@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
   </androidx.core.widget.NestedScrollView>
 
@@ -52,22 +52,23 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:orientation="vertical"
-      android:visibility="gone">
+      android:visibility="visible">
 
     <ImageButton
         android:id="@+id/image_button_central_woman"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@null"
         android:contentDescription="@string/central_woman_description"
         android:scaleType="fitXY"
-        android:src="@drawable/central_woman" />
+        android:src="@drawable/central_woman"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
         android:text="サイズを測りましょう！"
         android:textSize="20sp"
         android:textStyle="bold" />

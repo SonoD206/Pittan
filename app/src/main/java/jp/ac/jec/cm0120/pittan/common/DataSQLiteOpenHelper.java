@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.graduation_work.common;
+package jp.ac.jec.cm0120.pittan.common;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

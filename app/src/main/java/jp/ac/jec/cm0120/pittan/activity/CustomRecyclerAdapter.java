@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.graduation_work.activity;
+package jp.ac.jec.cm0120.pittan.activity;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import jp.ac.jec.cm0120.graduation_work.R;
+import jp.ac.jec.cm0120.pittan.R;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.ViewHolder> {
 

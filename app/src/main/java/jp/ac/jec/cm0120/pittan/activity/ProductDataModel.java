@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.graduation_work.activity;
+package jp.ac.jec.cm0120.pittan.activity;
 
 public class ProductDataModel {
 

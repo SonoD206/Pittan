@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Graduation_Work</string>
+  <string name="app_name">Pittan</string>
   <string name="settings_description">設定ボタン</string>
   <string name="card_image_description">カーテン・ラグの写真</string>
   <string name="home_floating_button_description">カーテン・ラグの情報を追加する</string>

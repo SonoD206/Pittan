@@ -6,7 +6,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "jp.ac.jec.cm0120.graduation_work"
+        applicationId "jp.ac.jec.cm0120.pittan"
         minSdk 24
         targetSdk 28
         versionCode 1

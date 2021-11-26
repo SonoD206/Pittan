@@ -1,10 +1,10 @@
-package jp.ac.jec.cm0120.graduation_work.activity;
+package jp.ac.jec.cm0120.pittan.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import jp.ac.jec.cm0120.graduation_work.R;
+import jp.ac.jec.cm0120.pittan.R;
 
 public class AddDataActivity extends AppCompatActivity {
 

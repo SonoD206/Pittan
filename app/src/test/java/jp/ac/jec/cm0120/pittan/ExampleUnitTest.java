@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.graduation_work;
+package jp.ac.jec.cm0120.pittan;
 
 import org.junit.Test;
 
