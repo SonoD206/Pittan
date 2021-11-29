@@ -1,6 +1,7 @@
 package jp.ac.jec.cm0120.pittan.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,8 @@ import jp.ac.jec.cm0120.pittan.R;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.ViewHolder> {
 
-  private Context context;
-  private ArrayList<ProductDataModel> productDataModelArrayList;
+  private final Context context;
+  private final ArrayList<ProductDataModel> productDataModelArrayList;
 
   public CustomRecyclerAdapter(Context context, ArrayList<ProductDataModel> productDataModelArrayList) {
     this.context = context;
@@ -27,7 +28,12 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   @Override
   public CustomRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false);
-    return new ViewHolder(view);
+    CustomRecyclerAdapter.ViewHolder holder = new ViewHolder(view);
+    holder.itemView.setOnClickListener(view1 -> {
+      Intent intent = new Intent(context,DetailActivity.class);
+      context.startActivity(intent);
+    });
+    return holder;
   }
 
   @Override
@@ -50,13 +56,13 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private TextView textViewDataHeight;
     private TextView textViewDataWidth;
     private TextView textViewCategory;
+
     public ViewHolder(@NonNull View itemView) {
       super(itemView);
       textViewDataTitle = itemView.findViewById(R.id.text_view_data_title);
       textViewDataHeight = itemView.findViewById(R.id.text_view_data_height);
       textViewDataWidth = itemView.findViewById(R.id.text_view_data_width);
       textViewCategory = itemView.findViewById(R.id.text_view_data_category);
-
     }
   }
 }

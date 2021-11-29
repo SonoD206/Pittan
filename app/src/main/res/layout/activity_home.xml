@@ -27,7 +27,7 @@
           android:layout_height="?attr/actionBarSize"
           app:layout_collapseMode="pin"
           app:menu="@menu/top_app_bar"
-          app:title="@string/app_name" />
+          app:title="@string/home_top_app_bar_title"/>
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
   </androidx.core.widget.NestedScrollView>
 
@@ -52,7 +52,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:orientation="vertical"
-      android:visibility="visible">
+      android:visibility="gone">
 
     <ImageButton
         android:id="@+id/image_button_central_woman"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@null"
-        android:contentDescription="@string/central_woman_description"
+        android:contentDescription="@string/add_description"
         android:scaleType="fitXY"
         android:src="@drawable/central_woman"/>
 
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:text="サイズを測りましょう！"
+        android:text="@string/home_user_info"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
       android:layout_margin="16dp"
-      android:contentDescription="@string/fab_description"
+      android:contentDescription="@string/add_description"
       app:backgroundTint="@color/base_color"
       app:srcCompat="@drawable/icon_add"
       app:tint="@color/white" />

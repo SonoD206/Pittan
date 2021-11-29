@@ -2,7 +2,8 @@
   <string name="app_name">Pittan</string>
   <string name="settings_description">設定ボタン</string>
   <string name="card_image_description">カーテン・ラグの写真</string>
-  <string name="home_floating_button_description">カーテン・ラグの情報を追加する</string>
-  <string name="fab_description">カーテン・ラグの情報を追加する</string>
-  <string name="central_woman_description">カーテン・ラグの情報を追加します。</string>
+  <string name="add_description">カーテン・ラグの情報を追加する</string>
+  <string name="home_top_app_bar_title">設置場所</string>
+  <string name="home_user_info">サイズを測りましょう！</string>
+  <string name="setting_toolbar_title">設定</string>
 </resources>
