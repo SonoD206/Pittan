@@ -15,6 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
@@ -23,20 +25,19 @@ public class HomeActivity extends AppCompatActivity  {
 
   private static final String TAG = "###";
   private ArrayList<ProductDataModel> productDataModelArrayList;
-  private RecyclerView recyclerView;
+  private RecyclerView mRecyclerView;
+  private CustomRecyclerAdapter mAdapter;
+  private RecyclerView.LayoutManager mLayoutManager;
   private Intent intent;
-
-  private Toolbar toolbar;
-  private ImageButton imageButtonCentralWoman;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
 
-    recyclerView = findViewById(R.id.recycler_view);
-    toolbar = findViewById(R.id.toolbar);
-    imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
+    Toolbar toolbar = findViewById(R.id.toolbar);
+    ImageButton imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
+    FloatingActionButton fab = findViewById(R.id.fab);
     setSupportActionBar(toolbar);
 
     //テストデータ
@@ -46,13 +47,14 @@ public class HomeActivity extends AppCompatActivity  {
     productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
     productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
 
-    CustomRecyclerAdapter customRecyclerAdapter = new CustomRecyclerAdapter(this, productDataModelArrayList);
-    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-    recyclerView.setLayoutManager(linearLayoutManager);
-    recyclerView.setAdapter(customRecyclerAdapter);
+    buildRecyclerView();
 
     imageButtonCentralWoman.setOnClickListener(view -> {
+      intent = new Intent(this,AddDataActivity.class);
+      startActivity(intent);
+    });
+
+    fab.setOnClickListener(view -> {
       intent = new Intent(this,AddDataActivity.class);
       startActivity(intent);
     });
@@ -74,5 +76,22 @@ public class HomeActivity extends AppCompatActivity  {
       return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+  /// RecyclerViewの作成
+  private void buildRecyclerView(){
+    mRecyclerView = findViewById(R.id.recycler_view);
+    mRecyclerView.setHasFixedSize(true);
+    mLayoutManager = new LinearLayoutManager(this);
+    mAdapter = new CustomRecyclerAdapter(productDataModelArrayList);
+    mRecyclerView.setLayoutManager(mLayoutManager);
+    mRecyclerView.setAdapter(mAdapter);
+    mAdapter.setOnItemClickListener(new CustomRecyclerAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(int position) {
+        intent = new Intent(HomeActivity.this,DetailActivity.class);
+        startActivity(intent);
+      }
+    });
   }
 }

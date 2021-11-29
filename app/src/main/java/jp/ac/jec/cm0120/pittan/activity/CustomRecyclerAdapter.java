@@ -14,30 +14,58 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 
-public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.ViewHolder> {
+public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
 
-  private final Context context;
-  private final ArrayList<ProductDataModel> productDataModelArrayList;
+  private ArrayList<ProductDataModel> productDataModelArrayList;
+  private OnItemClickListener onItemClickListener;
 
-  public CustomRecyclerAdapter(Context context, ArrayList<ProductDataModel> productDataModelArrayList) {
-    this.context = context;
+  public interface OnItemClickListener{
+      void onItemClick(int position);
+  }
+
+  public void setOnItemClickListener(OnItemClickListener listener){
+      onItemClickListener = listener;
+  }
+
+  public static class CustomViewHolder extends RecyclerView.ViewHolder {
+
+    public TextView textViewDataTitle;
+    public TextView textViewDataHeight;
+    public TextView textViewDataWidth;
+    public TextView textViewCategory;
+
+    public CustomViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
+      super(itemView);
+      textViewDataTitle = itemView.findViewById(R.id.text_view_data_title);
+      textViewDataHeight = itemView.findViewById(R.id.text_view_data_height);
+      textViewDataWidth = itemView.findViewById(R.id.text_view_data_width);
+      textViewCategory = itemView.findViewById(R.id.text_view_data_category);
+
+      itemView.setOnClickListener(view -> {
+        if (listener != null){
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+              listener.onItemClick(position);
+          }
+        }
+      });
+    }
+  }
+
+  public CustomRecyclerAdapter(ArrayList<ProductDataModel> productDataModelArrayList) {
     this.productDataModelArrayList = productDataModelArrayList;
   }
 
   @NonNull
   @Override
-  public CustomRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false);
-    CustomRecyclerAdapter.ViewHolder holder = new ViewHolder(view);
-    holder.itemView.setOnClickListener(view1 -> {
-      Intent intent = new Intent(context,DetailActivity.class);
-      context.startActivity(intent);
-    });
+    CustomViewHolder holder = new CustomViewHolder(view, onItemClickListener);
     return holder;
   }
 
   @Override
-  public void onBindViewHolder(@NonNull CustomRecyclerAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
     ProductDataModel model = productDataModelArrayList.get(position);
     holder.textViewDataTitle.setText(model.getProductTitle());
     holder.textViewDataHeight.setText(model.getProductHeight());
@@ -48,21 +76,5 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   @Override
   public int getItemCount() {
     return productDataModelArrayList.size();
-  }
-
-  public class ViewHolder extends RecyclerView.ViewHolder {
-
-    private TextView textViewDataTitle;
-    private TextView textViewDataHeight;
-    private TextView textViewDataWidth;
-    private TextView textViewCategory;
-
-    public ViewHolder(@NonNull View itemView) {
-      super(itemView);
-      textViewDataTitle = itemView.findViewById(R.id.text_view_data_title);
-      textViewDataHeight = itemView.findViewById(R.id.text_view_data_height);
-      textViewDataWidth = itemView.findViewById(R.id.text_view_data_width);
-      textViewCategory = itemView.findViewById(R.id.text_view_data_category);
-    }
   }
 }
