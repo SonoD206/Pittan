@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
@@ -20,22 +22,28 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   private final Context context;
   private ArrayList<ProductDataModel> productDataModelArrayList;
   private OnItemClickListener onItemClickListener;
+  private ProductDataModel mRecentlyDeletedItem;
+  private int mRecentlyDeletedItemPosition;
+  private CustomRecyclerAdapter.SnackbarListener snackbarListener;
 
   public interface OnItemClickListener{
     void onItemClick(int position);
+  }
+
+  public interface SnackbarListener{
+    void showUndoSnackbar(int position, String dataTitle);
   }
 
   public Context getContext() {
     return context;
   }
 
-  public void deleteItem(int position) {
-    this.productDataModelArrayList.remove(position);
-    notifyItemRemoved(position);
-  }
-
   public void setOnItemClickListener(OnItemClickListener listener){
       onItemClickListener = listener;
+  }
+
+  public void setSnackbarListener(SnackbarListener snackbarListener) {
+    this.snackbarListener = snackbarListener;
   }
 
   public CustomRecyclerAdapter(ArrayList<ProductDataModel> productDataModelArrayList, Context context) {
@@ -87,5 +95,21 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
         }
       });
     }
+  }
+
+  // Cellを削除した時に呼ばれる
+  public void deleteItem(int position) {
+    mRecentlyDeletedItem = productDataModelArrayList.get(position);
+    mRecentlyDeletedItemPosition = position;
+    String dataTitle = productDataModelArrayList.get(position).getProductTitle();
+    productDataModelArrayList.remove(position);
+    notifyItemRemoved(position);
+    snackbarListener.showUndoSnackbar(position, dataTitle);
+  }
+
+  public void undoDelete() {
+    productDataModelArrayList.add(mRecentlyDeletedItemPosition,
+            mRecentlyDeletedItem);
+    notifyItemInserted(mRecentlyDeletedItemPosition);
   }
 }

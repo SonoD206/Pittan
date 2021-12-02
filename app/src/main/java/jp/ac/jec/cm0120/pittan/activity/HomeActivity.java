@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,6 @@ import jp.ac.jec.cm0120.pittan.R;
 
 public class HomeActivity extends AppCompatActivity {
 
-  private static final String TAG = "###";
   private ArrayList<ProductDataModel> productDataModelArrayList;
   private RecyclerView mRecyclerView;
   private CustomRecyclerAdapter mAdapter;
@@ -30,8 +31,6 @@ public class HomeActivity extends AppCompatActivity {
   private Intent intent;
   private ImageButton imageButtonCentralWoman;
   private FloatingActionButton fab;
-
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +86,14 @@ public class HomeActivity extends AppCompatActivity {
     mAdapter.setOnItemClickListener(position -> {
       intent = new Intent(HomeActivity.this, DetailActivity.class);
       startActivity(intent);
+    });
+
+    mAdapter.setSnackbarListener((position, dataTitle) -> {
+      View view = findViewById(R.id.coordinator_layout);
+      Snackbar snackbar = Snackbar.make(view, dataTitle,
+              Snackbar.LENGTH_LONG);
+      snackbar.setAction("元に戻す", v -> mAdapter.undoDelete());
+      snackbar.show();
     });
 
     ItemTouchHelper touchHelper = new ItemTouchHelper(new CustomSwipeHelper(mAdapter));
