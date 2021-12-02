@@ -3,10 +3,12 @@ package jp.ac.jec.cm0120.pittan.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -88,11 +90,23 @@ public class HomeActivity extends AppCompatActivity {
       startActivity(intent);
     });
 
+    // SnackBar
     mAdapter.setSnackbarListener((position, dataTitle) -> {
       View view = findViewById(R.id.coordinator_layout);
       Snackbar snackbar = Snackbar.make(view, dataTitle,
               Snackbar.LENGTH_LONG);
       snackbar.setAction("元に戻す", v -> mAdapter.undoDelete());
+      snackbar.addCallback(new Snackbar.Callback(){
+        @Override
+        public void onDismissed(Snackbar transientBottomBar, int event) {
+          super.onDismissed(transientBottomBar, event);
+          // TODO: 2021/12/02 LocalDBからデータを削除
+        }
+        @Override
+        public void onShown(Snackbar sb) {
+          super.onShown(sb);
+        }
+      });
       snackbar.show();
     });
 
