@@ -1,10 +1,8 @@
 package jp.ac.jec.cm0120.pittan.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
@@ -12,6 +10,7 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 
-public class HomeActivity extends AppCompatActivity  {
+public class HomeActivity extends AppCompatActivity {
 
   private static final String TAG = "###";
   private ArrayList<ProductDataModel> productDataModelArrayList;
@@ -29,6 +28,10 @@ public class HomeActivity extends AppCompatActivity  {
   private CustomRecyclerAdapter mAdapter;
   private RecyclerView.LayoutManager mLayoutManager;
   private Intent intent;
+  private ImageButton imageButtonCentralWoman;
+  private FloatingActionButton fab;
+
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +39,9 @@ public class HomeActivity extends AppCompatActivity  {
     setContentView(R.layout.activity_home);
 
     Toolbar toolbar = findViewById(R.id.toolbar);
-    ImageButton imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
-    FloatingActionButton fab = findViewById(R.id.fab);
+    imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
+    fab = findViewById(R.id.fab);
+
     setSupportActionBar(toolbar);
 
     //テストデータ
@@ -48,17 +52,8 @@ public class HomeActivity extends AppCompatActivity  {
     productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
 
     buildRecyclerView();
-
-    imageButtonCentralWoman.setOnClickListener(view -> {
-      intent = new Intent(this,AddDataActivity.class);
-      startActivity(intent);
-    });
-
-    fab.setOnClickListener(view -> {
-      intent = new Intent(this,AddDataActivity.class);
-      startActivity(intent);
-    });
-
+    onClickCentralWoman();
+    onClickFab();
   }
 
   @Override
@@ -71,7 +66,7 @@ public class HomeActivity extends AppCompatActivity  {
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.settings) {
-      intent = new Intent(this,SettingActivity.class);
+      intent = new Intent(this, SettingActivity.class);
       startActivity(intent);
       return true;
     }
@@ -79,19 +74,38 @@ public class HomeActivity extends AppCompatActivity  {
   }
 
   /// RecyclerViewの作成
-  private void buildRecyclerView(){
+  private void buildRecyclerView() {
     mRecyclerView = findViewById(R.id.recycler_view);
+
     mRecyclerView.setHasFixedSize(true);
     mLayoutManager = new LinearLayoutManager(this);
-    mAdapter = new CustomRecyclerAdapter(productDataModelArrayList);
+    mAdapter = new CustomRecyclerAdapter(productDataModelArrayList, this);
+
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);
-    mAdapter.setOnItemClickListener(new CustomRecyclerAdapter.OnItemClickListener() {
-      @Override
-      public void onItemClick(int position) {
-        intent = new Intent(HomeActivity.this,DetailActivity.class);
-        startActivity(intent);
-      }
+
+    mAdapter.setOnItemClickListener(position -> {
+      intent = new Intent(HomeActivity.this, DetailActivity.class);
+      startActivity(intent);
+    });
+
+    ItemTouchHelper touchHelper = new ItemTouchHelper(new CustomSwipeHelper(mAdapter));
+    touchHelper.attachToRecyclerView(mRecyclerView);
+  }
+
+  // 中心の女性を押した時の処理
+  private void onClickCentralWoman() {
+    imageButtonCentralWoman.setOnClickListener(view -> {
+      intent = new Intent(this, AddDataActivity.class);
+      startActivity(intent);
+    });
+  }
+
+  //　FloatingActionButtonを押した時の処理
+  private void onClickFab() {
+    fab.setOnClickListener(view -> {
+      intent = new Intent(this, AddDataActivity.class);
+      startActivity(intent);
     });
   }
 }

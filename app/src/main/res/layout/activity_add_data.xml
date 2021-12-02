@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.AddDataActivity">
+    tools:context=".activity.AddDataActivity"
+    android:background="#ff0000">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
