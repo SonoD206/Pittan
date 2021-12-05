@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +24,11 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
+  private static final String TAG =  "###";
   private ArrayList<ProductDataModel> productDataModelArrayList;
   private RecyclerView mRecyclerView;
   private CustomRecyclerAdapter mAdapter;
@@ -33,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
   private Intent intent;
   private ImageButton imageButtonCentralWoman;
   private FloatingActionButton fab;
+  private PittanSQLiteOpenHelper helper;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +49,20 @@ public class HomeActivity extends AppCompatActivity {
 
     setSupportActionBar(toolbar);
 
-    //テストデータ
     productDataModelArrayList = new ArrayList<>();
-    productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
-    productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
-    productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
-    productDataModelArrayList.add(new ProductDataModel("子供部屋", "3000mm", "900mm", "カーテン"));
 
-    buildRecyclerView();
+    Log.i(TAG, "onCreate:" + productDataModelArrayList.size());
     onClickCentralWoman();
     onClickFab();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    helper = new PittanSQLiteOpenHelper(this);
+    productDataModelArrayList = helper.getSelectCardData();
+    Log.i(TAG, "onResume:" + productDataModelArrayList.size());
+    buildRecyclerView();
   }
 
   @Override
@@ -81,7 +89,6 @@ public class HomeActivity extends AppCompatActivity {
     mRecyclerView.setHasFixedSize(true);
     mLayoutManager = new LinearLayoutManager(this);
     mAdapter = new CustomRecyclerAdapter(productDataModelArrayList, this);
-
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);
 
@@ -91,16 +98,20 @@ public class HomeActivity extends AppCompatActivity {
     });
 
     // SnackBar
-    mAdapter.setSnackbarListener((position, dataTitle) -> {
+    mAdapter.setSnackbarListener((position, placeName, placeID) -> {
       View view = findViewById(R.id.coordinator_layout);
-      Snackbar snackbar = Snackbar.make(view, dataTitle,
+      Snackbar snackbar = Snackbar.make(view, placeName,
               Snackbar.LENGTH_LONG);
       snackbar.setAction("元に戻す", v -> mAdapter.undoDelete());
       snackbar.addCallback(new Snackbar.Callback(){
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
           super.onDismissed(transientBottomBar, event);
-          // TODO: 2021/12/02 LocalDBからデータを削除
+          if (helper.isUpdatePlaceTable(placeID)) {
+            Toast.makeText(HomeActivity.this, "seikou", Toast.LENGTH_SHORT).show();
+          } else {
+            Toast.makeText(HomeActivity.this, "sippai", Toast.LENGTH_SHORT).show();
+          }
         }
         @Override
         public void onShown(Snackbar sb) {

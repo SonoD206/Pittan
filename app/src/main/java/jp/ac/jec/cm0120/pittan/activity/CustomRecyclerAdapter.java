@@ -32,7 +32,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   }
 
   public interface SnackbarListener{
-    void showUndoSnackbar(int position, String dataTitle);
+    void showUndoSnackbar(int position, String placeName, String placeID);
   }
 
   public Context getContext() {
@@ -62,9 +62,9 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   @Override
   public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
     ProductDataModel model = productDataModelArrayList.get(position);
-    holder.textViewDataTitle.setText(model.getProductTitle());
-    holder.textViewDataHeight.setText(model.getProductHeight());
-    holder.textViewDataWidth.setText(model.getProductWeight());
+    holder.textViewDataTitle.setText(model.getPlaceName());
+    holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()));
+    holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()));
     holder.textViewCategory.setText(model.getProductCategory());
   }
 
@@ -102,10 +102,11 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   public void deleteItem(int position) {
     mRecentlyDeletedItem = productDataModelArrayList.get(position);
     mRecentlyDeletedItemPosition = position;
-    String dataTitle = productDataModelArrayList.get(position).getProductTitle();
+    String placeName = productDataModelArrayList.get(position).getPlaceName();
+    String placeID = String.valueOf(productDataModelArrayList.get(position).getPlaceID());
     productDataModelArrayList.remove(position);
     notifyItemRemoved(position);
-    snackbarListener.showUndoSnackbar(position, dataTitle);
+    snackbarListener.showUndoSnackbar(position, placeName, placeID);
   }
 
   public void undoDelete() {

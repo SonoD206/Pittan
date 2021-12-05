@@ -2,40 +2,57 @@ package jp.ac.jec.cm0120.pittan.activity;
 
 public class ProductDataModel {
 
-  private String productTitle;
-  private String productHeight;
-  private String productWidth;
+  // place table
+  private int placeID;
+  private String placeName;
+  private int placeDeleteFlag;
+
+  // product table
+  private int productID;
   private String productCategory;
+  private String productColorCode;
+  private String productDesign;
+  private String productType;
+  private String productComment;
+  private float productRecommendedSize;
+  private float productWidth;
+  private float productHeight;
 
-  public ProductDataModel(String title, String height, String width, String category) {
-    productTitle = title;
-    productHeight = height;
-    productWidth = width;
-    productCategory = category;
+  // product_image table
+  private int productImageID;
+  private String productImagePath;
+
+  // 各Getter,Setter
+  public int getPlaceID() {
+    return placeID;
   }
 
-  public String getProductTitle() {
-    return productTitle;
+  public void setPlaceID(int placeID) {
+    this.placeID = placeID;
   }
 
-  public void setProductTitle(String productTitle) {
-    this.productTitle = productTitle;
+  public String getPlaceName() {
+    return placeName;
   }
 
-  public String getProductHeight() {
-    return productHeight;
+  public void setPlaceName(String placeName) {
+    this.placeName = placeName;
   }
 
-  public void setProductHeight(String productHeight) {
-    this.productHeight = productHeight;
+  public int getPlaceDeleteFlag() {
+    return placeDeleteFlag;
   }
 
-  public String getProductWeight() {
-    return productWidth;
+  public void setPlaceDeleteFlag(int placeDeleteFlag) {
+    this.placeDeleteFlag = placeDeleteFlag;
   }
 
-  public void setProductWidth(String productWidth) {
-    this.productWidth = productWidth;
+  public int getProductID() {
+    return productID;
+  }
+
+  public void setProductID(int productID) {
+    this.productID = productID;
   }
 
   public String getProductCategory() {
@@ -44,5 +61,77 @@ public class ProductDataModel {
 
   public void setProductCategory(String productCategory) {
     this.productCategory = productCategory;
+  }
+
+  public String getProductColorCode() {
+    return productColorCode;
+  }
+
+  public void setProductColorCode(String productColorCode) {
+    this.productColorCode = productColorCode;
+  }
+
+  public String getProductDesign() {
+    return productDesign;
+  }
+
+  public void setProductDesign(String productDesign) {
+    this.productDesign = productDesign;
+  }
+
+  public String getProductType() {
+    return productType;
+  }
+
+  public void setProductType(String productType) {
+    this.productType = productType;
+  }
+
+  public String getProductComment() {
+    return productComment;
+  }
+
+  public void setProductComment(String productComment) {
+    this.productComment = productComment;
+  }
+
+  public float getProductRecommendedSize() {
+    return productRecommendedSize;
+  }
+
+  public void setProductRecommendedSize(float productRecommendedSize) {
+    this.productRecommendedSize = productRecommendedSize;
+  }
+
+  public float getProductWidth() {
+    return productWidth;
+  }
+
+  public void setProductWidth(float productWidth) {
+    this.productWidth = productWidth;
+  }
+
+  public float getProductHeight() {
+    return productHeight;
+  }
+
+  public void setProductHeight(float productHeight) {
+    this.productHeight = productHeight;
+  }
+
+  public int getProductImageID() {
+    return productImageID;
+  }
+
+  public void setProductImageID(int productImageID) {
+    this.productImageID = productImageID;
+  }
+
+  public String getProductImagePath() {
+    return productImagePath;
+  }
+
+  public void setProductImagePath(String productImagePath) {
+    this.productImagePath = productImagePath;
   }
 }
