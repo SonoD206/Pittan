@@ -65,15 +65,18 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     db.execSQL(createPlaceTable);
 
     // TestData
-    // TODO: 2021/12/03 AUTOINCREMENTが効いていない？？ カラム指定のインサートをかくと治る
-    String insertTestProduct = "INSERT INTO product VALUES(null,'カーテン','hoge','hogehoge','両開き','コメントコメント',100.0,1200,900)";
-    String insertTestPlace = "INSERT INTO place VALUES(null,'子供部屋',0,1)";
-    String insertTestProductImage = "INSERT INTO product_image VALUES(null,'hogePath',1)";
-
-    db.execSQL(insertTestProduct);
-    db.execSQL(insertTestPlace);
-    db.execSQL(insertTestProductImage);
-
+    // 一つ目
+    db.execSQL("INSERT INTO product ('product_category','product_color_code','product_design','product_type','product_comment','product_recommended_size','product_height','product_width') VALUES('カーテン','hoge','hogehoge','両開き','コメント',100.0,1200,900)");
+    db.execSQL("INSERT INTO place ('place_name','place_delete_flag','product_id') VALUES('子供部屋',0,1)");
+    db.execSQL("INSERT INTO product_image ('product_image_path','product_id') VALUES ('hoge_path',1)");
+    // 二つ目
+    db.execSQL("INSERT INTO product ('product_category','product_color_code','product_design','product_type','product_comment','product_recommended_size','product_height','product_width') VALUES('カーテン','hoge','hogehoge','両開き','コメント',100.0,1200,900)");
+    db.execSQL("INSERT INTO place ('place_name','place_delete_flag','product_id') VALUES('子供部屋',0,2)");
+    db.execSQL("INSERT INTO product_image ('product_image_path','product_id') VALUES ('hoge_path',2)");
+    // 三つ目
+    db.execSQL("INSERT INTO product ('product_category','product_color_code','product_design','product_type','product_comment','product_recommended_size','product_height','product_width') VALUES('カーテン','hoge','hogehoge','両開き','コメント',100.0,1200,900)");
+    db.execSQL("INSERT INTO place ('place_name','place_delete_flag','product_id') VALUES('子供部屋',0,3)");
+    db.execSQL("INSERT INTO product_image ('product_image_path','product_id') VALUES ('hoge_path',3)");
   }
 
   @Override
