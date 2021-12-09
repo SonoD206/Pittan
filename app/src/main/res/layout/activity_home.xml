@@ -2,11 +2,12 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".activity.HomeActivity"
-    android:id="@+id/coordinator_layout">
+    tools:context=".ui.home.HomeActivity">
 
   <com.google.android.material.appbar.AppBarLayout
       android:id="@+id/appbar"
@@ -21,14 +22,13 @@
         app:contentScrim="@color/base_color"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         app:toolbarId="@id/toolbar">
-
       <androidx.appcompat.widget.Toolbar
           android:id="@+id/toolbar"
           android:layout_width="match_parent"
           android:layout_height="?attr/actionBarSize"
           app:layout_collapseMode="pin"
-          app:menu="@menu/top_app_bar"
-          app:title="@string/home_top_app_bar_title"/>
+          app:menu="@menu/home_top_app_bar"
+          app:title="@string/home_top_app_bar_title" />
 
     </com.google.android.material.appbar.CollapsingToolbarLayout>
   </com.google.android.material.appbar.AppBarLayout>
@@ -42,11 +42,11 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:visibility="visible"
-        android:paddingTop="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
+        android:layout_marginEnd="8dp"
+        android:paddingTop="8dp"
+        android:scrollbars="vertical"
+        android:visibility="visible" />
 
   </androidx.core.widget.NestedScrollView>
 
@@ -66,7 +66,7 @@
         android:background="@null"
         android:contentDescription="@string/add_description"
         android:scaleType="fitXY"
-        android:src="@drawable/central_woman"/>
+        android:src="@drawable/central_woman" />
 
     <TextView
         android:layout_width="wrap_content"

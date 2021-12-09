@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-import jp.ac.jec.cm0120.pittan.activity.ProductDataModel;
+import jp.ac.jec.cm0120.pittan.ui.home.ProductDataModel;
 
 
 public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {

@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Pittan">
         <activity
-            android:name="jp.ac.jec.cm0120.pittan.activity.ObjectInstallationActivity"
+            android:name="jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity"
             android:exported="true" />
         <activity
-            android:name="jp.ac.jec.cm0120.pittan.activity.AddDataActivity"
+            android:name="jp.ac.jec.cm0120.pittan.ui.add.AddDataActivity"
             android:exported="true" />
         <activity
-            android:name="jp.ac.jec.cm0120.pittan.activity.DetailActivity"
+            android:name="jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity"
             android:exported="true" />
         <activity
-            android:name="jp.ac.jec.cm0120.pittan.activity.SettingActivity"
+            android:name="jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity"
             android:exported="true" />
         <activity
-            android:name="jp.ac.jec.cm0120.pittan.activity.HomeActivity"
+            android:name="jp.ac.jec.cm0120.pittan.ui.home.HomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

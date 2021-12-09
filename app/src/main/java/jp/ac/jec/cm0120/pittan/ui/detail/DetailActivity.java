@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.pittan.activity;
+package jp.ac.jec.cm0120.pittan.ui.detail;
 
 import android.os.Bundle;
 

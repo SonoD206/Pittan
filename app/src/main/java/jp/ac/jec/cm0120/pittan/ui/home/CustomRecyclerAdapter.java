@@ -1,9 +1,7 @@
-package jp.ac.jec.cm0120.pittan.activity;
+package jp.ac.jec.cm0120.pittan.ui.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -59,12 +55,13 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     return new CustomViewHolder(view, onItemClickListener);
   }
 
+  @SuppressLint("SetTextI18n")
   @Override
   public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
     ProductDataModel model = productDataModelArrayList.get(position);
     holder.textViewDataTitle.setText(model.getPlaceName());
-    holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()));
-    holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()));
+    holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()) + "mm");
+    holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()) + "mm");
     holder.textViewCategory.setText(model.getProductCategory());
   }
 

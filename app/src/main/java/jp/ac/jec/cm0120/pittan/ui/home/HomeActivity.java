@@ -1,10 +1,8 @@
-package jp.ac.jec.cm0120.pittan.activity;
+package jp.ac.jec.cm0120.pittan.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,36 +22,39 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.ui.add.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
+import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
-  private static final String TAG =  "###";
-  private ArrayList<ProductDataModel> productDataModelArrayList;
-  private RecyclerView mRecyclerView;
-  private CustomRecyclerAdapter mAdapter;
-  private RecyclerView.LayoutManager mLayoutManager;
   private Intent intent;
+  private ArrayList<ProductDataModel> productDataModelArrayList;
+  private Toolbar mToolbar;
   private ImageButton imageButtonCentralWoman;
   private FloatingActionButton fab;
   private PittanSQLiteOpenHelper helper;
+  private CustomRecyclerAdapter mAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
 
-    Toolbar toolbar = findViewById(R.id.toolbar);
     imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
     fab = findViewById(R.id.fab);
 
-    setSupportActionBar(toolbar);
+    buildAppTopBar();
 
     productDataModelArrayList = new ArrayList<>();
-
-    Log.i(TAG, "onCreate:" + productDataModelArrayList.size());
     onClickCentralWoman();
     onClickFab();
+  }
+
+  private void buildAppTopBar() {
+    mToolbar = findViewById(R.id.toolbar);
+    setSupportActionBar(mToolbar);
   }
 
   @Override
@@ -61,20 +62,18 @@ public class HomeActivity extends AppCompatActivity {
     super.onResume();
     helper = new PittanSQLiteOpenHelper(this);
     productDataModelArrayList = helper.getSelectCardData();
-    Log.i(TAG, "onResume:" + productDataModelArrayList.size());
     buildRecyclerView();
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.top_app_bar, menu);
+    getMenuInflater().inflate(R.menu.home_top_app_bar, menu);
     return super.onCreateOptionsMenu(menu);
   }
 
-  @SuppressLint("NonConstantResourceId")
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    if (item.getItemId() == R.id.settings) {
+    if (item.getItemId() == R.id.menu_item_setting) {
       intent = new Intent(this, SettingActivity.class);
       startActivity(intent);
       return true;
@@ -84,10 +83,10 @@ public class HomeActivity extends AppCompatActivity {
 
   /// RecyclerViewの作成
   private void buildRecyclerView() {
-    mRecyclerView = findViewById(R.id.recycler_view);
+    RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
 
     mRecyclerView.setHasFixedSize(true);
-    mLayoutManager = new LinearLayoutManager(this);
+    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     mAdapter = new CustomRecyclerAdapter(productDataModelArrayList, this);
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);

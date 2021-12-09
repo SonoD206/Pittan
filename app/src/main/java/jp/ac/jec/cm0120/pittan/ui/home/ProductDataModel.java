@@ -1,4 +1,4 @@
-package jp.ac.jec.cm0120.pittan.activity;
+package jp.ac.jec.cm0120.pittan.ui.home;
 
 public class ProductDataModel {
 
