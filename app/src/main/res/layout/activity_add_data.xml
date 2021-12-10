@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".ui.add.AddDataActivity">
+    tools:context=".ui.add_data.AddDataActivity">
 
   <!-- Tool　Bar -->
   <com.google.android.material.appbar.AppBarLayout
@@ -33,6 +33,7 @@
         android:orientation="vertical">
       <!-- Photo -->
       <FrameLayout
+          android:id="@+id/frame_photo"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -124,7 +125,7 @@
 
         <Button
             android:id="@+id/button_curtain"
-            style="@style/SegmentController.Item"
+            style="@style/SegmentedController.Item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -135,7 +136,7 @@
 
         <Button
             android:id="@+id/button_rug"
-            style="@style/SegmentController.Item"
+            style="@style/SegmentedController.Item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

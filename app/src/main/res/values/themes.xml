@@ -17,14 +17,18 @@
     <item name="actionMenuTextAppearance">@style/App.ToolbarMenuItem</item>
   </style>
 
+<!-- Menu in App Top Bar -->
   <style name="App.ToolbarMenuItem" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
     <item name="android:textSize">20sp</item>
     <item name="textAllCaps">true</item>
     <item name="android:textStyle">normal</item>
   </style>
 
-  <style name="SegmentController.Item" parent="Widget.MaterialComponents.Button.OutlinedButton">
+<!-- SegmentedControl -->
+  <style name="SegmentedController.Item" parent="Widget.MaterialComponents.Button.OutlinedButton">
     <item name="android:backgroundTint">@color/segmented_item_background</item>
   </style>
+
+<!--  Transition -->
 
 </resources>

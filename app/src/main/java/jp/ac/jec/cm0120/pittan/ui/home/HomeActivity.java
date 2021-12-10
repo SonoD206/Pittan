@@ -2,13 +2,11 @@ package jp.ac.jec.cm0120.pittan.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
-import jp.ac.jec.cm0120.pittan.ui.add.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
