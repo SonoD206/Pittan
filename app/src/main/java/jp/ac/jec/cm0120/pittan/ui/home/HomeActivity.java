@@ -1,12 +1,13 @@
 package jp.ac.jec.cm0120.pittan.ui.home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,18 +23,21 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
-import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 
 public class HomeActivity extends AppCompatActivity {
 
+  private static final String TAG = "###";
   private Intent intent;
   private ArrayList<ProductDataModel> productDataModelArrayList;
   private Toolbar mToolbar;
   private ImageButton imageButtonCentralWoman;
   private FloatingActionButton fab;
+  private LinearLayout centralLinear;
+  private RecyclerView mRecyclerView;
   private PittanSQLiteOpenHelper helper;
   private CustomRecyclerAdapter mAdapter;
 
@@ -42,17 +46,17 @@ public class HomeActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
 
-    imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
-    fab = findViewById(R.id.fab);
-
-    buildAppTopBar();
+    initialize();
+//    onClickCentralWoman();
+    onClickFab();
 
     productDataModelArrayList = new ArrayList<>();
-    onClickCentralWoman();
-    onClickFab();
   }
 
-  private void buildAppTopBar() {
+  private void initialize() {
+    imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
+    centralLinear = findViewById(R.id.linear_layout_central_image_button);
+    fab = findViewById(R.id.fab);
     mToolbar = findViewById(R.id.toolbar);
     setSupportActionBar(mToolbar);
   }
@@ -63,6 +67,15 @@ public class HomeActivity extends AppCompatActivity {
     helper = new PittanSQLiteOpenHelper(this);
     productDataModelArrayList = helper.getSelectCardData();
     buildRecyclerView();
+
+//　DBにデータがあるかないか
+    if (productDataModelArrayList.size() > 0){
+      mRecyclerView.setVisibility(View.VISIBLE);
+      centralLinear.setVisibility(View.GONE);
+    } else {
+      mRecyclerView.setVisibility(View.GONE);
+      centralLinear.setVisibility(View.VISIBLE);
+    }
   }
 
   @Override
@@ -83,8 +96,7 @@ public class HomeActivity extends AppCompatActivity {
 
   /// RecyclerViewの作成
   private void buildRecyclerView() {
-    RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
-
+    mRecyclerView = findViewById(R.id.recycler_view);
     mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
     mAdapter = new CustomRecyclerAdapter(productDataModelArrayList, this);
@@ -102,16 +114,20 @@ public class HomeActivity extends AppCompatActivity {
       Snackbar snackbar = Snackbar.make(view, placeName,
               Snackbar.LENGTH_LONG);
       snackbar.setAction("元に戻す", v -> mAdapter.undoDelete());
-      snackbar.addCallback(new Snackbar.Callback(){
+      snackbar.setAnchorView(R.id.fab);
+      snackbar.addCallback(new Snackbar.Callback() {
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
           super.onDismissed(transientBottomBar, event);
-          if (helper.isUpdatePlaceTable(placeID)) {
-            Toast.makeText(HomeActivity.this, "seikou", Toast.LENGTH_SHORT).show();
+          if (productDataModelArrayList.size() > 0){
+            mRecyclerView.setVisibility(View.VISIBLE);
+            centralLinear.setVisibility(View.GONE);
           } else {
-            Toast.makeText(HomeActivity.this, "sippai", Toast.LENGTH_SHORT).show();
+            mRecyclerView.setVisibility(View.GONE);
+            centralLinear.setVisibility(View.VISIBLE);
           }
         }
+
         @Override
         public void onShown(Snackbar sb) {
           super.onShown(sb);

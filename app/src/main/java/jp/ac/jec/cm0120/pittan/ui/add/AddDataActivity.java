@@ -29,12 +29,11 @@ public class AddDataActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_add_data);
 
-    mToolbar = findViewById(R.id.add_top_bar);
+    buildAppTopBar();
+
     MaterialButtonToggleGroup segmentedControl = findViewById(R.id.segmented_controller);
     buttonCurtain = findViewById(R.id.button_curtain);
     buttonRug = findViewById(R.id.button_curtain);
-
-//    buildAppTopBar();
 
     segmentedControl.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
       if (checkedId == R.id.button_curtain) {
@@ -47,22 +46,23 @@ public class AddDataActivity extends AppCompatActivity {
     });
   }
 
-//  private void buildAppTopBar() {
-//    mToolbar.setTitle("");
-//    setSupportActionBar(mToolbar);
-//  }
-//
-//  public boolean onCreateOptionsMenu(Menu menu) {
-//    getMenuInflater().inflate(R.menu.add_top_app_bar, menu);
-//    return super.onCreateOptionsMenu(menu);
-//  }
-//
-//  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//    if (item.getItemId() == R.id.menu_item_save_data) {
-//      finish();
-//      return true;
-//    }
-//    return super.onOptionsItemSelected(item);
-//  }
+  private void buildAppTopBar() {
+    mToolbar = findViewById(R.id.add_top_bar);
+    mToolbar.setTitle("");
+    setSupportActionBar(mToolbar);
+  }
+
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.add_top_app_bar, menu);
+    return super.onCreateOptionsMenu(menu);
+  }
+
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    if (item.getItemId() == R.id.menu_item_save_data) {
+      finish();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
 
 }
