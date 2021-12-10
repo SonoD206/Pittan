@@ -35,12 +35,6 @@ public class AddDataActivity extends AppCompatActivity {
     buttonRug = findViewById(R.id.button_rug);
     FrameLayout frameLayout = findViewById(R.id.frame_photo);
 
-    frameLayout.setOnClickListener(view -> {
-      Intent intent = new Intent(this, ObjectInstallationActivity.class);
-      startActivity(intent);
-    });
-
-
     segmentedControl.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
       if (checkedId == R.id.button_curtain) {
         segmentedControl.check(R.id.button_curtain);
@@ -55,6 +49,11 @@ public class AddDataActivity extends AppCompatActivity {
       finish();
     });
 
+    frameLayout.setOnClickListener(view -> {
+      Intent intent = new Intent(this, ObjectInstallationActivity.class);
+      startActivity(intent);
+
+    });
   }
 
   private void buildAppTopBar() {

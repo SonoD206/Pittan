@@ -32,7 +32,6 @@ public class HomeActivity extends AppCompatActivity {
   private Intent intent;
   private ArrayList<ProductDataModel> productDataModelArrayList;
   private Toolbar mToolbar;
-  private ImageButton imageButtonCentralWoman;
   private FloatingActionButton fab;
   private LinearLayout centralLinear;
   private RecyclerView mRecyclerView;
@@ -45,14 +44,12 @@ public class HomeActivity extends AppCompatActivity {
     setContentView(R.layout.activity_home);
 
     initialize();
-//    onClickCentralWoman();
     onClickFab();
 
     productDataModelArrayList = new ArrayList<>();
   }
 
   private void initialize() {
-    imageButtonCentralWoman = findViewById(R.id.image_button_central_woman);
     centralLinear = findViewById(R.id.linear_layout_central_image_button);
     fab = findViewById(R.id.fab);
     mToolbar = findViewById(R.id.toolbar);
@@ -136,14 +133,6 @@ public class HomeActivity extends AppCompatActivity {
 
     ItemTouchHelper touchHelper = new ItemTouchHelper(new CustomSwipeHelper(mAdapter));
     touchHelper.attachToRecyclerView(mRecyclerView);
-  }
-
-  // 中心の女性を押した時の処理
-  private void onClickCentralWoman() {
-    imageButtonCentralWoman.setOnClickListener(view -> {
-      intent = new Intent(this, AddDataActivity.class);
-      startActivity(intent);
-    });
   }
 
   //　FloatingActionButtonを押した時の処理
