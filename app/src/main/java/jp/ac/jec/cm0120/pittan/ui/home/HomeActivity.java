@@ -2,6 +2,7 @@ package jp.ac.jec.cm0120.pittan.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,6 +115,12 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
           super.onDismissed(transientBottomBar, event);
+          Log.i(TAG, "onDismissed: DBのUpdateが始まります");
+          if (event == DISMISS_EVENT_TIMEOUT || event == DISMISS_EVENT_SWIPE
+                  || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_MANUAL){
+            helper.isUpdatePlaceTable(placeID);
+          }
+
           if (productDataModelArrayList.size() > 0){
             mRecyclerView.setVisibility(View.VISIBLE);
             centralLinear.setVisibility(View.GONE);
@@ -138,6 +145,7 @@ public class HomeActivity extends AppCompatActivity {
   //　FloatingActionButtonを押した時の処理
   private void onClickFab() {
     fab.setOnClickListener(view -> {
+      productDataModelArrayList.clear();
       intent = new Intent(this, AddDataActivity.class);
       startActivity(intent);
     });
