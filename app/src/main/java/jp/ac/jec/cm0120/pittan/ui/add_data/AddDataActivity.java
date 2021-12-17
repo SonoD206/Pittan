@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -60,8 +59,6 @@ public class AddDataActivity extends AppCompatActivity {
   private void initialize() {
     mToolbar = findViewById(R.id.add_top_bar);
     frameLayout = findViewById(R.id.frame_photo);
-    Button buttonCurtain = findViewById(R.id.button_curtain);
-    Button buttonRug = findViewById(R.id.button_rug);
     segmentedControl = findViewById(R.id.segmented_controller);
     editLocation = findViewById(R.id.edit_view_location);
     editHeightSize = findViewById(R.id.edit_view_size_height);
