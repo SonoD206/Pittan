@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
+import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
@@ -31,7 +31,7 @@ public class HomeActivity extends AppCompatActivity {
 
   private static final String TAG = "###";
   private Intent intent;
-  private ArrayList<ProductDataModel> productDataModelArrayList;
+  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
   private Toolbar mToolbar;
   private FloatingActionButton fab;
   private LinearLayout centralLinear;
@@ -45,15 +45,20 @@ public class HomeActivity extends AppCompatActivity {
     setContentView(R.layout.activity_home);
 
     initialize();
+    buildAppTopBar();
     onClickFab();
 
-    productDataModelArrayList = new ArrayList<>();
+    pittanProductDataModelArrayList = new ArrayList<>();
   }
 
   private void initialize() {
+    mToolbar = findViewById(R.id.toolbar);
+    mRecyclerView = findViewById(R.id.recycler_view);
     centralLinear = findViewById(R.id.linear_layout_central_image_button);
     fab = findViewById(R.id.fab);
-    mToolbar = findViewById(R.id.toolbar);
+  }
+
+  private void buildAppTopBar() {
     setSupportActionBar(mToolbar);
   }
 
@@ -61,11 +66,11 @@ public class HomeActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     helper = new PittanSQLiteOpenHelper(this);
-    productDataModelArrayList = helper.getSelectCardData();
+    pittanProductDataModelArrayList = helper.getSelectCardData();
     buildRecyclerView();
 
 //　DBにデータがあるかないか
-    if (productDataModelArrayList.size() > 0){
+    if (pittanProductDataModelArrayList.size() > 0) {
       mRecyclerView.setVisibility(View.VISIBLE);
       centralLinear.setVisibility(View.GONE);
     } else {
@@ -92,10 +97,9 @@ public class HomeActivity extends AppCompatActivity {
 
   /// RecyclerViewの作成
   private void buildRecyclerView() {
-    mRecyclerView = findViewById(R.id.recycler_view);
     mRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-    mAdapter = new CustomRecyclerAdapter(productDataModelArrayList, this);
+    mAdapter = new CustomRecyclerAdapter(pittanProductDataModelArrayList, this);
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);
 
@@ -115,13 +119,12 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onDismissed(Snackbar transientBottomBar, int event) {
           super.onDismissed(transientBottomBar, event);
-          Log.i(TAG, "onDismissed: DBのUpdateが始まります");
           if (event == DISMISS_EVENT_TIMEOUT || event == DISMISS_EVENT_SWIPE
-                  || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_MANUAL){
+                  || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_MANUAL) {
             helper.isUpdatePlaceTable(placeID);
           }
 
-          if (productDataModelArrayList.size() > 0){
+          if (pittanProductDataModelArrayList.size() > 0) {
             mRecyclerView.setVisibility(View.VISIBLE);
             centralLinear.setVisibility(View.GONE);
           } else {
@@ -129,7 +132,6 @@ public class HomeActivity extends AppCompatActivity {
             centralLinear.setVisibility(View.VISIBLE);
           }
         }
-
         @Override
         public void onShown(Snackbar sb) {
           super.onShown(sb);
@@ -145,7 +147,6 @@ public class HomeActivity extends AppCompatActivity {
   //　FloatingActionButtonを押した時の処理
   private void onClickFab() {
     fab.setOnClickListener(view -> {
-      productDataModelArrayList.clear();
       intent = new Intent(this, AddDataActivity.class);
       startActivity(intent);
     });

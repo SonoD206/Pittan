@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-import jp.ac.jec.cm0120.pittan.ui.home.ProductDataModel;
-
 
 public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
 
@@ -85,8 +83,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   }
 
   // Get Data Display In CardView
-  public ArrayList<ProductDataModel> getSelectCardData(){
-    ArrayList<ProductDataModel> arrayList = new ArrayList<>();
+  public ArrayList<PittanProductDataModel> getSelectCardData(){
+    ArrayList<PittanProductDataModel> arrayList = new ArrayList<>();
     String selectAllSql = "SELECT place_name,product_height,product_width,product_category,product_image_path,place_id FROM product " +
             "LEFT OUTER JOIN place ON product.product_id = place.product_id " +
             "LEFT OUTER JOIN product_image ON product.product_id = product_image.product_id " +
@@ -101,7 +99,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
       @SuppressLint("Recycle")
       Cursor cursor = db.rawQuery(selectAllSql,null);
       while (cursor.moveToNext()){
-        ProductDataModel temps = new ProductDataModel();
+        PittanProductDataModel temps = new PittanProductDataModel();
         temps.setPlaceName(cursor.getString(0));
         temps.setProductHeight(cursor.getFloat(1));
         temps.setProductWidth(cursor.getFloat(2));
@@ -122,7 +120,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   }
 
   // Insert　product TABLE
-  public boolean isInsertProductData(ProductDataModel item) {
+  public boolean insertProductData(PittanProductDataModel item) {
     ContentValues contentValues = new ContentValues();
     contentValues.put("product_category", item.getProductCategory());
     contentValues.put("product_color_code", item.getProductColorCode());
@@ -130,14 +128,14 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     contentValues.put("product_type", item.getProductType());
     contentValues.put("product_comment", item.getProductComment());
     contentValues.put("product_recommended_size", item.getProductComment());
-    contentValues.put("product_height", item.getProductComment());
+    contentValues.put("product_height", item.getProductHeight());
     contentValues.put("product_width", item.getProductWidth());
 
     SQLiteDatabase db = getWritableDatabase();
     long ret;
     boolean isSuccess = false;
     try {
-      ret = db.insert(TABLE_PLACE, null, contentValues);
+      ret = db.insert(TABLE_PRODUCT, null, contentValues);
       if (ret > 0) {
         isSuccess = isInsertPlaceData(item, ret);
         isSuccess = isInsertProductImageData(item, ret);
@@ -152,16 +150,17 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   }
 
   // Insert place TABLE
-  public boolean isInsertPlaceData(ProductDataModel item, long productID) {
+  public boolean isInsertPlaceData(PittanProductDataModel item, long productID) {
     ContentValues contentValues = new ContentValues();
     contentValues.put("place_name", item.getPlaceName());
     contentValues.put("place_delete_flag", item.getPlaceDeleteFlag());
-    contentValues.put("place_id", productID);
+    contentValues.put("product_id", productID);
 
     SQLiteDatabase db = getWritableDatabase();
     long ret = -1;
 
     try {
+
       ret = db.insert(TABLE_PLACE, null, contentValues);
     } catch (SQLiteException e) {
       e.printStackTrace();
@@ -173,15 +172,15 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   }
 
   // Insert　product_image TABLE
-  public boolean isInsertProductImageData(ProductDataModel item, long productID) {
+  public boolean isInsertProductImageData(PittanProductDataModel item, long productID) {
     ContentValues contentValues = new ContentValues();
     contentValues.put("product_image_path", item.getProductImagePath());
-    contentValues.put("place_id", productID);
+    contentValues.put("product_id", productID);
     SQLiteDatabase db = getWritableDatabase();
     long ret = -1;
 
     try {
-      ret = db.insert(TABLE_PLACE, null, contentValues);
+      ret = db.insert(TABLE_PRODUCT_IMAGE, null, contentValues);
     } catch (SQLiteException e) {
       e.printStackTrace();
     } finally {

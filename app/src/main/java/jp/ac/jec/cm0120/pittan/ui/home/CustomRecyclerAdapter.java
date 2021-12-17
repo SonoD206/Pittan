@@ -13,21 +13,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
 
+  public static final String TAG = "###";
   private final Context context;
-  private ArrayList<ProductDataModel> productDataModelArrayList;
+  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
   private OnItemClickListener onItemClickListener;
-  private ProductDataModel mRecentlyDeletedItem;
+  private PittanProductDataModel mRecentlyDeletedItem;
   private int mRecentlyDeletedItemPosition;
   private CustomRecyclerAdapter.SnackbarListener snackbarListener;
 
-  public interface OnItemClickListener{
+  public interface OnItemClickListener {
     void onItemClick(int position);
   }
 
-  public interface SnackbarListener{
+  public interface SnackbarListener {
     void showUndoSnackbar(int position, String placeName, String placeID);
   }
 
@@ -35,30 +37,30 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     return context;
   }
 
-  public void setOnItemClickListener(OnItemClickListener listener){
-      onItemClickListener = listener;
+  public void setOnItemClickListener(OnItemClickListener listener) {
+    onItemClickListener = listener;
   }
 
   public void setSnackbarListener(SnackbarListener snackbarListener) {
     this.snackbarListener = snackbarListener;
   }
 
-  public CustomRecyclerAdapter(ArrayList<ProductDataModel> productDataModelArrayList, Context context) {
-    this.productDataModelArrayList = productDataModelArrayList;
+  public CustomRecyclerAdapter(ArrayList<PittanProductDataModel> pittanProductDataModelArrayList, Context context) {
+    this.pittanProductDataModelArrayList = pittanProductDataModelArrayList;
     this.context = context;
   }
 
   @NonNull
   @Override
   public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item,parent,false);
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
     return new CustomViewHolder(view, onItemClickListener);
   }
 
   @SuppressLint("SetTextI18n")
   @Override
   public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-    ProductDataModel model = productDataModelArrayList.get(position);
+    PittanProductDataModel model = pittanProductDataModelArrayList.get(position);
     holder.textViewDataTitle.setText(model.getPlaceName());
     holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()) + "mm");
     holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()) + "mm");
@@ -67,7 +69,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
   @Override
   public int getItemCount() {
-    return productDataModelArrayList.size();
+    return pittanProductDataModelArrayList.size();
   }
 
   public static class CustomViewHolder extends RecyclerView.ViewHolder {
@@ -85,7 +87,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
       textViewCategory = itemView.findViewById(R.id.text_view_data_category);
 
       itemView.setOnClickListener(view -> {
-        if (listener != null){
+        if (listener != null) {
           int position = getAdapterPosition();
           if (position != RecyclerView.NO_POSITION) {
             listener.onItemClick(position);
@@ -97,18 +99,20 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
 
   // Cellを削除した時に呼ばれる
   public void deleteItem(int position) {
-    mRecentlyDeletedItem = productDataModelArrayList.get(position);
+    mRecentlyDeletedItem = pittanProductDataModelArrayList.get(position);
     mRecentlyDeletedItemPosition = position;
-    String placeName = productDataModelArrayList.get(position).getPlaceName();
-    String placeID = String.valueOf(productDataModelArrayList.get(position).getPlaceID());
-    productDataModelArrayList.remove(position);
+
+    String placeName = pittanProductDataModelArrayList.get(position).getPlaceName();
+    String placeID = String.valueOf(pittanProductDataModelArrayList.get(position).getPlaceID());
+
+    pittanProductDataModelArrayList.remove(position);
     notifyItemRemoved(position);
+
     snackbarListener.showUndoSnackbar(position, placeName, placeID);
   }
 
   public void undoDelete() {
-    productDataModelArrayList.add(mRecentlyDeletedItemPosition,
-            mRecentlyDeletedItem);
+    pittanProductDataModelArrayList.add(mRecentlyDeletedItemPosition, mRecentlyDeletedItem);
     notifyItemInserted(mRecentlyDeletedItemPosition);
   }
 }

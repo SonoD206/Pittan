@@ -1,6 +1,6 @@
-package jp.ac.jec.cm0120.pittan.ui.home;
+package jp.ac.jec.cm0120.pittan.database;
 
-public class ProductDataModel {
+public class PittanProductDataModel {
 
   // place table
   private int placeID;
@@ -14,7 +14,6 @@ public class ProductDataModel {
   private String productDesign;
   private String productType;
   private String productComment;
-  private float productRecommendedSize;
   private float productWidth;
   private float productHeight;
 
@@ -51,9 +50,9 @@ public class ProductDataModel {
     return productID;
   }
 
-  public void setProductID(int productID) {
-    this.productID = productID;
-  }
+//  public void setProductID(int productID) {
+//    this.productID = productID;
+//  }
 
   public String getProductCategory() {
     return productCategory;
@@ -93,14 +92,6 @@ public class ProductDataModel {
 
   public void setProductComment(String productComment) {
     this.productComment = productComment;
-  }
-
-  public float getProductRecommendedSize() {
-    return productRecommendedSize;
-  }
-
-  public void setProductRecommendedSize(float productRecommendedSize) {
-    this.productRecommendedSize = productRecommendedSize;
   }
 
   public float getProductWidth() {
