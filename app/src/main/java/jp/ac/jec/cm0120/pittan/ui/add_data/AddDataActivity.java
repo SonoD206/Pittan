@@ -1,11 +1,15 @@
 package jp.ac.jec.cm0120.pittan.ui.add_data;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import jp.ac.jec.cm0120.pittan.R;
@@ -25,12 +30,14 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 public class AddDataActivity extends AppCompatActivity {
 
   private static final String TAG = "###";
-  private Intent intent;
+  private Intent mIntent;
+  private InputMethodManager mInputMethodManager;
 
   /// Components
+  private LinearLayout mLinearLayout;
   private MaterialButtonToggleGroup segmentedControl;
   private FrameLayout frameLayout;
-  private MaterialToolbar mToolbar;
+  private MaterialToolbar toolbar;
   private TextInputEditText editLocation;
   private TextInputEditText editHeightSize;
   private TextInputEditText editWidthSize;
@@ -56,8 +63,17 @@ public class AddDataActivity extends AppCompatActivity {
     setListener();
   }
 
+  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+    mInputMethodManager.hideSoftInputFromWindow(mLinearLayout.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    mLinearLayout.requestFocus();
+    return false;
+  }
+
+  /// 初期設定
   private void initialize() {
-    mToolbar = findViewById(R.id.add_top_bar);
+    mLinearLayout = findViewById(R.id.add_main_layout);
+    toolbar = findViewById(R.id.add_top_bar);
     frameLayout = findViewById(R.id.frame_photo);
     segmentedControl = findViewById(R.id.segmented_controller);
     editLocation = findViewById(R.id.edit_view_location);
@@ -66,13 +82,17 @@ public class AddDataActivity extends AppCompatActivity {
     editComments = findViewById(R.id.edit_view_comments);
 
     productCategory = getString(R.string.add_segment_first_item);
+
+    mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
   }
 
+  /// AppToolBarの作成
   private void buildAppTopBar() {
-    mToolbar.setTitle("");
-    setSupportActionBar(mToolbar);
+    toolbar.setTitle("");
+    setSupportActionBar(toolbar);
   }
 
+  /// 各ListenerのSet
   private void setListener() {
 
     /// StartActivityForResult
@@ -92,12 +112,12 @@ public class AddDataActivity extends AppCompatActivity {
     );
 
     /// AppTopBar
-    mToolbar.setNavigationOnClickListener(view -> finish());
+    toolbar.setNavigationOnClickListener(view -> finish());
 
     /// PhotoFrame
     frameLayout.setOnClickListener(view -> {
-      intent = new Intent(this, ObjectInstallationActivity.class);
-      startForResult.launch(intent);
+      mIntent = new Intent(this, ObjectInstallationActivity.class);
+      startForResult.launch(mIntent);
     });
 
     /// SegmentedControl
@@ -122,8 +142,6 @@ public class AddDataActivity extends AppCompatActivity {
 
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.menu_item_save_data) {
-      // TODO: 2021/12/10  PittanSQLiteOpenHelperのInsert実行　鬼門は画像保存
-
       if (editHeightSize.getText().toString().length() != 0) {
         productHeight = Float.parseFloat(editHeightSize.getText().toString());
       }
@@ -132,14 +150,15 @@ public class AddDataActivity extends AppCompatActivity {
       }
       if (editLocation.getText().toString().length() != 0) {
         insertPittanDB();
+        finish();
       } else {
-        Toast.makeText(this, "設置場所を入力してください", Toast.LENGTH_SHORT).show();
+        Snackbar.make(mLinearLayout, "設置場所を入力してください", Snackbar.LENGTH_SHORT).setDuration(1000).show();
       }
-      finish();
       return true;
     }
     return super.onOptionsItemSelected(item);
   }
+
 
 
   /// PittanDBにデータをインサート
@@ -173,5 +192,7 @@ public class AddDataActivity extends AppCompatActivity {
       runtimeException.printStackTrace();
     }
   }
+
+
 
 }

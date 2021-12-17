@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".ui.add_data.AddDataActivity">
+    tools:context=".ui.add_data.AddDataActivity"
+    android:id="@+id/add_main_layout">
 
   <!-- Tool　Bar -->
   <com.google.android.material.appbar.AppBarLayout
