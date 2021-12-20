@@ -3,14 +3,16 @@ package jp.ac.jec.cm0120.pittan.ui.add_data;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -21,6 +23,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.concurrent.locks.ReadWriteLock;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
@@ -64,10 +68,20 @@ public class AddDataActivity extends AppCompatActivity {
   }
 
   @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    mInputMethodManager.hideSoftInputFromWindow(mLinearLayout.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    mLinearLayout.requestFocus();
-    return false;
+  public boolean dispatchTouchEvent(MotionEvent ev) {
+    if (ev.getAction() == MotionEvent.ACTION_DOWN){
+      View view = getCurrentFocus();
+      if (view instanceof EditText){
+        Rect outRect = new Rect();
+        view.getGlobalVisibleRect(outRect);
+        if (!outRect.contains((int)ev.getRawX(),(int)ev.getRawY())){
+          view.clearFocus();
+          mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
+        }
+      }
+    }
+
+    return super.dispatchTouchEvent(ev);
   }
 
   /// 初期設定
@@ -132,7 +146,6 @@ public class AddDataActivity extends AppCompatActivity {
         productCategory = getString(R.string.add_segment_second_item);
       }
     });
-
   }
 
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,8 +171,6 @@ public class AddDataActivity extends AppCompatActivity {
     }
     return super.onOptionsItemSelected(item);
   }
-
-
 
   /// PittanDBにデータをインサート
   private void insertPittanDB() {
@@ -192,7 +203,6 @@ public class AddDataActivity extends AppCompatActivity {
       runtimeException.printStackTrace();
     }
   }
-
 
 
 }
