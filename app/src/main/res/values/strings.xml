@@ -1,20 +1,22 @@
 <resources>
   <string name="app_name">Pittan</string>
-<!-- home -->
+  <!-- home -->
   <string name="home_menu_item_settings_description">設定ボタン</string>
   <string name="card_image_description">カーテン・ラグの写真</string>
   <string name="add_description">カーテン・ラグの情報を追加する</string>
   <string name="home_top_app_bar_title">設置場所</string>
   <string name="home_user_info">サイズを測りましょう！</string>
   <string name="home_menu_item_settings_title">設定</string>
-<!-- add -->
+  <string name="home_size_height_title">縦幅：</string>
+  <string name="home_size_width_title">横幅：</string>
+  <!-- add -->
   <string name="add_photo_description">撮影したカーテン・ラグの画像</string>
   <string name="add_photo_info">カーテンの雰囲気</string>
   <string name="add_first_title">設置する場所</string>
   <string name="add_second_title">カテゴリ</string>
   <string name="add_third_title">窓枠のサイズ</string>
   <string name="add_forth_title">コメント</string>
-  <string name="add_first_edit_hint">子供部屋</string>
+  <string name="add_first_edit_hint">例：子供部屋</string>
   <string name="add_second_edit_first_hint">縦幅 mm</string>
   <string name="add_second_edit_second_hint">横幅 mm</string>
   <string name="add_third_edit_hint">柄、遮光性、こだわり</string>
@@ -24,4 +26,11 @@
   <string name="add_multiply">×</string>
   <string name="add_menu_item_title">保存</string>
   <string name="add_menu_item_description">入力したデータを保存する</string>
+
+  <!-- detail -->
+  <string name="detail_menu_item_title">編集</string>
+  <string name="detail_menu_item_description">表示しているデータの編集画面に遷移する</string>
+  <string name="detail_size_container_height_title">縦幅</string>
+  <string name="detail_size_container_width_title">横幅</string>
+
 </resources>

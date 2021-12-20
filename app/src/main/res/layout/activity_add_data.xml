@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     android:orientation="vertical"
-    tools:context=".ui.add_data.AddDataActivity"
-    android:id="@+id/add_main_layout">
+    tools:context=".ui.add_data.AddDataActivity">
 
   <!-- Tool　Bar -->
   <com.google.android.material.appbar.AppBarLayout
@@ -26,7 +26,8 @@
   <!--　Contents　-->
   <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,7 +63,7 @@
             app:cardCornerRadius="4dp">
 
           <ImageView
-              android:id="@+id/image_view_user_photo"
+              android:id="@+id/add_image_view_user_photo"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/corner_radius_photo_input"

@@ -37,7 +37,6 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="8dp"
           android:padding="4dp"
-          android:text="子供部屋"
           android:textAlignment="viewStart"
           android:textSize="28sp"
           android:textStyle="bold" />
@@ -52,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="縦幅："
+            android:text="@string/home_size_height_title"
             android:textAlignment="viewStart"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -62,7 +61,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.6"
-            android:text="3000mm"
             android:textAlignment="viewStart"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -78,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="横幅："
+            android:text="@string/detail_size_container_width_title"
             android:textAlignment="viewStart"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -88,7 +86,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.6"
-            android:text="900mm"
             android:textAlignment="viewStart"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -103,8 +100,9 @@
           android:layout_marginEnd="8dp"
           android:background="@drawable/corner_radius_tag"
           android:padding="8dp"
-          android:text="カーテン"
-          android:textStyle="bold" />
+          android:textStyle="bold"
+          android:gravity="center"
+          android:minWidth="76dp"/>
 
     </LinearLayout>
 
