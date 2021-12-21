@@ -69,6 +69,8 @@ public class DetailActivity extends AppCompatActivity {
   private void buildAppTopBar() {
     mToolbar.setTitle("");
     setSupportActionBar(mToolbar);
+
+    mToolbar.setNavigationOnClickListener(view -> finish());
   }
 
   private void setItemData() {
