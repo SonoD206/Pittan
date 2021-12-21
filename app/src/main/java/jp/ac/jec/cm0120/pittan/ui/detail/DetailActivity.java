@@ -1,11 +1,11 @@
 package jp.ac.jec.cm0120.pittan.ui.detail;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +49,7 @@ public class DetailActivity extends AppCompatActivity {
     buildAppTopBar();
     setItemData();
   }
+
   private void initialize() {
 
     mToolbar = findViewById(R.id.detail_top_bar);
@@ -61,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     textViewComments = findViewById(R.id.detail_text_view_comments_area);
 
     intent = getIntent();
-    placeID = intent.getIntExtra(EXTRA_PLACE_ID,1);
+    placeID = intent.getIntExtra(EXTRA_PLACE_ID, 1);
 
   }
 
@@ -72,18 +73,21 @@ public class DetailActivity extends AppCompatActivity {
 
   private void setItemData() {
     PittanSQLiteOpenHelper helper = new PittanSQLiteOpenHelper(this);
-    ArrayList<PittanProductDataModel> selectItem = new ArrayList<>();
+    ArrayList<PittanProductDataModel> selectItem;
     selectItem = helper.getSelectDetailData(placeID);
 
-    if (selectItem.size() > 0){
+    if (selectItem.size() > 0) {
 
       for (PittanProductDataModel item : selectItem) {
-         textViewPlaceTitle.setText(item.getPlaceName());
-         textViewItemCategory.setText(item.getProductCategory());
-         textViewItemHeight.setText(String.valueOf(item.getProductHeight()) + "mm");
-         textViewItemWidth.setText(String.valueOf( item.getProductWidth()) + "mm");
-         textViewComments.setText(item.getProductComment());
-         imagePath = item.getProductImagePath();
+        String itemHeight = item.getProductHeight() + getResources().getString(R.string.millimetre);
+        String itemWidth = item.getProductWidth() + getResources().getString(R.string.millimetre);
+
+        textViewPlaceTitle.setText(item.getPlaceName());
+        textViewItemCategory.setText(item.getProductCategory());
+        textViewItemHeight.setText(itemHeight);
+        textViewItemWidth.setText(itemWidth);
+        textViewComments.setText(item.getProductComment());
+        imagePath = item.getProductImagePath();
       }
 
     } else {
@@ -93,13 +97,13 @@ public class DetailActivity extends AppCompatActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.detail_top_app_bar,menu);
+    getMenuInflater().inflate(R.menu.detail_top_app_bar, menu);
     return super.onCreateOptionsMenu(menu);
   }
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    if (item.getItemId() == R.id.menu_item_edit){
+    if (item.getItemId() == R.id.menu_item_edit) {
       intent = new Intent(this, AddDataActivity.class);
       startActivity(intent);
       return true;

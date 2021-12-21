@@ -2,7 +2,6 @@ package jp.ac.jec.cm0120.pittan.ui.home;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -17,8 +16,7 @@ import jp.ac.jec.cm0120.pittan.R;
 public class CustomSwipeHelper extends ItemTouchHelper.SimpleCallback {
 
   CustomRecyclerAdapter mAdapter;
-  private Paint paint = new Paint();
-  private Drawable icon;
+  private final Drawable icon;
   private final ColorDrawable swipeBackGround;
 
   CustomSwipeHelper(CustomRecyclerAdapter mAdapter) {

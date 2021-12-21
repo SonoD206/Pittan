@@ -24,8 +24,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.concurrent.locks.ReadWriteLock;
-
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
@@ -41,7 +39,7 @@ public class AddDataActivity extends AppCompatActivity {
   private LinearLayout mLinearLayout;
   private MaterialButtonToggleGroup segmentedControl;
   private FrameLayout frameLayout;
-  private MaterialToolbar toolbar;
+  private MaterialToolbar mToolbar;
   private TextInputEditText editLocation;
   private TextInputEditText editHeightSize;
   private TextInputEditText editWidthSize;
@@ -69,14 +67,14 @@ public class AddDataActivity extends AppCompatActivity {
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (ev.getAction() == MotionEvent.ACTION_DOWN){
+    if (ev.getAction() == MotionEvent.ACTION_DOWN) {
       View view = getCurrentFocus();
-      if (view instanceof EditText){
+      if (view instanceof EditText) {
         Rect outRect = new Rect();
         view.getGlobalVisibleRect(outRect);
-        if (!outRect.contains((int)ev.getRawX(),(int)ev.getRawY())){
+        if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
           view.clearFocus();
-          mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
+          mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
       }
     }
@@ -87,7 +85,7 @@ public class AddDataActivity extends AppCompatActivity {
   /// 初期設定
   private void initialize() {
     mLinearLayout = findViewById(R.id.add_main_layout);
-    toolbar = findViewById(R.id.add_top_bar);
+    mToolbar = findViewById(R.id.add_top_bar);
     frameLayout = findViewById(R.id.frame_photo);
     segmentedControl = findViewById(R.id.segmented_controller);
     editLocation = findViewById(R.id.edit_view_location);
@@ -102,8 +100,8 @@ public class AddDataActivity extends AppCompatActivity {
 
   /// AppToolBarの作成
   private void buildAppTopBar() {
-    toolbar.setTitle("");
-    setSupportActionBar(toolbar);
+    mToolbar.setTitle("");
+    setSupportActionBar(mToolbar);
   }
 
   /// 各ListenerのSet
@@ -126,7 +124,7 @@ public class AddDataActivity extends AppCompatActivity {
     );
 
     /// AppTopBar
-    toolbar.setNavigationOnClickListener(view -> finish());
+    mToolbar.setNavigationOnClickListener(view -> finish());
 
     /// PhotoFrame
     frameLayout.setOnClickListener(view -> {

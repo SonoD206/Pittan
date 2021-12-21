@@ -1,5 +1,7 @@
 <resources>
   <string name="app_name">Pittan</string>
+  <!-- Anywhere -->
+  <string name="millimetre">mm</string>
   <!-- home -->
   <string name="home_menu_item_settings_description">設定ボタン</string>
   <string name="card_image_description">カーテン・ラグの写真</string>
@@ -26,7 +28,6 @@
   <string name="add_multiply">×</string>
   <string name="add_menu_item_title">保存</string>
   <string name="add_menu_item_description">入力したデータを保存する</string>
-
   <!-- detail -->
   <string name="detail_menu_item_title">編集</string>
   <string name="detail_menu_item_description">表示しているデータの編集画面に遷移する</string>
