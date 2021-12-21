@@ -13,7 +13,7 @@
       android:layout_height="wrap_content">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/add_top_bar"
+        android:id="@+id/detail_top_bar"
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -35,7 +35,6 @@
 
       <!-- photoFrame -->
       <FrameLayout
-          android:id="@+id/detail_frame_photo"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
@@ -55,6 +54,7 @@
             app:drawableStartCompat="@drawable/icon_camera" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/detail_card_view_item_photo_frame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
@@ -176,6 +176,7 @@
               android:textStyle="bold" />
 
           <TextView
+              android:id="@+id/detail_text_view_item_width"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_gravity="center"

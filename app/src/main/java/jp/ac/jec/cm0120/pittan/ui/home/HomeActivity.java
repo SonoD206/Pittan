@@ -2,7 +2,6 @@ package jp.ac.jec.cm0120.pittan.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +20,15 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
-import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
+import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
-  private static final String TAG = "###";
+  private static final String EXTRA_PLACE_ID = "placeID";
   private Intent intent;
   private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
   private Toolbar mToolbar;
@@ -104,7 +103,9 @@ public class HomeActivity extends AppCompatActivity {
     mRecyclerView.setAdapter(mAdapter);
 
     mAdapter.setOnItemClickListener(position -> {
+      int currentPlaceID = pittanProductDataModelArrayList.get(position).getPlaceID();
       intent = new Intent(HomeActivity.this, DetailActivity.class);
+      intent.putExtra(EXTRA_PLACE_ID,currentPlaceID);
       startActivity(intent);
     });
 
@@ -123,7 +124,6 @@ public class HomeActivity extends AppCompatActivity {
                   || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_MANUAL) {
             helper.isUpdatePlaceTable(placeID);
           }
-
           if (pittanProductDataModelArrayList.size() > 0) {
             mRecyclerView.setVisibility(View.VISIBLE);
             centralLinear.setVisibility(View.GONE);
@@ -132,6 +132,7 @@ public class HomeActivity extends AppCompatActivity {
             centralLinear.setVisibility(View.VISIBLE);
           }
         }
+
         @Override
         public void onShown(Snackbar sb) {
           super.onShown(sb);

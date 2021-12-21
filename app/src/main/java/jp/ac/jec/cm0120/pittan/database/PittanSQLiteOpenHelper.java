@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 
@@ -82,6 +84,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
 
   }
 
+  // region SQLite SELECT statement
+
   // Get Data Display In CardView
   public ArrayList<PittanProductDataModel> getSelectCardData(){
     ArrayList<PittanProductDataModel> arrayList = new ArrayList<>();
@@ -119,6 +123,41 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     return arrayList;
   }
 
+  public ArrayList<PittanProductDataModel> getSelectDetailData(int placeID){
+    ArrayList<PittanProductDataModel> ary = new ArrayList<>();
+    String selectDetailItemSql = "SELECT place_name,product_height,product_width,product_category,product_image_path,place_id FROM product " +
+            "LEFT OUTER JOIN place ON product.product_id = place.product_id " +
+            "LEFT OUTER JOIN product_image ON product.product_id = product_image.product_id " +
+            "WHERE place_id = " + placeID;
+
+    SQLiteDatabase db = getReadableDatabase();
+    if (db == null){
+      return null;
+    }
+
+    try {
+      @SuppressLint("Recycle")
+      Cursor cursor = db.rawQuery(selectDetailItemSql,null);
+      while (cursor.moveToNext()){
+        PittanProductDataModel tmp = new PittanProductDataModel();
+        tmp.setPlaceName(cursor.getString(0));
+        tmp.setProductHeight(cursor.getFloat(1));
+        tmp.setProductWidth(cursor.getFloat(2));
+        tmp.setProductCategory(cursor.getString(3));
+        tmp.setProductImagePath(cursor.getString(4));
+        ary.add(tmp);
+      }
+    } catch (SQLiteException e){
+      e.printStackTrace();
+    } finally {
+      db.close();
+    }
+    return ary;
+  }
+
+  // endregion
+
+  //region SQLite INSERT statement
   // Insert　product TABLE
   public boolean insertProductData(PittanProductDataModel item) {
     ContentValues contentValues = new ContentValues();
@@ -208,4 +247,5 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     }
     return ret > 0;
   }
+  // endregion
 }
