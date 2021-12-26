@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.ac.jec.cm0120.pittan">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-feature android:name="android.hardware.camera.ar" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_pittan_launcher"
@@ -9,6 +13,9 @@
         android:roundIcon="@mipmap/ic_pittan_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Pittan">
+
+        <meta-data android:name="com.google.ar.core" android:value="required" />
+
         <activity
             android:name="jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity"
             android:exported="true" />
