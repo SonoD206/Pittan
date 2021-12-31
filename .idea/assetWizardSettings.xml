@@ -303,7 +303,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/arrow_back/baseline_arrow_back_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/crop_free/baseline_crop_free_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -313,9 +313,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="icon_navigation_back" />
-                            <entry key="sourceFile" value="$USER_HOME$/Desktop/SVG/アセット 1.svg" />
+                            <entry key="outputName" value="icon_curtain" />
+                            <entry key="sourceFile" value="$USER_HOME$/Desktop/IconCurtain.svg" />
                           </map>
                         </option>
                       </PersistentState>

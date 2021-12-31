@@ -1,9 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pale_gray"
     tools:context=".ui.objectInstallation.ObjectInstallationActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+  <androidx.fragment.app.FragmentContainerView
+      android:id="@+id/arFragment"
+      android:name="com.google.ar.sceneform.ux.ArFragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+  <ImageButton
+      android:id="@+id/image_button_close"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:background="@null"
+      android:contentDescription="前の画面に戻る"
+      android:padding="16dp"
+      android:src="@drawable/icon_close" />
+
+  <ImageButton
+      android:id="@+id/image_button_shutter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center|bottom"
+      android:background="@null"
+      android:contentDescription="ARモデルの写真を撮る"
+      android:paddingBottom="16dp"
+      android:src="@drawable/icon_shutter_button" />
+
+  <!-- side menu -->
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end|bottom"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="150dp"
+      android:minWidth="64dp"
+      android:minHeight="182dp"
+      android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/image_button_take_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:contentDescription="3Dモデルを含んだ写真を撮る"
+        android:src="@drawable/icon_take_picture" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="撮る"
+        android:textColor="@color/white"/>
+
+    <ImageButton
+        android:id="@+id/image_button_installation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:contentDescription="3Dモデルを含んだ写真を撮る"
+        android:src="@drawable/icon_curtain" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="設置"
+        android:textColor="@color/white"
+        android:layout_marginTop="8dp"/>
+
+  </LinearLayout>
+
+
+</FrameLayout>

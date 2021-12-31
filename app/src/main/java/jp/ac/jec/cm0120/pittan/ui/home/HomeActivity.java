@@ -105,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
     mAdapter.setOnItemClickListener(position -> {
       int currentPlaceID = pittanProductDataModelArrayList.get(position).getPlaceID();
       intent = new Intent(HomeActivity.this, DetailActivity.class);
-      intent.putExtra(EXTRA_PLACE_ID,currentPlaceID);
+      intent.putExtra(EXTRA_PLACE_ID, currentPlaceID);
       startActivity(intent);
     });
 
