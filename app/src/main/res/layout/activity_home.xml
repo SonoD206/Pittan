@@ -51,15 +51,14 @@
   </androidx.core.widget.NestedScrollView>
 
   <LinearLayout
-      android:id="@+id/linear_layout_central_image_button"
+      android:id="@+id/linear_layout_central_woman"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:orientation="vertical"
       android:visibility="gone">
 
-    <ImageButton
-        android:id="@+id/image_button_central_woman"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

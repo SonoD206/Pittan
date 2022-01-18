@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
   private void initialize() {
     mToolbar = findViewById(R.id.toolbar);
     mRecyclerView = findViewById(R.id.recycler_view_home);
-    centralLinear = findViewById(R.id.linear_layout_central_image_button);
+    centralLinear = findViewById(R.id.linear_layout_central_woman);
     fab = findViewById(R.id.fab);
   }
 
