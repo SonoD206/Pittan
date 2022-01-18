@@ -33,5 +33,7 @@
   <string name="detail_menu_item_description">表示しているデータの編集画面に遷移する</string>
   <string name="detail_size_container_height_title">縦幅</string>
   <string name="detail_size_container_width_title">横幅</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

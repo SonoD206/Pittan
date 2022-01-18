@@ -1,0 +1,104 @@
+package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
+
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+import jp.ac.jec.cm0120.pittan.R;
+
+public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<ProductMenuRecyclerViewAdapter.ProductMenuRecyclerViewHolder> {
+
+  private static final String TAG = "###";
+
+  // Fields
+  private LayoutInflater mInflater;
+  private ArrayList<ProductMenuModel> productMenuModelArrayList;
+  private int headerTypeDouble = 0;
+  private int headerTypeSingle = 1;
+  private int itemType = 2;
+
+  public ProductMenuRecyclerViewAdapter(Context context, ArrayList<ProductMenuModel> imageModels) {
+    mInflater = LayoutInflater.from(context);
+    productMenuModelArrayList = imageModels;
+  }
+
+  @NonNull
+  @Override
+  public ProductMenuRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+    View view;
+
+    if (viewType == 0 || viewType == 1){
+      view = mInflater.inflate(R.layout.product_menu_header, parent, false);
+    } else {
+      view = mInflater.inflate(R.layout.product_menu_item, parent, false);
+    }
+
+    return new ProductMenuRecyclerViewHolder(view);
+  }
+
+  /// Itemのクリック時のActionをセット
+  @Override
+  public void onBindViewHolder(@NonNull ProductMenuRecyclerViewHolder holder, int position) {
+
+    int itemMenuImage = productMenuModelArrayList.get(position).getMenuImage();
+    int itemViewType = productMenuModelArrayList.get(position).getItemViewType();
+
+    if (itemViewType == 0 ){
+      holder.imageViewHeader.setImageResource(itemMenuImage);
+      holder.textViewCategoryName.setText("両開き");
+    } else if (itemViewType == 1){
+      holder.imageViewHeader.setImageResource(itemMenuImage);
+      holder.textViewCategoryName.setText("片開き");
+    } else {
+      holder.imageViewModel.setImageResource(itemMenuImage);
+
+    }
+  }
+
+  @Override
+  public int getItemCount() {
+    return productMenuModelArrayList.size();
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+
+    int itemViewType = productMenuModelArrayList.get(position).getItemViewType();
+
+    if (itemViewType == 0 || itemViewType == 1){
+      return headerTypeDouble;
+    } else {
+      return itemType;
+    }
+  }
+
+  public static class ProductMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
+
+    private final ImageView imageViewModel;
+    private final TextView textViewCategoryName;
+    private final ImageView imageViewHeader;
+
+
+    public ProductMenuRecyclerViewHolder(@NonNull View itemView) {
+      super(itemView);
+
+      imageViewModel = itemView.findViewById(R.id.image_view_model);
+      imageViewHeader = itemView.findViewById(R.id.image_view_item_header);
+      textViewCategoryName = itemView.findViewById(R.id.text_view_item_header_category);
+
+      if (imageViewHeader == null){
+        Log.i(TAG, "ProductMenuRecyclerViewHolder: NULL");
+      }
+    }
+  }
+}

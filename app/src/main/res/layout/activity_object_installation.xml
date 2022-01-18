@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/pale_gray"
     tools:context=".ui.objectInstallation.ObjectInstallationActivity">
 
@@ -22,62 +23,48 @@
       android:src="@drawable/icon_close" />
 
   <ImageButton
-      android:id="@+id/image_button_shutter"
+      android:id="@+id/image_button_delete"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_gravity="center|bottom"
       android:background="@null"
-      android:contentDescription="ARモデルの写真を撮る"
-      android:paddingBottom="16dp"
-      android:src="@drawable/icon_shutter_button" />
+      android:contentDescription="前の画面に戻る"
+      android:padding="16dp"
+      android:src="@drawable/icon_delete_object_installation"
+      android:layout_gravity="end"/>
 
-  <!-- side menu -->
-
+<!-- Bottom Menu -->
   <LinearLayout
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="end|bottom"
-      android:layout_marginEnd="8dp"
-      android:layout_marginBottom="150dp"
-      android:minWidth="64dp"
-      android:minHeight="182dp"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:layout_gravity="bottom"
+      android:background="@color/white">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_menu_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="center"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager2_menu_item"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:minHeight="120dp"
+        android:background="@color/white"
+        />
 
     <ImageButton
-        android:id="@+id/image_button_take_picture"
+        android:id="@+id/image_button_shutter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@null"
-        android:contentDescription="3Dモデルを含んだ写真を撮る"
-        android:src="@drawable/icon_take_picture" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="撮る"
-        android:textColor="@color/white"/>
-
-    <ImageButton
-        android:id="@+id/image_button_installation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:contentDescription="3Dモデルを含んだ写真を撮る"
-        android:src="@drawable/icon_curtain" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="設置"
-        android:textColor="@color/white"
-        android:layout_marginTop="8dp"/>
+      android:src="@drawable/icon_shutter_button"
+      android:background="@null"
+      android:layout_gravity="center"
+      android:layout_marginBottom="32dp"/>
 
   </LinearLayout>
-
 
 </FrameLayout>
