@@ -30,7 +30,14 @@ public class ObjectInstallationActivity extends AppCompatActivity {
 
     initialize();
     buildViewPager2();
+    setListener();
 
+  }
+
+  private void setListener() {
+    imageButtonClose.setOnClickListener(view -> {
+      finish();
+    });
   }
 
   private void initialize() {
