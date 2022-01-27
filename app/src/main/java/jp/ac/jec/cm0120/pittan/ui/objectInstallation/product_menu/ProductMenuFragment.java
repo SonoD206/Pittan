@@ -1,21 +1,34 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import jp.ac.jec.cm0120.pittan.R;
 
 public class ProductMenuFragment extends Fragment {
 
+  /// Interface
+  public interface OnClickRecyclerViewListener {
+    void onClickRecyclerItem(String textureName);
+  }
+
+  /// Constant
   private static final String TAG = "###";
   /// Components
   private RecyclerView productMenuRecyclerView;
@@ -23,20 +36,15 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private ProductMenuRecyclerViewAdapter productMenuAdapter;
-  // Test Data
-  private int[] productMenuCurtainModels = new int[]{
-          R.drawable.icon_curtain_double,
-          R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman, R.drawable.central_woman,
-          R.drawable.icon_curtain_single
-  };
+  private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
+  private ArrayList<String> productMenuCurtainName = new ArrayList<>();
 
   public ProductMenuFragment() {
     // Required empty public constructor
   }
 
   public static ProductMenuFragment newInstance() {
-    ProductMenuFragment fragment = new ProductMenuFragment();
-    return fragment;
+    return new ProductMenuFragment();
   }
 
   @Override
@@ -50,38 +58,73 @@ public class ProductMenuFragment extends Fragment {
     // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_product_menu, container, false);
     productMenuRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_product_menu_double_opening);
-    productMenuArrayList = addTestData();
+    addProductData();
     buildProductMenuRecyclerView();
     return view;
   }
 
-  /// add TestData
-  private ArrayList<ProductMenuModel> addTestData() {
-    ArrayList<ProductMenuModel> ary = new ArrayList<>();
+  @Override
+  public void onAttach(@NonNull Context context) {
+    super.onAttach(context);
+    if (context instanceof OnClickRecyclerViewListener) {
+      mOnClickRecyclerViewListener = (OnClickRecyclerViewListener) context;
+    }
+  }
 
-    for (int model : productMenuCurtainModels) {
-      ProductMenuModel temp = new ProductMenuModel();
-      temp.setMenuImage(model);
-      if (model == R.drawable.icon_curtain_double) {
-        temp.setItemViewType(0);
-      } else if (model == R.drawable.icon_curtain_single){
-        temp.setItemViewType(1);
-      } else {
-        temp.setItemViewType(2);
-      }
-      ary.add(temp);
+  private void addProductData() {
+    productMenuCurtainName = getProductName();
+    productMenuArrayList = getProductMenuData(productMenuCurtainName);
+  }
+
+  private ArrayList<ProductMenuModel> getProductMenuData(ArrayList<String> textureNames) {
+    ArrayList<ProductMenuModel> ary = new ArrayList<>();
+    for (String textureName :textureNames) {
+      ProductMenuModel tmp = new ProductMenuModel();
+      tmp.setItemTextureName(textureName);
+      tmp.setItemTextureImage(getBitmapTexture(textureName));
+      ary.add(tmp);
     }
     return ary;
   }
 
-  private void buildProductMenuRecyclerView(){
+  private Bitmap getBitmapTexture(String textureName) {
+    AssetManager assets = getResources().getAssets();
+    InputStream inputStream = null;
+    try {
+      inputStream = assets.open("textures/"+textureName);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return  BitmapFactory.decodeStream(inputStream);
+  }
 
+  /// Load the name from Assets/textures
+  private ArrayList<String> getProductName() {
+    ArrayList<String> nameArrayList = new ArrayList<>();
+    AssetManager assetManager = getResources().getAssets();
+    String[] fileNames = null;
+    try {
+      fileNames = assetManager.list("textures");
+      nameArrayList.addAll(Arrays.asList(fileNames));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return nameArrayList;
+  }
+
+  private void buildProductMenuRecyclerView() {
     productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
     productMenuRecyclerView.setAdapter(productMenuAdapter);
     productMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
+    productMenuAdapter.setOnItemClickListener(new ProductMenuRecyclerViewAdapter.OnItemClickListener() {
+      @Override
+      public void onItemClick(String textureName) {
+        if (mOnClickRecyclerViewListener != null) {
+          mOnClickRecyclerViewListener.onClickRecyclerItem(textureName);
+        }
+      }
+    });
   }
-
-
 
 
 }

@@ -1,24 +1,28 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 
+import android.graphics.Bitmap;
+
 public class ProductMenuModel {
 
   /// Test
-  private int menuImage;
-  private int itemViewType;
+  private Bitmap itemTextureImage;
+  private String itemTextureName;
 
-  public int getItemViewType() {
-    return itemViewType;
+  public Bitmap getItemTextureImage() {
+    return itemTextureImage;
   }
 
-  public void setItemViewType(int itemViewType) {
-    this.itemViewType = itemViewType;
+  public void setItemTextureImage(Bitmap itemTextureImage) {
+    this.itemTextureImage = itemTextureImage;
   }
 
-  public int getMenuImage() {
-    return menuImage;
+  public String getItemTextureName() {
+    return itemTextureName;
   }
 
-  public void setMenuImage(int menuImage) {
-    this.menuImage = menuImage;
+  public void setItemTextureName(String itemTextureName) {
+    this.itemTextureName = itemTextureName;
   }
+
+
 }
