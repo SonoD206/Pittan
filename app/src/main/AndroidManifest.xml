@@ -2,41 +2,50 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="jp.ac.jec.cm0120.pittan">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
-    <uses-feature android:name="android.hardware.camera.ar" />
+  <uses-permission android:name="android.permission.CAMERA" />
 
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_pittan_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_pittan_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Pittan">
+  <uses-feature
+      android:glEsVersion="0x00030000"
+      android:required="true" />
 
-        <meta-data android:name="com.google.ar.core" android:value="required" />
+  <uses-feature android:name="android.hardware.camera.ar" />
 
-        <activity
-            android:name="jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity"
-            android:exported="true" />
-        <activity
-            android:name="jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity"
-            android:exported="true" />
-        <activity
-            android:name="jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity"
-            android:exported="true" />
-        <activity
-            android:name="jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity"
-            android:exported="true" />
-        <activity
-            android:name="jp.ac.jec.cm0120.pittan.ui.home.HomeActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_pittan_launcher"
+      android:label="@string/app_name"
+      android:roundIcon="@mipmap/ic_pittan_launcher_round"
+      android:supportsRtl="true"
+      android:theme="@style/Theme.Pittan">
+    <activity
+        android:name=".ui.preview.PreviewActivity"
+        android:exported="true" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
+    <meta-data
+        android:name="com.google.ar.core"
+        android:value="required" />
+
+    <activity
+        android:name=".ui.objectInstallation.ObjectInstallationActivity"
+        android:exported="true" />
+    <activity
+        android:name=".ui.add_data.AddDataActivity"
+        android:exported="true" />
+    <activity
+        android:name=".ui.detail.DetailActivity"
+        android:exported="true" />
+    <activity
+        android:name=".ui.setting.SettingActivity"
+        android:exported="true" />
+    <activity
+        android:name=".ui.home.HomeActivity"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
 
 </manifest>

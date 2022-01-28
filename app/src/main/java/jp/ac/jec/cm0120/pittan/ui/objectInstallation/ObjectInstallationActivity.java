@@ -45,12 +45,15 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFra
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
 
+  /// Constants
+  private static final int MODEL_NUM = 1;
+  private static final int TEXTURE_NUM = 2;
   private static final String TAG = "###";
-  public static final String FIRST_MODEL = "white_curtain.glb";
-  public static final String BASE_COLOR_INDEX = "baseColorIndex";
-  public static final String BASE_COLOR_MAP = "baseColorMap";
-  public static final int MODEL_NUM = 1;
-  public static final int TEXTURE_NUM = 2;
+  private static final String FIRST_MODEL = "white_curtain.glb";
+  private static final String BASE_COLOR_INDEX = "baseColorIndex";
+  private static final String BASE_COLOR_MAP = "baseColorMap";
+  private static final String TEXTURES_PATH_HEADER = "textures/";
+  private static final String MODELS_PATH_HEADER = "models/" ;
 
   /// Components
   private TabLayout mTabLayout;
@@ -67,7 +70,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private TransformableNode mModel;
   private AnchorNode anchorNode;
   private Texture texture;
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -262,11 +264,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     StringBuilder builder = new StringBuilder();
 
     if (kind == modelNum) {
-      builder.append("models/")
+      builder.append(MODELS_PATH_HEADER)
               .append(name);
       path = builder.toString();
     } else if (kind == textureNum) {
-      builder.append("textures/")
+      builder.append(TEXTURES_PATH_HEADER)
               .append(name);
       path = builder.toString();
     } else {

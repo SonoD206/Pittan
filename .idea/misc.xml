@@ -29,6 +29,7 @@
         <entry key="app/src/main/res/layout/activity_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.2904639066041584" />
         <entry key="app/src/main/res/layout/activity_object_installation.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_preview.xml" value="0.2545289855072464" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.14635416666666667" />
         <entry key="app/src/main/res/layout/corner_radius_tag.xml" value="0.17074275362318841" />
         <entry key="app/src/main/res/layout/fragment_product_change_size.xml" value="0.4277456647398844" />
