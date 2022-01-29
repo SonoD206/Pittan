@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/pale_gray"
     tools:context=".ui.objectInstallation.ObjectInstallationActivity">
 
@@ -26,45 +26,50 @@
       android:id="@+id/image_button_delete"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_gravity="end"
       android:background="@null"
       android:contentDescription="前の画面に戻る"
       android:padding="16dp"
-      android:src="@drawable/icon_delete_object_installation"
-      android:layout_gravity="end"/>
+      android:src="@drawable/icon_delete_object_installation" />
 
-<!-- Bottom Menu -->
+  <!-- Bottom Menu -->
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
       android:layout_gravity="bottom"
-      android:background="@color/white">
+      android:background="@color/white"
+      android:orientation="vertical">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_menu_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabGravity="center"/>
+        app:tabGravity="center" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager2_menu_item"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:minHeight="120dp"
         android:background="@color/white"
-        />
+        android:minHeight="120dp"
+        android:orientation="horizontal" />
 
     <ImageButton
         android:id="@+id/image_button_shutter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-      android:src="@drawable/icon_shutter_button"
-      android:background="@null"
-      android:layout_gravity="center"
-      android:layout_marginBottom="32dp"/>
-
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        android:background="@null"
+        android:src="@drawable/icon_shutter_button"
+        android:contentDescription="3Dモデルを含んだ写真を撮るボタン"/>
   </LinearLayout>
+
+  <include layout="@layout/layout_preview"
+    android:id="@+id/view_preview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+      android:visibility="invisible"/>
 
 </FrameLayout>

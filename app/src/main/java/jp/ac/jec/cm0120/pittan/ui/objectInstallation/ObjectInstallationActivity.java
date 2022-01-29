@@ -4,7 +4,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,7 +64,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private ViewPager2 mViewPager2;
   private ImageButton imageButtonClose;
   private ImageButton imageButtonDelete;
+  private ImageButton imageButtonShutter;
   private ArFragment arFragment;
+  private View photoPreview;
+  private Button saveButton;
 
   /// Fields
   private BottomMenuAdapter bottomMenuAdapter;
@@ -81,22 +88,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     setListener();
   }
 
-  private void setListener() {
-    imageButtonClose.setOnClickListener(view -> {
-      finish();
-    });
-
-    imageButtonDelete.setOnClickListener(view -> {
-
-    });
-  }
-
   private void initialize(Bundle savedInstanceState) {
 
     mTabLayout = findViewById(R.id.tab_menu_category);
     mViewPager2 = findViewById(R.id.view_pager2_menu_item);
     imageButtonClose = findViewById(R.id.image_button_close);
     imageButtonDelete = findViewById(R.id.image_button_delete);
+    imageButtonShutter = findViewById(R.id.image_button_shutter);
+    photoPreview = findViewById(R.id.view_preview);
+    saveButton = photoPreview.findViewById(R.id.button_save_photo);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
 
@@ -107,6 +107,27 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
                 .commit();
       }
     }
+
+    loadModels(getPath(MODEL_NUM, FIRST_MODEL));
+  }
+
+  private void setListener() {
+
+    imageButtonClose.setOnClickListener(view -> {
+      finish();
+    });
+
+    imageButtonDelete.setOnClickListener(view -> {
+    });
+
+    saveButton.setOnClickListener(view -> {
+      // TODO: 2022/01/29 SQLiteにファイル名を格納
+    });
+
+    imageButtonShutter.setOnClickListener(view -> {
+      photoPreview.setVisibility(View.VISIBLE);
+      // TODO: 2022/01/29 写真を撮る & 画像を表示させる
+    });
 
   }
 
@@ -169,7 +190,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     /// 垂直面と平面の分岐
     if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
-
       // Create the Anchor.
       Anchor anchor = hitResult.createAnchor();
       anchorNode = new AnchorNode(anchor);
@@ -280,7 +300,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onClickRecyclerItem(String textureName) {
     String path = getPath(TEXTURE_NUM, textureName);
-    loadModels(getPath(MODEL_NUM, FIRST_MODEL));
     loadTexture(path);
   }
 }
