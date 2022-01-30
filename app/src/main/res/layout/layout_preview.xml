@@ -13,8 +13,7 @@
       android:contentDescription="撮影した写真をプレビューする"
       android:padding="20dp"
       android:scaleType="fitXY"
-      android:src="@drawable/sample_curtain"
-      android:background="@drawco"/>
+      android:src="@drawable/sample_curtain" />
 
   <Button
       android:id="@+id/button_save_photo"

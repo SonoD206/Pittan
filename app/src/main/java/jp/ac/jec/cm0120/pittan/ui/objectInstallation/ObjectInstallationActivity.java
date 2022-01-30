@@ -1,7 +1,7 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -47,10 +48,8 @@ import com.gorisse.thomas.sceneform.light.LightEstimationConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -87,6 +86,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private BottomMenuAdapter bottomMenuAdapter;
   private String filename = "";
   private Bitmap mPreviewBitmap;
+  private float[] mModelScales = new float[3];
 
   /// ARCore
   private Renderable mRenderModel;
@@ -138,13 +138,28 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
     buttonPhotoSave.setOnClickListener(view -> {
-      // TODO: 2022/01/29 SQLiteにファイル名を格納
-      try {
-        saveBitmapToDisk(mPreviewBitmap,filename);
-        finish();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      new AlertDialog.Builder(this)
+              .setTitle("窓枠のサイズ")
+              .setMessage("縦幅：" + mModelScales[0] + "mm\n" + "横幅：" + mModelScales[1] + "mm")
+              .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                  try {
+                    saveBitmapToDisk(mPreviewBitmap, filename);
+                    // TODO: 2022/01/29 SQLiteにファイル名を格納
+                    finish();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                }
+              })
+              .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                  viewPhotoPreview.setVisibility(View.INVISIBLE);
+                }
+              })
+              .show();
     });
 
     imageButtonShutter.setOnClickListener(view -> {
@@ -155,7 +170,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         public void run() {
           imagePhotoPreview.setImageBitmap(mPreviewBitmap);
         }
-      },1000);
+      }, 1000);
     });
 
   }
@@ -235,7 +250,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setLocalScale(new Vector3(0.3f, 0.3f, 0.3f));
 
       /// モデルのサイズ
-      Log.i("###", "onTapPlane: model Size" + mModel.getLocalScale());
+      mModelScales[0] = mModel.getLocalScale().x;
+      mModelScales[1] = mModel.getLocalScale().y;
+      mModelScales[2] = mModel.getLocalScale().z;
 
       mModel.setParent(anchorNode);
 
