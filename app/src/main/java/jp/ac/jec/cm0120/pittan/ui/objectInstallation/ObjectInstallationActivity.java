@@ -1,6 +1,7 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,8 +47,10 @@ import com.gorisse.thomas.sceneform.light.LightEstimationConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,7 +70,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private static final String BASE_COLOR_INDEX = "baseColorIndex";
   private static final String BASE_COLOR_MAP = "baseColorMap";
   private static final String TEXTURES_PATH_HEADER = "textures/";
-  private static final String MODELS_PATH_HEADER = "models/" ;
+  private static final String MODELS_PATH_HEADER = "models/";
 
   /// Components
   private TabLayout mTabLayout;
@@ -77,19 +79,20 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private ImageButton imageButtonDelete;
   private ImageButton imageButtonShutter;
   private ArFragment arFragment;
-  private View photoPreview;
-  private Button saveButton;
+  private View viewPhotoPreview;
+  private Button buttonPhotoSave;
+  private ImageView imagePhotoPreview;
 
   /// Fields
   private BottomMenuAdapter bottomMenuAdapter;
+  private String filename = "";
+  private Bitmap mPreviewBitmap;
 
   /// ARCore
   private Renderable mRenderModel;
   private TransformableNode mModel;
   private AnchorNode anchorNode;
   private Texture texture;
-  private Bitmap mBitmap;
-  private android.os.Handler mHandler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +111,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonClose = findViewById(R.id.image_button_close);
     imageButtonDelete = findViewById(R.id.image_button_delete);
     imageButtonShutter = findViewById(R.id.image_button_shutter);
-    photoPreview = findViewById(R.id.view_preview);
-    saveButton = photoPreview.findViewById(R.id.button_save_photo);
+    viewPhotoPreview = findViewById(R.id.view_preview);
+    buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
+    imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
 
@@ -133,14 +137,25 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonDelete.setOnClickListener(view -> {
     });
 
-    saveButton.setOnClickListener(view -> {
+    buttonPhotoSave.setOnClickListener(view -> {
       // TODO: 2022/01/29 SQLiteにファイル名を格納
+      try {
+        saveBitmapToDisk(mPreviewBitmap,filename);
+        finish();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     });
 
     imageButtonShutter.setOnClickListener(view -> {
-      photoPreview.setVisibility(View.VISIBLE);
-      // TODO: 2022/01/29 写真を撮る & 画像を表示させる
+      viewPhotoPreview.setVisibility(View.VISIBLE);
       takePhoto();
+      new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          imagePhotoPreview.setImageBitmap(mPreviewBitmap);
+        }
+      },1000);
     });
 
   }
@@ -320,34 +335,24 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void takePhoto() {
     new Thread(() -> {
-      final String filename = generateFilename();
-
-      Log.i(TAG, "Take a new photo: " + filename);
-
+      filename = generateFilename();
       ArSceneView view = arFragment.getArSceneView();
-
-      if (mBitmap == null) {
+      if (mPreviewBitmap == null) {
         // Reduce size of the resulting Bitmap
-        mBitmap = Bitmap.createBitmap(
-                view.getWidth() / 2,
-                view.getHeight() / 2,
+        mPreviewBitmap = Bitmap.createBitmap(
+                view.getWidth(),
+                view.getHeight(),
                 Bitmap.Config.RGB_565);
       }
-
       // Create a handler thread to offload the processing of the image.
       final HandlerThread handlerThread = new HandlerThread("PixelCopier");
       handlerThread.start();
-
       // Make the request to copy.
-      PixelCopy.request(view, mBitmap, (copyResult) -> {
+      PixelCopy.request(view, mPreviewBitmap, (copyResult) -> {
         if (copyResult == PixelCopy.SUCCESS) {
-          try {
-            saveBitmapToDisk(mBitmap, filename);
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
+          Log.i(TAG, "takePhoto: success");
         } else {
-          mHandler.post(() -> {
+          new Handler().post(() -> {
             Toast toast = Toast.makeText(this,
                     "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
             toast.show();
@@ -365,7 +370,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     return Environment.getExternalStoragePublicDirectory(
             Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/" + date + "_3dModel.jpg";
   }
-
 
   private void saveBitmapToDisk(Bitmap mBitmap, String filename) throws IOException {
     File out = new File(filename);
