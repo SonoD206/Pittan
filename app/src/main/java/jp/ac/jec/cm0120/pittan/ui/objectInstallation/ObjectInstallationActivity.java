@@ -1,9 +1,14 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.PixelCopy;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,7 +45,13 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import com.gorisse.thomas.sceneform.ArSceneViewKt;
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -77,6 +88,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private TransformableNode mModel;
   private AnchorNode anchorNode;
   private Texture texture;
+  private Bitmap mBitmap;
+  private android.os.Handler mHandler;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +140,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonShutter.setOnClickListener(view -> {
       photoPreview.setVisibility(View.VISIBLE);
       // TODO: 2022/01/29 写真を撮る & 画像を表示させる
+      takePhoto();
     });
 
   }
@@ -167,7 +181,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onViewCreated(ArSceneView arSceneView) {
     arFragment.setOnViewCreatedListener(null);
-
     // Fine adjust the maximum frame rate
     arSceneView.setFrameRateFactor(SceneView.FrameRate.FULL);
   }
@@ -297,9 +310,75 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     return path;
   }
 
+  /// Interface
   @Override
   public void onClickRecyclerItem(String textureName) {
     String path = getPath(TEXTURE_NUM, textureName);
     loadTexture(path);
+  }
+
+
+  private void takePhoto() {
+    new Thread(() -> {
+      final String filename = generateFilename();
+
+      Log.i(TAG, "Take a new photo: " + filename);
+
+      ArSceneView view = arFragment.getArSceneView();
+
+      if (mBitmap == null) {
+        // Reduce size of the resulting Bitmap
+        mBitmap = Bitmap.createBitmap(
+                view.getWidth() / 2,
+                view.getHeight() / 2,
+                Bitmap.Config.RGB_565);
+      }
+
+      // Create a handler thread to offload the processing of the image.
+      final HandlerThread handlerThread = new HandlerThread("PixelCopier");
+      handlerThread.start();
+
+      // Make the request to copy.
+      PixelCopy.request(view, mBitmap, (copyResult) -> {
+        if (copyResult == PixelCopy.SUCCESS) {
+          try {
+            saveBitmapToDisk(mBitmap, filename);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        } else {
+          mHandler.post(() -> {
+            Toast toast = Toast.makeText(this,
+                    "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
+            toast.show();
+          });
+        }
+        handlerThread.quitSafely();
+        Log.i(TAG, "New photo taken: " + filename);
+      }, new Handler(handlerThread.getLooper()));
+    }).start();
+  }
+
+  private String generateFilename() {
+    String date =
+            new SimpleDateFormat("yyyy_MM_dd_HHmm", java.util.Locale.getDefault()).format(new Date());
+    return Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/" + date + "_3dModel.jpg";
+  }
+
+
+  private void saveBitmapToDisk(Bitmap mBitmap, String filename) throws IOException {
+    File out = new File(filename);
+    if (!out.getParentFile().exists()) {
+      out.getParentFile().mkdirs();
+    }
+    try (FileOutputStream outputStream = new FileOutputStream(filename);
+         ByteArrayOutputStream outputData = new ByteArrayOutputStream()) {
+      mBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputData);
+      outputData.writeTo(outputStream);
+      outputStream.flush();
+    } catch (IOException ex) {
+      throw new IOException("Failed to save bitmap to disk", ex);
+    }
   }
 }

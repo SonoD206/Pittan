@@ -3,6 +3,7 @@
     package="jp.ac.jec.cm0120.pittan">
 
   <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
   <uses-feature
       android:glEsVersion="0x00030000"
@@ -17,9 +18,6 @@
       android:roundIcon="@mipmap/ic_pittan_launcher_round"
       android:supportsRtl="true"
       android:theme="@style/Theme.Pittan">
-    <activity
-        android:name=".ui.preview.PreviewActivity"
-        android:exported="true" />
 
     <meta-data
         android:name="com.google.ar.core"
