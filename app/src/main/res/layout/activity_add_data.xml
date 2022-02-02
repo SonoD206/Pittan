@@ -98,7 +98,9 @@
             android:id="@+id/edit_view_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent" />
+            android:backgroundTint="@android:color/transparent"
+            android:maxLines="1"
+            android:minLines="1" />
 
       </com.google.android.material.textfield.TextInputLayout>
       <!--　Category　-->
@@ -180,7 +182,9 @@
               android:id="@+id/edit_view_size_height"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:backgroundTint="@android:color/transparent" />
+              android:backgroundTint="@android:color/transparent"
+              android:maxLines="1"
+              android:minLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -200,6 +204,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.4"
             android:hint="@string/add_second_edit_second_hint"
+            android:maxLines="1"
+            android:minLines="1"
             app:boxBackgroundColor="@null"
             app:boxBackgroundMode="filled">
 
