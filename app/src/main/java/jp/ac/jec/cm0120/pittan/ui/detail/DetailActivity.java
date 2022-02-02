@@ -89,6 +89,7 @@ public class DetailActivity extends AppCompatActivity {
         textViewItemHeight.setText(itemHeight);
         textViewItemWidth.setText(itemWidth);
         textViewComments.setText(item.getProductComment());
+        // TODO: 2022/01/31 ImagePath -> file -> bitmap -> 反映
         imagePath = item.getProductImagePath();
       }
 

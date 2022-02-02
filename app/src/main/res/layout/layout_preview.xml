@@ -12,8 +12,7 @@
       android:layout_weight="6"
       android:contentDescription="撮影した写真をプレビューする"
       android:padding="20dp"
-      android:scaleType="fitXY"
-      android:src="@drawable/sample_curtain" />
+      android:scaleType="fitXY"/>
 
   <Button
       android:id="@+id/button_save_photo"

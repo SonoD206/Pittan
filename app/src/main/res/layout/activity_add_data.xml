@@ -59,7 +59,6 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:cardCornerRadius="4dp">
 
           <ImageView
@@ -69,7 +68,8 @@
               android:background="@drawable/corner_radius_photo_input"
               android:contentDescription="@string/add_photo_description"
               android:scaleType="fitXY"
-              android:src="@drawable/sample_curtain" />
+              android:src="@drawable/sample_curtain"
+              android:visibility="gone" />
         </androidx.cardview.widget.CardView>
 
       </FrameLayout>

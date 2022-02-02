@@ -3,8 +3,10 @@ package jp.ac.jec.cm0120.pittan.ui.add_data;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,12 +31,12 @@ import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
+import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class AddDataActivity extends AppCompatActivity {
 
+  /// Constants
   private static final String TAG = "###";
-  private Intent mIntent;
-  private InputMethodManager mInputMethodManager;
 
   /// Components
   private LinearLayout mLinearLayout;
@@ -44,6 +47,12 @@ public class AddDataActivity extends AppCompatActivity {
   private TextInputEditText editHeightSize;
   private TextInputEditText editWidthSize;
   private TextInputEditText editComments;
+  private ImageView imageViewPhoto;
+
+  /// Fields
+  private Intent mIntent;
+  private InputMethodManager mInputMethodManager;
+  private Bitmap mPreView;
 
   ///DBItem
   private int placeDeleteFlag = 0;
@@ -92,6 +101,7 @@ public class AddDataActivity extends AppCompatActivity {
     editHeightSize = findViewById(R.id.edit_view_size_height);
     editWidthSize = findViewById(R.id.edit_view_size_width);
     editComments = findViewById(R.id.edit_view_comments);
+    imageViewPhoto = findViewById(R.id.add_image_view_user_photo);
 
     productCategory = getString(R.string.add_segment_first_item);
 
@@ -111,14 +121,15 @@ public class AddDataActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-              if (result.getResultCode() == Activity.RESULT_OK) {
-                Intent data = result.getData();
-                if (data != null) {
-                  productColorCode = data.getStringExtra("colorCode");
-                  productDesign = data.getStringExtra("design");
-                  productType = data.getStringExtra("type");
-                  productImagePath = data.getStringExtra("imagePath");
-                }
+              if (result.getResultCode() != Activity.RESULT_OK) {
+                Log.i(TAG, "setListener: failure");
+              }
+              Intent data = result.getData();
+              if (data != null) {
+                productImagePath = data.getStringExtra("imagePath");
+                String tempPath = data.getStringExtra("imageTempPath");
+                imageViewPhoto.setVisibility(View.VISIBLE);
+                imageViewPhoto.setImageBitmap(PictureIO.outputPicture(tempPath));
               }
             }
     );
@@ -201,6 +212,5 @@ public class AddDataActivity extends AppCompatActivity {
       runtimeException.printStackTrace();
     }
   }
-
 
 }

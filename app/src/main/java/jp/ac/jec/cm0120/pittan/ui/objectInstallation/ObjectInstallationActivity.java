@@ -1,6 +1,7 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,9 +47,7 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import com.gorisse.thomas.sceneform.ArSceneViewKt;
 import com.gorisse.thomas.sceneform.light.LightEstimationConfig;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -58,6 +57,7 @@ import java.util.function.Function;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
+import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
 
@@ -70,6 +70,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private static final String BASE_COLOR_MAP = "baseColorMap";
   private static final String TEXTURES_PATH_HEADER = "textures/";
   private static final String MODELS_PATH_HEADER = "models/";
+  private static final String TMP_FILE =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/tmp.jpg";
 
   /// Components
   private TabLayout mTabLayout;
@@ -84,8 +85,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   /// Fields
   private BottomMenuAdapter bottomMenuAdapter;
-  private String filename = "";
+  private String filename;
+  private String tmpFile;
   private Bitmap mPreviewBitmap;
+  private Intent mIntent;
   private float[] mModelScales = new float[3];
 
   /// ARCore
@@ -138,28 +141,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
     buttonPhotoSave.setOnClickListener(view -> {
-      new AlertDialog.Builder(this)
-              .setTitle("窓枠のサイズ")
-              .setMessage("縦幅：" + mModelScales[0] + "mm\n" + "横幅：" + mModelScales[1] + "mm")
-              .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                  try {
-                    saveBitmapToDisk(mPreviewBitmap, filename);
-                    // TODO: 2022/01/29 SQLiteにファイル名を格納
-                    finish();
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-              })
-              .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                  viewPhotoPreview.setVisibility(View.INVISIBLE);
-                }
-              })
-              .show();
+      showAlertDialog();
     });
 
     imageButtonShutter.setOnClickListener(view -> {
@@ -182,7 +164,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     new TabLayoutMediator(mTabLayout, mViewPager2,
             (tab, position) -> {
-
               switch (position) {
                 case 0:
                   tab.setText("設置");
@@ -342,14 +323,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     return path;
   }
 
-  /// Interface
+  /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String textureName) {
     String path = getPath(TEXTURE_NUM, textureName);
     loadTexture(path);
   }
 
-
+  ///写真を撮る
   private void takePhoto() {
     new Thread(() -> {
       filename = generateFilename();
@@ -368,6 +349,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       PixelCopy.request(view, mPreviewBitmap, (copyResult) -> {
         if (copyResult == PixelCopy.SUCCESS) {
           Log.i(TAG, "takePhoto: success");
+          try {
+            PictureIO.saveBitmapToDisk(mPreviewBitmap,TMP_FILE);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         } else {
           new Handler().post(() -> {
             Toast toast = Toast.makeText(this,
@@ -388,18 +374,26 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
             Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/" + date + "_3dModel.jpg";
   }
 
-  private void saveBitmapToDisk(Bitmap mBitmap, String filename) throws IOException {
-    File out = new File(filename);
-    if (!out.getParentFile().exists()) {
-      out.getParentFile().mkdirs();
-    }
-    try (FileOutputStream outputStream = new FileOutputStream(filename);
-         ByteArrayOutputStream outputData = new ByteArrayOutputStream()) {
-      mBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputData);
-      outputData.writeTo(outputStream);
-      outputStream.flush();
-    } catch (IOException ex) {
-      throw new IOException("Failed to save bitmap to disk", ex);
-    }
+  private void showAlertDialog() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("窓枠のサイズ")
+            .setMessage("縦幅：" + mModelScales[0] + "mm\n" + "横幅：" + mModelScales[1] + "mm")
+            .setPositiveButton("OK", null)
+            .setNegativeButton("キャンセル", null);
+    AlertDialog dialog = builder.show();
+    Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+    positiveButton.setOnClickListener(view -> {
+      mIntent = getIntent();
+      mIntent.putExtra("imageTempPath", TMP_FILE);
+      mIntent.putExtra("imagePath", filename);
+      setResult(RESULT_OK, mIntent);
+      dialog.dismiss();
+      finish();
+    });
+    Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+    negativeButton.setOnClickListener(view -> {
+      dialog.dismiss();
+     viewPhotoPreview.setVisibility(View.INVISIBLE);
+    });
   }
 }
