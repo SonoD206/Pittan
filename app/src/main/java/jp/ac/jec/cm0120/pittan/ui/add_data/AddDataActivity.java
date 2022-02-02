@@ -3,10 +3,10 @@ package jp.ac.jec.cm0120.pittan.ui.add_data;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -52,7 +52,6 @@ public class AddDataActivity extends AppCompatActivity {
   /// Fields
   private Intent mIntent;
   private InputMethodManager mInputMethodManager;
-  private Bitmap mPreView;
 
   ///DBItem
   private int placeDeleteFlag = 0;
@@ -155,7 +154,21 @@ public class AddDataActivity extends AppCompatActivity {
         productCategory = getString(R.string.add_segment_second_item);
       }
     });
+    editLocation.setOnKeyListener(this::doCloseKeyboard);
+    editWidthSize.setOnKeyListener(this::doCloseKeyboard);
+    editHeightSize.setOnKeyListener(this::doCloseKeyboard);
   }
+
+  private boolean doCloseKeyboard(View view, int keyCode, KeyEvent keyEvent) {
+    if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+      //キーボードを閉じる
+      mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+      mLinearLayout.requestLayout();
+      return true;
+    }
+    return false;
+  }
+
 
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.add_top_app_bar, menu);
@@ -184,10 +197,6 @@ public class AddDataActivity extends AppCompatActivity {
   /// PittanDBにデータをインサート
   private void insertPittanDB() {
     PittanProductDataModel model = new PittanProductDataModel();
-
-    ///テスト
-    productImagePath = "外部ストレージのパス";
-
     /// placeテーブル
     model.setPlaceName(editLocation.getText().toString());
     model.setPlaceDeleteFlag(placeDeleteFlag);

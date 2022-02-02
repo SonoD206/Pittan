@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             android:maxLines="1"
-            android:minLines="1" />
+            android:minLines="1"/>
 
       </com.google.android.material.textfield.TextInputLayout>
       <!--　Category　-->
