@@ -3,6 +3,7 @@ package jp.ac.jec.cm0120.pittan.ui.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,14 +22,14 @@ import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 
 public class DetailActivity extends AppCompatActivity {
 
+  /// Constants
   private static final String TAG = "###";
-  private static final String EXTRA_PLACE_ID = "placeID";
-  private Intent intent;
-  private int placeID;
-  private String imagePath;
+  public static final String EXTRA_MODEL = "PittanProductDataModel";
+  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
 
   // Component
   private MaterialToolbar mToolbar;
@@ -39,6 +40,12 @@ public class DetailActivity extends AppCompatActivity {
   private TextView textViewItemHeight;
   private TextView textViewItemWidth;
   private TextView textViewComments;
+
+  /// Fields
+  private Intent mIntent;
+  private int placeID;
+  private String imagePath;
+  private ArrayList<PittanProductDataModel> selectItem = new ArrayList<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +68,8 @@ public class DetailActivity extends AppCompatActivity {
     textViewItemWidth = findViewById(R.id.detail_text_view_item_width);
     textViewComments = findViewById(R.id.detail_text_view_comments_area);
 
-    intent = getIntent();
-    placeID = intent.getIntExtra(EXTRA_PLACE_ID, 1);
-
+    mIntent = getIntent();
+    placeID = mIntent.getIntExtra(HomeActivity.EXTRA_PLACE_ID, 1);
   }
 
   private void buildAppTopBar() {
@@ -75,7 +81,6 @@ public class DetailActivity extends AppCompatActivity {
 
   private void setItemData() {
     PittanSQLiteOpenHelper helper = new PittanSQLiteOpenHelper(this);
-    ArrayList<PittanProductDataModel> selectItem;
     selectItem = helper.getSelectDetailData(placeID);
 
     if (selectItem.size() > 0) {
@@ -107,8 +112,10 @@ public class DetailActivity extends AppCompatActivity {
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.menu_item_edit) {
-      intent = new Intent(this, AddDataActivity.class);
-      startActivity(intent);
+      mIntent = new Intent(this, AddDataActivity.class);
+      mIntent.putExtra(EXTRA_MODEL,selectItem);
+      mIntent.putExtra(EXTRA_TRANSITION_NAME,"Detail");
+      startActivity(mIntent);
       return true;
     }
     return super.onOptionsItemSelected(item);

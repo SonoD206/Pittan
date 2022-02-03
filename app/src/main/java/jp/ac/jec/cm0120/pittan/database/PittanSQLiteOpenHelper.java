@@ -125,7 +125,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
 
   public ArrayList<PittanProductDataModel> getSelectDetailData(int placeID){
     ArrayList<PittanProductDataModel> ary = new ArrayList<>();
-    String selectDetailItemSql = "SELECT place_name,product_height,product_width,product_category,product_image_path,place_id FROM product " +
+    String selectDetailItemSql = "SELECT place_name,product_height,product_width,product_category,product_comment,product_image_path,place_id FROM product " +
             "LEFT OUTER JOIN place ON product.product_id = place.product_id " +
             "LEFT OUTER JOIN product_image ON product.product_id = product_image.product_id " +
             "WHERE place_id = " + placeID;
@@ -144,7 +144,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
         tmp.setProductHeight(cursor.getFloat(1));
         tmp.setProductWidth(cursor.getFloat(2));
         tmp.setProductCategory(cursor.getString(3));
-        tmp.setProductImagePath(cursor.getString(4));
+        tmp.setProductComment(cursor.getString(4));
+        tmp.setProductImagePath(cursor.getString(5));
         ary.add(tmp);
       }
     } catch (SQLiteException e){

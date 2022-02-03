@@ -56,6 +56,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
@@ -71,6 +72,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private static final String TEXTURES_PATH_HEADER = "textures/";
   private static final String MODELS_PATH_HEADER = "models/";
   private static final String TMP_FILE =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/tmp.jpg";
+  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
 
   /// Components
   private TabLayout mTabLayout;
@@ -86,10 +88,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Fields
   private BottomMenuAdapter bottomMenuAdapter;
   private String filename;
-  private String tmpFile;
   private Bitmap mPreviewBitmap;
   private Intent mIntent;
   private float[] mModelScales = new float[3];
+  private int transitionNum;
 
   /// ARCore
   private Renderable mRenderModel;
@@ -119,7 +121,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
-
+    setTransitionNum();
     if (savedInstanceState == null) {
       if (Sceneform.isSupported(this)) {
         getSupportFragmentManager().beginTransaction()
@@ -129,6 +131,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
 
     loadModels(getPath(MODEL_NUM, FIRST_MODEL));
+  }
+
+  private void setTransitionNum() {
+    mIntent = getIntent();
+    transitionNum = mIntent.getIntExtra("transitionNum",0);
+    mIntent = null;
   }
 
   private void setListener() {
@@ -383,12 +391,23 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     AlertDialog dialog = builder.show();
     Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
     positiveButton.setOnClickListener(view -> {
-      mIntent = getIntent();
-      mIntent.putExtra("imageTempPath", TMP_FILE);
-      mIntent.putExtra("imagePath", filename);
-      setResult(RESULT_OK, mIntent);
-      dialog.dismiss();
-      finish();
+      if (transitionNum == 0){
+        mIntent = new Intent(this, AddDataActivity.class);
+        mIntent.putExtra("imageTempPath", TMP_FILE);
+        mIntent.putExtra("imagePath", filename);
+        mIntent.putExtra(EXTRA_TRANSITION_NAME,"Object");
+        startActivity(mIntent);
+        dialog.dismiss();
+      } else if (transitionNum == 1) {
+        mIntent = getIntent();
+        mIntent.putExtra("imageTempPath", TMP_FILE);
+        mIntent.putExtra("imagePath", filename);
+        setResult(RESULT_OK, mIntent);
+        dialog.dismiss();
+        finish();
+      } else {
+        Log.i(TAG, "You transitioned from an unexpected screen.");
+      }
     });
     Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
     negativeButton.setOnClickListener(view -> {

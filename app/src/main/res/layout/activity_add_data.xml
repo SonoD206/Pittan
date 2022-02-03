@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:menu="@menu/add_top_app_bar"
-        app:navigationIcon="@drawable/icon_navigation_back" />
+        app:navigationIcon="@drawable/icon_close" />
   </com.google.android.material.appbar.AppBarLayout>
 
   <!--　Contents　-->

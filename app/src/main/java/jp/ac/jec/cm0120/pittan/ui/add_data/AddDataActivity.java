@@ -27,9 +27,13 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
+import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
+import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
@@ -52,6 +56,8 @@ public class AddDataActivity extends AppCompatActivity {
   /// Fields
   private Intent mIntent;
   private InputMethodManager mInputMethodManager;
+  private String transitionName;
+  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
 
   ///DBItem
   private int placeDeleteFlag = 0;
@@ -105,6 +111,35 @@ public class AddDataActivity extends AppCompatActivity {
     productCategory = getString(R.string.add_segment_first_item);
 
     mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    setTransitionName();
+  }
+
+  private void setTransitionName() {
+    mIntent = getIntent();
+    transitionName = mIntent.getStringExtra(DetailActivity.EXTRA_TRANSITION_NAME);
+    if (transitionName.equals("Detail")){
+      pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
+      setDetailData(pittanProductDataModelArrayList);
+    } else if (transitionName.equals("Object")){
+      productImagePath = mIntent.getStringExtra("imagePath");
+      String tempPath = mIntent.getStringExtra("imageTempPath");
+      imageViewPhoto.setVisibility(View.VISIBLE);
+      imageViewPhoto.setImageBitmap(PictureIO.outputPicture(tempPath));
+    }
+  }
+
+  private void setDetailData(ArrayList<PittanProductDataModel> models) {
+    if (models != null){
+      for (PittanProductDataModel model: models) {
+        editLocation.setText(model.getPlaceName());
+//        textViewItemCategory.setText(model.getProductCategory());
+        editHeightSize.setText(String.valueOf(model.getProductHeight()));
+        editWidthSize.setText(String.valueOf(model.getProductWidth()));
+        editComments.setText(model.getProductComment());
+        // TODO: 2022/01/31 ImagePath -> file -> bitmap -> 反映
+//        imagePath = model.getProductImagePath();
+      }
+    }
   }
 
   /// AppToolBarの作成
@@ -115,7 +150,6 @@ public class AddDataActivity extends AppCompatActivity {
 
   /// 各ListenerのSet
   private void setListener() {
-
     /// StartActivityForResult
     ActivityResultLauncher<Intent> startForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -132,16 +166,22 @@ public class AddDataActivity extends AppCompatActivity {
               }
             }
     );
-
     /// AppTopBar
-    mToolbar.setNavigationOnClickListener(view -> finish());
-
+    mToolbar.setNavigationOnClickListener(view -> {
+      if (transitionName.equals("Detail")){
+        finish();
+      }  else if (transitionName.equals("Object")){
+        mIntent = new Intent(this, HomeActivity.class);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(mIntent);
+      }
+    });
     /// PhotoFrame
     frameLayout.setOnClickListener(view -> {
       mIntent = new Intent(this, ObjectInstallationActivity.class);
       startForResult.launch(mIntent);
     });
-
     /// SegmentedControl
     segmentedControl.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
       if (checkedId == R.id.button_curtain) {
@@ -169,7 +209,6 @@ public class AddDataActivity extends AppCompatActivity {
     return false;
   }
 
-
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.add_top_app_bar, menu);
     return super.onCreateOptionsMenu(menu);
@@ -185,7 +224,10 @@ public class AddDataActivity extends AppCompatActivity {
       }
       if (editLocation.getText().toString().length() != 0) {
         insertPittanDB();
-        finish();
+        mIntent = new Intent(this, HomeActivity.class);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(mIntent);
       } else {
         Snackbar.make(mLinearLayout, "設置場所を入力してください", Snackbar.LENGTH_SHORT).setDuration(1000).show();
       }
@@ -214,12 +256,10 @@ public class AddDataActivity extends AppCompatActivity {
     model.setProductImagePath(productImagePath);
 
     PittanSQLiteOpenHelper helper = new PittanSQLiteOpenHelper(this);
-
     try {
       helper.insertProductData(model);
     } catch (RuntimeException runtimeException) {
       runtimeException.printStackTrace();
     }
   }
-
 }

@@ -1,6 +1,8 @@
 package jp.ac.jec.cm0120.pittan.database;
 
-public class PittanProductDataModel {
+import java.io.Serializable;
+
+public class PittanProductDataModel implements Serializable {
 
   // place table
   private int placeID;

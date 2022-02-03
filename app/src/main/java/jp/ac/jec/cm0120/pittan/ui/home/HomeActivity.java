@@ -22,19 +22,24 @@ import java.util.ArrayList;
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
-import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
+import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
-  private static final String EXTRA_PLACE_ID = "placeID";
-  private Intent intent;
-  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
+  /// Constants
+  public static final String EXTRA_PLACE_ID = "placeID";
+
+  /// Components
   private Toolbar mToolbar;
   private FloatingActionButton fab;
   private LinearLayout centralLinear;
   private RecyclerView mRecyclerView;
+
+  /// Fields
+  private Intent mIntent;
+  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
   private PittanSQLiteOpenHelper helper;
   private CustomRecyclerAdapter mAdapter;
 
@@ -47,7 +52,6 @@ public class HomeActivity extends AppCompatActivity {
     buildAppTopBar();
     onClickFab();
 
-    pittanProductDataModelArrayList = new ArrayList<>();
   }
 
   private void initialize() {
@@ -87,8 +91,8 @@ public class HomeActivity extends AppCompatActivity {
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.menu_item_setting) {
-      intent = new Intent(this, SettingActivity.class);
-      startActivity(intent);
+      mIntent = new Intent(this, SettingActivity.class);
+      startActivity(mIntent);
       return true;
     }
     return super.onOptionsItemSelected(item);
@@ -104,9 +108,9 @@ public class HomeActivity extends AppCompatActivity {
 
     mAdapter.setOnItemClickListener(position -> {
       int currentPlaceID = pittanProductDataModelArrayList.get(position).getPlaceID();
-      intent = new Intent(HomeActivity.this, DetailActivity.class);
-      intent.putExtra(EXTRA_PLACE_ID, currentPlaceID);
-      startActivity(intent);
+      mIntent = new Intent(HomeActivity.this, DetailActivity.class);
+      mIntent.putExtra(EXTRA_PLACE_ID, currentPlaceID);
+      startActivity(mIntent);
     });
 
     // SnackBar
@@ -148,8 +152,9 @@ public class HomeActivity extends AppCompatActivity {
   //　FloatingActionButtonを押した時の処理
   private void onClickFab() {
     fab.setOnClickListener(view -> {
-      intent = new Intent(this, AddDataActivity.class);
-      startActivity(intent);
+      mIntent = new Intent(this, ObjectInstallationActivity.class);
+      mIntent.putExtra("transitionNum",0);
+      startActivity(mIntent);
     });
   }
 }
