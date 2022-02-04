@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
@@ -55,13 +54,12 @@ import java.util.Date;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
-
-  public static final String TAG = "###";
 
   /// Components
   private TabLayout mTabLayout;
@@ -292,7 +290,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     } else if (kind == textureNum) {
       path = String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,name);
     } else {
-      Log.i(TAG, "getUri: Not the right kind.");
+      AppLog.info( "Not the right kind.");
     }
     return path;
   }
@@ -383,7 +381,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       dialog.dismiss();
       finish();
     } else {
-      Log.i(TAG, "You transitioned from an unexpected screen.");
+      AppLog.info("You transitioned from an unexpected screen.");
     }
   }
 }

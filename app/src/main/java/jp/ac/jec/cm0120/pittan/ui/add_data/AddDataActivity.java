@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
@@ -41,10 +42,6 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class AddDataActivity extends AppCompatActivity {
-
-  /// Constants
-  private static final String TAG = "###";
-
   /// Components
   private LinearLayout mLinearLayout;
   private MaterialButtonToggleGroup segmentedControl;
@@ -109,7 +106,7 @@ public class AddDataActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
               if (result.getResultCode() != Activity.RESULT_OK) {
-                Log.i(TAG, "setListener: failure");
+                AppLog.info(AppConstant.Log.FAILURE);
               }
               Intent data = result.getData();
               if (data != null) {

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
@@ -78,7 +79,6 @@ public class DetailActivity extends AppCompatActivity {
     selectItem = helper.getSelectDetailData(placeID);
 
     if (selectItem.size() > 0) {
-
       for (PittanProductDataModel item : selectItem) {
         String itemHeight = item.getProductHeight() + getResources().getString(R.string.millimetre);
         String itemWidth = item.getProductWidth() + getResources().getString(R.string.millimetre);
@@ -92,9 +92,8 @@ public class DetailActivity extends AppCompatActivity {
 
         imageViewPhoto.setImageBitmap(PictureIO.outputPicture(photoImagePath));
       }
-
     } else {
-      Log.i(TAG, "setItemData: Trouble");
+      AppLog.info(AppConstant.Log.FAILURE);
     }
   }
 

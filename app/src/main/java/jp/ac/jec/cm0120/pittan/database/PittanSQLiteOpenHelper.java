@@ -23,7 +23,6 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   public static final String TABLE_PRODUCT = "product";
   public static final String TABLE_PLACE = "place";
   public static final String TABLE_PRODUCT_IMAGE = "product_image";
-  public static final  String TAG = "###";
 
   public PittanSQLiteOpenHelper(@Nullable Context context) {
     super(context, DB_NAME, null, DB_VERSION);
@@ -172,7 +171,6 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     } finally {
       db.close();
     }
-
     return isSuccess;
   }
 
@@ -227,7 +225,6 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
 
     try {
       ret = db.update(TABLE_PLACE,contentValues,"place_id = " + placeID,null);
-      Log.i(TAG, "isUpdatePlaceTable: "+ret);
     } catch (SQLiteException e){
       e.printStackTrace();
     } finally {

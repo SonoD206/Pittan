@@ -14,10 +14,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class PictureIO {
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 
-  /// Constants
-  private static final String TAG = "###";
+public class PictureIO {
 
   public static void saveBitmapToDisk(Bitmap mBitmap, String filename) throws IOException {
     File out = new File(filename);
@@ -33,16 +33,13 @@ public class PictureIO {
       throw new IOException("Failed to save bitmap to disk", ex);
     }
   }
-
   public static Bitmap outputPicture(String filename) {
     Bitmap bitmap = null;
     if (isExternalStorageReadable()) {
       try {
         InputStream stream = new FileInputStream(filename);
         BufferedInputStream bufferedInputStream = new BufferedInputStream(stream);
-        Log.i(TAG, "outputPicture: " + bufferedInputStream);
         bitmap = BitmapFactory.decodeStream(bufferedInputStream);
-
       } catch (FileNotFoundException e) {
         e.printStackTrace();
       }
