@@ -109,7 +109,7 @@ public class DetailActivity extends AppCompatActivity {
     if (item.getItemId() == R.id.menu_item_edit) {
       mIntent = new Intent(this, AddDataActivity.class);
       mIntent.putExtra(AppConstant.Detail.EXTRA_MODEL,selectItem);
-      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME,"Detail");
+      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME,AppConstant.Detail.ACTIVITY_NAME);
       startActivity(mIntent);
       return true;
     }

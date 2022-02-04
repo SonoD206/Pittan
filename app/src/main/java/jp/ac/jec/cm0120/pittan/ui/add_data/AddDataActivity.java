@@ -121,20 +121,22 @@ public class AddDataActivity extends AppCompatActivity {
     );
     /// AppTopBar
     mToolbar.setNavigationOnClickListener(view -> {
-      if (transitionName.equals("Detail")){
+      if (transitionName.equals(AppConstant.Detail.ACTIVITY_NAME)){
         finish();
-      }  else if (transitionName.equals("Object")){
+      }  else if (transitionName.equals(AppConstant.Objection.ACTIVITY_NAME)){
         mIntent = new Intent(this, HomeActivity.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(mIntent);
       }
     });
+
     /// PhotoFrame
     frameLayout.setOnClickListener(view -> {
       mIntent = new Intent(this, ObjectInstallationActivity.class);
       startForResult.launch(mIntent);
     });
+
     /// SegmentedControl
     segmentedControl.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
       if (checkedId == R.id.button_curtain) {
@@ -143,6 +145,7 @@ public class AddDataActivity extends AppCompatActivity {
         checkSegmentControl(false);
       }
     });
+
     editLocation.setOnKeyListener(this::doCloseKeyboard);
     editWidthSize.setOnKeyListener(this::doCloseKeyboard);
     editHeightSize.setOnKeyListener(this::doCloseKeyboard);
@@ -167,12 +170,12 @@ public class AddDataActivity extends AppCompatActivity {
   private void setTransitionName() {
     mIntent = getIntent();
     transitionName = mIntent.getStringExtra(AppConstant.EXTRA_TRANSITION_NAME);
-    if (transitionName.equals("Detail")){
+    if (transitionName.equals(AppConstant.Detail.ACTIVITY_NAME)){
       ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(AppConstant.Detail.EXTRA_MODEL);
       setDetailData(pittanProductDataModelArrayList);
-    } else if (transitionName.equals("Object")){
-      productImagePath = mIntent.getStringExtra("imagePath");
-      String tempPath = mIntent.getStringExtra("imageTempPath");
+    } else if (transitionName.equals(AppConstant.Objection.ACTIVITY_NAME)){
+      productImagePath = mIntent.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH);
+      String tempPath = mIntent.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH);
       photoBitmap = PictureIO.outputPicture(tempPath);
       imageViewPhoto.setVisibility(View.VISIBLE);
       imageViewPhoto.setImageBitmap(photoBitmap);

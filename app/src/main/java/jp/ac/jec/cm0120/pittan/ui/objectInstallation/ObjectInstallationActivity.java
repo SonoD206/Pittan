@@ -372,7 +372,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mIntent = new Intent(this, AddDataActivity.class);
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
-      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME, AppConstant.Objection.TRANSITION_NAME_OBJECT);
+      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME, AppConstant.Objection.ACTIVITY_NAME);
       startActivity(mIntent);
       dialog.dismiss();
     } else if (transitionNum == 1) {
