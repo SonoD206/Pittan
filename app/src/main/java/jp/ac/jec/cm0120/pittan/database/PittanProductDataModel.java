@@ -52,9 +52,9 @@ public class PittanProductDataModel implements Serializable {
     return productID;
   }
 
-//  public void setProductID(int productID) {
-//    this.productID = productID;
-//  }
+  public void setProductID(int productID) {
+    this.productID = productID;
+  }
 
   public String getProductCategory() {
     return productCategory;
