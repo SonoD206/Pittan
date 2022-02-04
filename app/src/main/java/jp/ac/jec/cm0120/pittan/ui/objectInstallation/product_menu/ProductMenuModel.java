@@ -3,7 +3,6 @@ package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 import android.graphics.Bitmap;
 
 public class ProductMenuModel {
-
   /// Test
   private Bitmap itemTextureImage;
   private String itemTextureName;

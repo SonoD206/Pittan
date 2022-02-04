@@ -21,13 +21,10 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
     void onItemClick(String textureName);
   }
 
-  /// Constant
-  private static final String TAG = "###";
-
   // Fields
   private OnItemClickListener onItemClickListener;
-  private LayoutInflater mInflater;
-  private ArrayList<ProductMenuModel> productMenuModelArrayList;
+  private final LayoutInflater mInflater;
+  private final ArrayList<ProductMenuModel> productMenuModelArrayList;
 
   public ProductMenuRecyclerViewAdapter(Context context, ArrayList<ProductMenuModel> imageModels) {
     mInflater = LayoutInflater.from(context);
@@ -69,11 +66,10 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
   }
 
   public static class ProductMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
-
     private final ImageView imageViewTexture;
+
     public ProductMenuRecyclerViewHolder(@NonNull View itemView) {
       super(itemView);
-
       imageViewTexture = itemView.findViewById(R.id.image_view_model);
     }
   }

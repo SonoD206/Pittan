@@ -71,14 +71,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private static final String FIRST_MODEL = "white_curtain.glb";
   private static final String BASE_COLOR_INDEX = "baseColorIndex";
   private static final String BASE_COLOR_MAP = "baseColorMap";
-  private static final String TEXTURES_PATH_HEADER = "textures/";
-  private static final String MODELS_PATH_HEADER = "models/";
   private static final String HANDLER_THREAD_NAME = "PixelCopier";
   private static final String DATE_FORMAT_PATTERN = "yyyy_MM_dd_HHmm";
   private static final String TRANSITION_NAME_OBJECT = "Object";
   private static final String ALERT_MESSAGE_FORMAT =  "縦幅：%smm\n" + "横幅：%smm" ;
   private static final String TEMP_PICTURE_NAME ="temp.jpg";
   private static final String USER_PICTURE_NAME_FORMAT_PATTERN = "Pittan/%s_3dModel.jpg";
+  private static final String MODELS_PATH_FORMAT_PATTERN = "models/%s";
+  private static final String TEXTURES_PATH_FORMAT_PATTERN = "textures/%s";
 
   /// Components
   private TabLayout mTabLayout;
@@ -303,18 +303,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private String getPath(int kind, String name) {
     final int modelNum = 1;
     final int textureNum = 2;
-
     String path = "";
-    StringBuilder builder = new StringBuilder();
-
     if (kind == modelNum) {
-      builder.append(MODELS_PATH_HEADER)
-              .append(name);
-      path = builder.toString();
+      path = String.format(MODELS_PATH_FORMAT_PATTERN,name);
     } else if (kind == textureNum) {
-      builder.append(TEXTURES_PATH_HEADER)
-              .append(name);
-      path = builder.toString();
+      path = String.format(TEXTURES_PATH_FORMAT_PATTERN,name);
     } else {
       Log.i(TAG, "getUri: Not the right kind.");
     }

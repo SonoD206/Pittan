@@ -16,7 +16,7 @@ public class SquareView extends MaterialCardView {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    int newHeightMeasureSpec = widthMeasureSpec;
-    super.onMeasure(widthMeasureSpec, newHeightMeasureSpec);
+    heightMeasureSpec = widthMeasureSpec;
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
   }
 }

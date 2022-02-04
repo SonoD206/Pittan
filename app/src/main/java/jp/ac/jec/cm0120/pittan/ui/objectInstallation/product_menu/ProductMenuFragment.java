@@ -28,20 +28,18 @@ public class ProductMenuFragment extends Fragment {
     void onClickRecyclerItem(String textureName);
   }
 
-  /// Constant
-  private static final String TAG = "###";
+  /// Constants
+  private static final String FILE_PATH_FORMAT_PATTERN = "textures/%s";
+  private static final String ASSETS_FILE_NAME = "textures";
+
   /// Components
   private RecyclerView productMenuRecyclerView;
 
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
-  private ProductMenuRecyclerViewAdapter productMenuAdapter;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
-  private ArrayList<String> productMenuCurtainName = new ArrayList<>();
 
-  public ProductMenuFragment() {
-    // Required empty public constructor
-  }
+  public ProductMenuFragment() {}
 
   public static ProductMenuFragment newInstance() {
     return new ProductMenuFragment();
@@ -53,9 +51,7 @@ public class ProductMenuFragment extends Fragment {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    // Inflate the layout for this fragment
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_product_menu, container, false);
     productMenuRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_product_menu_double_opening);
     addProductData();
@@ -72,7 +68,7 @@ public class ProductMenuFragment extends Fragment {
   }
 
   private void addProductData() {
-    productMenuCurtainName = getProductName();
+    ArrayList<String> productMenuCurtainName = getProductName();
     productMenuArrayList = getProductMenuData(productMenuCurtainName);
   }
 
@@ -91,7 +87,7 @@ public class ProductMenuFragment extends Fragment {
     AssetManager assets = getResources().getAssets();
     InputStream inputStream = null;
     try {
-      inputStream = assets.open("textures/"+textureName);
+      inputStream = assets.open(String.format(FILE_PATH_FORMAT_PATTERN,textureName));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -102,9 +98,9 @@ public class ProductMenuFragment extends Fragment {
   private ArrayList<String> getProductName() {
     ArrayList<String> nameArrayList = new ArrayList<>();
     AssetManager assetManager = getResources().getAssets();
-    String[] fileNames = null;
+    String[] fileNames;
     try {
-      fileNames = assetManager.list("textures");
+      fileNames = assetManager.list(ASSETS_FILE_NAME);
       nameArrayList.addAll(Arrays.asList(fileNames));
     } catch (IOException e) {
       e.printStackTrace();
@@ -113,15 +109,12 @@ public class ProductMenuFragment extends Fragment {
   }
 
   private void buildProductMenuRecyclerView() {
-    productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
+    ProductMenuRecyclerViewAdapter productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
     productMenuRecyclerView.setAdapter(productMenuAdapter);
     productMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-    productMenuAdapter.setOnItemClickListener(new ProductMenuRecyclerViewAdapter.OnItemClickListener() {
-      @Override
-      public void onItemClick(String textureName) {
-        if (mOnClickRecyclerViewListener != null) {
-          mOnClickRecyclerViewListener.onClickRecyclerItem(textureName);
-        }
+    productMenuAdapter.setOnItemClickListener(textureName -> {
+      if (mOnClickRecyclerViewListener != null) {
+        mOnClickRecyclerViewListener.onClickRecyclerItem(textureName);
       }
     });
   }
