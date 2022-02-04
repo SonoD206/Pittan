@@ -30,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
 
   /// Constants
   public static final String EXTRA_PLACE_ID = "placeID";
+  public static final String EXTRA_TRANSITION_TAG = "transitionNum";
 
   /// Components
   private Toolbar mToolbar;
@@ -47,11 +48,9 @@ public class HomeActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_home);
-
     initialize();
     buildAppTopBar();
     onClickFab();
-
   }
 
   private void initialize() {
@@ -118,7 +117,7 @@ public class HomeActivity extends AppCompatActivity {
       View view = findViewById(R.id.coordinator_layout);
       Snackbar snackbar = Snackbar.make(view, placeName,
               Snackbar.LENGTH_LONG);
-      snackbar.setAction("元に戻す", v -> mAdapter.undoDelete());
+      snackbar.setAction(getString(R.string.home_snackbar_action_text), v -> mAdapter.undoDelete());
       snackbar.setAnchorView(R.id.fab);
       snackbar.addCallback(new Snackbar.Callback() {
         @Override
@@ -153,7 +152,7 @@ public class HomeActivity extends AppCompatActivity {
   private void onClickFab() {
     fab.setOnClickListener(view -> {
       mIntent = new Intent(this, ObjectInstallationActivity.class);
-      mIntent.putExtra("transitionNum",0);
+      mIntent.putExtra(EXTRA_TRANSITION_TAG,0);
       startActivity(mIntent);
     });
   }

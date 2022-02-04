@@ -19,12 +19,12 @@ import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
 
-  public static final String TAG = "###";
+  /// Fields
   private final Context context;
-  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
+  private final ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
+  private int mRecentlyDeletedItemPosition;
   private OnItemClickListener onItemClickListener;
   private PittanProductDataModel mRecentlyDeletedItem;
-  private int mRecentlyDeletedItemPosition;
   private CustomRecyclerAdapter.SnackbarListener snackbarListener;
 
   public interface OnItemClickListener {
@@ -64,8 +64,8 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
     PittanProductDataModel model = pittanProductDataModelArrayList.get(position);
     holder.textViewDataTitle.setText(model.getPlaceName());
-    holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()) + "mm");
-    holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()) + "mm");
+    holder.textViewDataHeight.setText(model.getProductHeight() + "mm");
+    holder.textViewDataWidth.setText(model.getProductWidth() + "mm");
     holder.textViewCategory.setText(model.getProductCategory());
     holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
   }

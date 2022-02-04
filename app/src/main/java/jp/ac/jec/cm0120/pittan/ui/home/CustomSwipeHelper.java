@@ -15,7 +15,7 @@ import jp.ac.jec.cm0120.pittan.R;
 
 public class CustomSwipeHelper extends ItemTouchHelper.SimpleCallback {
 
-  CustomRecyclerAdapter mAdapter;
+  private final CustomRecyclerAdapter mAdapter;
   private final Drawable icon;
   private final ColorDrawable swipeBackGround;
 
