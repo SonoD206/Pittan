@@ -30,6 +30,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
@@ -59,11 +60,10 @@ public class AddDataActivity extends AppCompatActivity {
   private Intent mIntent;
   private InputMethodManager mInputMethodManager;
   private String transitionName;
-  private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
   private Bitmap photoBitmap;
 
   ///DBItem
-  private int placeDeleteFlag = 0;
+  public static final int PLACE_DELETE_FLAG = 0;
   private float productHeight = 0f;
   private float productWidth = 0f;
   private String productCategory;
@@ -168,7 +168,7 @@ public class AddDataActivity extends AppCompatActivity {
     mIntent = getIntent();
     transitionName = mIntent.getStringExtra(DetailActivity.EXTRA_TRANSITION_NAME);
     if (transitionName.equals("Detail")){
-      pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
+      ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
       setDetailData(pittanProductDataModelArrayList);
     } else if (transitionName.equals("Object")){
       productImagePath = mIntent.getStringExtra("imagePath");
@@ -214,13 +214,13 @@ public class AddDataActivity extends AppCompatActivity {
 
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.menu_item_save_data) {
-      if (editHeightSize.getText().toString().length() != 0) {
+      if (Objects.requireNonNull(editHeightSize.getText()).toString().length() != 0) {
         productHeight = Float.parseFloat(editHeightSize.getText().toString());
       }
-      if (editWidthSize.getText().toString().length() != 0) {
+      if (Objects.requireNonNull(editWidthSize.getText()).toString().length() != 0) {
         productWidth = Float.parseFloat(editWidthSize.getText().toString());
       }
-      if (editLocation.getText().toString().length() != 0) {
+      if (Objects.requireNonNull(editLocation.getText()).toString().length() != 0) {
         insertPittanDB();
         try {
           PictureIO.saveBitmapToDisk(photoBitmap,productImagePath);
@@ -243,8 +243,8 @@ public class AddDataActivity extends AppCompatActivity {
   private void insertPittanDB() {
     PittanProductDataModel model = new PittanProductDataModel();
     /// placeテーブル
-    model.setPlaceName(editLocation.getText().toString());
-    model.setPlaceDeleteFlag(placeDeleteFlag);
+    model.setPlaceName(Objects.requireNonNull(editLocation.getText()).toString());
+    model.setPlaceDeleteFlag(PLACE_DELETE_FLAG);
 
     ///productテーブル
     model.setProductHeight(productHeight);
@@ -253,7 +253,7 @@ public class AddDataActivity extends AppCompatActivity {
     model.setProductColorCode(productColorCode);
     model.setProductDesign(productDesign);
     model.setProductType(productType);
-    model.setProductComment(editComments.getText().toString());
+    model.setProductComment(Objects.requireNonNull(editComments.getText()).toString());
 
     ///productImageテーブル
     model.setProductImagePath(productImagePath);
