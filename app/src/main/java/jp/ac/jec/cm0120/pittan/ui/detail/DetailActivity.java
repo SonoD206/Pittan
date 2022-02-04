@@ -17,18 +17,16 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
-import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class DetailActivity extends AppCompatActivity {
 
   /// Constants
   private static final String TAG = "###";
-  public static final String EXTRA_MODEL = "PittanProductDataModel";
-  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
 
   // Component
   private MaterialToolbar mToolbar;
@@ -65,7 +63,7 @@ public class DetailActivity extends AppCompatActivity {
     textViewComments = findViewById(R.id.detail_text_view_comments_area);
 
     mIntent = getIntent();
-    placeID = mIntent.getIntExtra(HomeActivity.EXTRA_PLACE_ID, 1);
+    placeID = mIntent.getIntExtra(AppConstant.Home.EXTRA_PLACE_ID, 1);
   }
 
   private void buildAppTopBar() {
@@ -110,8 +108,8 @@ public class DetailActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     if (item.getItemId() == R.id.menu_item_edit) {
       mIntent = new Intent(this, AddDataActivity.class);
-      mIntent.putExtra(EXTRA_MODEL,selectItem);
-      mIntent.putExtra(EXTRA_TRANSITION_NAME,"Detail");
+      mIntent.putExtra(AppConstant.Detail.EXTRA_MODEL,selectItem);
+      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME,"Detail");
       startActivity(mIntent);
       return true;
     }

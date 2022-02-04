@@ -54,31 +54,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
-import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
 
-  /// Constants
-  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
-  public static final String EXTRA_IMAGE_TEMP_FILE_PATH = "imageTempPath";
-  public static final String EXTRA_IMAGE_FILE_PATH = "imagePath";
-  private static final int MODEL_NUM = 1;
-  private static final int TEXTURE_NUM = 2;
-  private static final String TAG = "###";
-  private static final String FIRST_MODEL = "white_curtain.glb";
-  private static final String BASE_COLOR_INDEX = "baseColorIndex";
-  private static final String BASE_COLOR_MAP = "baseColorMap";
-  private static final String HANDLER_THREAD_NAME = "PixelCopier";
-  private static final String DATE_FORMAT_PATTERN = "yyyy_MM_dd_HHmm";
-  private static final String TRANSITION_NAME_OBJECT = "Object";
-  private static final String ALERT_MESSAGE_FORMAT =  "縦幅：%smm\n" + "横幅：%smm" ;
-  private static final String TEMP_PICTURE_NAME ="temp.jpg";
-  private static final String USER_PICTURE_NAME_FORMAT_PATTERN = "Pittan/%s_3dModel.jpg";
-  private static final String MODELS_PATH_FORMAT_PATTERN = "models/%s";
-  private static final String TEXTURES_PATH_FORMAT_PATTERN = "textures/%s";
+  public static final String TAG = "###";
 
   /// Components
   private TabLayout mTabLayout;
@@ -135,12 +118,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     }
 
-    loadModels(getPath(MODEL_NUM, FIRST_MODEL));
+    loadModels(getPath(AppConstant.Objection.MODEL_NUM, AppConstant.Objection.FIRST_MODEL));
   }
 
   private void setTransitionNum() {
     mIntent = getIntent();
-    transitionNum = mIntent.getIntExtra(HomeActivity.EXTRA_TRANSITION_TAG, 0);
+    transitionNum = mIntent.getIntExtra(AppConstant.Home.EXTRA_TRANSITION_TAG, 0);
     mIntent = null;
   }
 
@@ -244,8 +227,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       ///切り分け
       if (texture != null) {
         RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
-        modelInstance.getMaterial().setInt(BASE_COLOR_INDEX, 0);
-        modelInstance.getMaterial().setTexture(BASE_COLOR_MAP, texture);
+        modelInstance.getMaterial().setInt(AppConstant.Objection.BASE_COLOR_INDEX, 0);
+        modelInstance.getMaterial().setTexture(AppConstant.Objection.BASE_COLOR_MAP, texture);
       } else {
         mModel.setRenderable(mRenderModel);
       }
@@ -305,9 +288,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     final int textureNum = 2;
     String path = "";
     if (kind == modelNum) {
-      path = String.format(MODELS_PATH_FORMAT_PATTERN,name);
+      path = String.format(AppConstant.Objection.MODELS_PATH_FORMAT_PATTERN,name);
     } else if (kind == textureNum) {
-      path = String.format(TEXTURES_PATH_FORMAT_PATTERN,name);
+      path = String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,name);
     } else {
       Log.i(TAG, "getUri: Not the right kind.");
     }
@@ -317,7 +300,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String textureName) {
-    String path = getPath(TEXTURE_NUM, textureName);
+    String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
     loadTexture(path);
   }
 
@@ -334,7 +317,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
                 Bitmap.Config.RGB_565);
       }
       // Create a handler thread to offload the processing of the image.
-      final HandlerThread handlerThread = new HandlerThread(HANDLER_THREAD_NAME);
+      final HandlerThread handlerThread = new HandlerThread(AppConstant.Objection.HANDLER_THREAD_NAME);
       handlerThread.start();
       // Make the request to copy.
       PixelCopy.request(view, mPreviewBitmap, (copyResult) -> {
@@ -358,10 +341,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private String generateFilename(boolean isPhoto) {
     String pathHeader = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator;
-    String fileName = pathHeader + TEMP_PICTURE_NAME;
+    String fileName = pathHeader + AppConstant.Objection.TEMP_PICTURE_NAME;
     if (isPhoto){
-      String date = new SimpleDateFormat(DATE_FORMAT_PATTERN, java.util.Locale.getDefault()).format(new Date());
-      fileName = pathHeader + String.format(USER_PICTURE_NAME_FORMAT_PATTERN,date);
+      String date = new SimpleDateFormat(AppConstant.Objection.DATE_FORMAT_PATTERN, java.util.Locale.getDefault()).format(new Date());
+      fileName = pathHeader + String.format(AppConstant.Objection.USER_PICTURE_NAME_FORMAT_PATTERN,date);
     }
     return fileName;
   }
@@ -369,7 +352,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void showAlertDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.object_installation_alert_title))
-            .setMessage(String.format(ALERT_MESSAGE_FORMAT,mModelScales[0],mModelScales[1]))
+            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT,mModelScales[0],mModelScales[1]))
             .setPositiveButton(getString(R.string.ok), null)
             .setNegativeButton(getString(R.string.cancel), null);
     AlertDialog dialog = builder.show();
@@ -387,15 +370,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void judgeOriginalTransition(int transitionNum, AlertDialog dialog) {
     if (transitionNum == 0) {
       mIntent = new Intent(this, AddDataActivity.class);
-      mIntent.putExtra(EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
-      mIntent.putExtra(EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
-      mIntent.putExtra(EXTRA_TRANSITION_NAME, TRANSITION_NAME_OBJECT);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
+      mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
+      mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME, AppConstant.Objection.TRANSITION_NAME_OBJECT);
       startActivity(mIntent);
       dialog.dismiss();
     } else if (transitionNum == 1) {
       mIntent = getIntent();
-      mIntent.putExtra(EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
-      mIntent.putExtra(EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
+      mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
       setResult(RESULT_OK, mIntent);
       dialog.dismiss();
       finish();

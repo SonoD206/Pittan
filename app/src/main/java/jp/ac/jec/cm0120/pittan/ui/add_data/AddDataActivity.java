@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
-import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
 import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
@@ -113,8 +113,8 @@ public class AddDataActivity extends AppCompatActivity {
               }
               Intent data = result.getData();
               if (data != null) {
-                productImagePath = data.getStringExtra(ObjectInstallationActivity.EXTRA_IMAGE_FILE_PATH);
-                String tempPath = data.getStringExtra(ObjectInstallationActivity.EXTRA_IMAGE_TEMP_FILE_PATH);
+                productImagePath = data.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH);
+                String tempPath = data.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH);
                 setPhotoImage(tempPath);
               }
             }
@@ -166,9 +166,9 @@ public class AddDataActivity extends AppCompatActivity {
 
   private void setTransitionName() {
     mIntent = getIntent();
-    transitionName = mIntent.getStringExtra(DetailActivity.EXTRA_TRANSITION_NAME);
+    transitionName = mIntent.getStringExtra(AppConstant.EXTRA_TRANSITION_NAME);
     if (transitionName.equals("Detail")){
-      ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
+      ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(AppConstant.Detail.EXTRA_MODEL);
       setDetailData(pittanProductDataModelArrayList);
     } else if (transitionName.equals("Object")){
       productImagePath = mIntent.getStringExtra("imagePath");

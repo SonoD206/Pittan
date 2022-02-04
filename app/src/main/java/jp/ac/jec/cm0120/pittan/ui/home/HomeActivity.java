@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.detail.DetailActivity;
@@ -27,10 +28,6 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.ObjectInstallationActivity;
 import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
 public class HomeActivity extends AppCompatActivity {
-
-  /// Constants
-  public static final String EXTRA_PLACE_ID = "placeID";
-  public static final String EXTRA_TRANSITION_TAG = "transitionNum";
 
   /// Components
   private Toolbar mToolbar;
@@ -108,7 +105,7 @@ public class HomeActivity extends AppCompatActivity {
     mAdapter.setOnItemClickListener(position -> {
       int currentPlaceID = pittanProductDataModelArrayList.get(position).getPlaceID();
       mIntent = new Intent(HomeActivity.this, DetailActivity.class);
-      mIntent.putExtra(EXTRA_PLACE_ID, currentPlaceID);
+      mIntent.putExtra(AppConstant.Home.EXTRA_PLACE_ID, currentPlaceID);
       startActivity(mIntent);
     });
 
@@ -152,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
   private void onClickFab() {
     fab.setOnClickListener(view -> {
       mIntent = new Intent(this, ObjectInstallationActivity.class);
-      mIntent.putExtra(EXTRA_TRANSITION_TAG,0);
+      mIntent.putExtra(AppConstant.Home.EXTRA_TRANSITION_TAG,0);
       startActivity(mIntent);
     });
   }
