@@ -113,8 +113,8 @@ public class AddDataActivity extends AppCompatActivity {
               }
               Intent data = result.getData();
               if (data != null) {
-                productImagePath = data.getStringExtra("imagePath");
-                String tempPath = data.getStringExtra("imageTempPath");
+                productImagePath = data.getStringExtra(ObjectInstallationActivity.EXTRA_IMAGE_FILE_PATH);
+                String tempPath = data.getStringExtra(ObjectInstallationActivity.EXTRA_IMAGE_TEMP_FILE_PATH);
                 setPhotoImage(tempPath);
               }
             }

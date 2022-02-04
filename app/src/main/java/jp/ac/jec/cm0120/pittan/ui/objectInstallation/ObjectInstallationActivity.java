@@ -52,17 +52,19 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
 
   /// Constants
+  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
+  public static final String EXTRA_IMAGE_TEMP_FILE_PATH = "imageTempPath";
+  public static final String EXTRA_IMAGE_FILE_PATH = "imagePath";
   private static final int MODEL_NUM = 1;
   private static final int TEXTURE_NUM = 2;
   private static final String TAG = "###";
@@ -71,8 +73,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private static final String BASE_COLOR_MAP = "baseColorMap";
   private static final String TEXTURES_PATH_HEADER = "textures/";
   private static final String MODELS_PATH_HEADER = "models/";
-  private static final String TMP_FILE =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/tmp.jpg";
-  public static final String EXTRA_TRANSITION_NAME = "TransitionName";
+  private static final String HANDLER_THREAD_NAME = "PixelCopier";
+  private static final String DATE_FORMAT_PATTERN = "yyyy_MM_dd_HHmm";
+  private static final String TRANSITION_NAME_OBJECT = "Object";
+  private static final String ALERT_MESSAGE_FORMAT =  "縦幅：%smm\n" + "横幅：%smm" ;
+  private static final String TEMP_PICTURE_NAME ="temp.jpg";
+  private static final String USER_PICTURE_NAME_FORMAT_PATTERN = "Pittan/%s_3dModel.jpg";
 
   /// Components
   private TabLayout mTabLayout;
@@ -86,11 +92,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private ImageView imagePhotoPreview;
 
   /// Fields
-  private BottomMenuAdapter bottomMenuAdapter;
-  private String filename;
+  private String userPhotoFileName;
   private Bitmap mPreviewBitmap;
   private Intent mIntent;
-  private float[] mModelScales = new float[3];
+  private final float[] mModelScales = new float[3];
   private int transitionNum;
 
   /// ARCore
@@ -135,38 +140,30 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void setTransitionNum() {
     mIntent = getIntent();
-    transitionNum = mIntent.getIntExtra("transitionNum",0);
+    transitionNum = mIntent.getIntExtra(HomeActivity.EXTRA_TRANSITION_TAG, 0);
     mIntent = null;
   }
 
   private void setListener() {
 
-    imageButtonClose.setOnClickListener(view -> {
-      finish();
-    });
+    imageButtonClose.setOnClickListener(view -> finish());
 
     imageButtonDelete.setOnClickListener(view -> {
     });
 
-    buttonPhotoSave.setOnClickListener(view -> {
-      showAlertDialog();
-    });
+    buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
     imageButtonShutter.setOnClickListener(view -> {
       viewPhotoPreview.setVisibility(View.VISIBLE);
       takePhoto();
-      new Handler().postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          imagePhotoPreview.setImageBitmap(mPreviewBitmap);
-        }
-      }, 1000);
+      new Handler().postDelayed(() -> imagePhotoPreview.setImageBitmap(mPreviewBitmap), 1000);
     });
 
   }
 
   private void buildViewPager2() {
-    bottomMenuAdapter = new BottomMenuAdapter(this);
+    /// Fields
+    BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
     mViewPager2.setUserInputEnabled(false);
     mViewPager2.setAdapter(bottomMenuAdapter);
 
@@ -174,13 +171,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
             (tab, position) -> {
               switch (position) {
                 case 0:
-                  tab.setText("設置");
+                  tab.setText(getString(R.string.object_installation_tab_title_first));
                   break;
                 case 1:
-                  tab.setText("サイズ");
+                  tab.setText(getString(R.string.object_installation_tab_title_second));
                   break;
                 default:
-                  tab.setText("");
                   break;
               }
             }
@@ -265,21 +261,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
             .setIsFilamentGltf(true)
             .setAsyncLoadEnabled(true)
             .build()
-            .thenAccept(new Consumer<ModelRenderable>() {
-              @Override
-              public void accept(ModelRenderable model) {
-                ObjectInstallationActivity activity = weakActivity.get();
-                if (activity != null) {
-                  activity.mRenderModel = model;
-                }
+            .thenAccept(model -> {
+              ObjectInstallationActivity activity = weakActivity.get();
+              if (activity != null) {
+                activity.mRenderModel = model;
               }
             })
-            .exceptionally(new Function<Throwable, Void>() {
-              @Override
-              public Void apply(Throwable throwable) {
-                Toast.makeText(ObjectInstallationActivity.this, "Unable to load model", Toast.LENGTH_LONG).show();
-                return null;
-              }
+            .exceptionally(throwable -> {
+              Toast.makeText(ObjectInstallationActivity.this, "Unable to load model", Toast.LENGTH_LONG).show();
+              return null;
             });
   }
 
@@ -341,7 +331,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   ///写真を撮る
   private void takePhoto() {
     new Thread(() -> {
-      filename = generateFilename();
+      userPhotoFileName = generateFilename(true);
       ArSceneView view = arFragment.getArSceneView();
       if (mPreviewBitmap == null) {
         // Reduce size of the resulting Bitmap
@@ -351,14 +341,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
                 Bitmap.Config.RGB_565);
       }
       // Create a handler thread to offload the processing of the image.
-      final HandlerThread handlerThread = new HandlerThread("PixelCopier");
+      final HandlerThread handlerThread = new HandlerThread(HANDLER_THREAD_NAME);
       handlerThread.start();
       // Make the request to copy.
       PixelCopy.request(view, mPreviewBitmap, (copyResult) -> {
         if (copyResult == PixelCopy.SUCCESS) {
-          Log.i(TAG, "takePhoto: success");
           try {
-            PictureIO.saveBitmapToDisk(mPreviewBitmap,TMP_FILE);
+            PictureIO.saveBitmapToDisk(mPreviewBitmap,generateFilename(false));
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -370,48 +359,50 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
           });
         }
         handlerThread.quitSafely();
-        Log.i(TAG, "New photo taken: " + filename);
       }, new Handler(handlerThread.getLooper()));
     }).start();
   }
 
-  private String generateFilename() {
-    String date =
-            new SimpleDateFormat("yyyy_MM_dd_HHmm", java.util.Locale.getDefault()).format(new Date());
-    return Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES) + File.separator + "Pittan/" + date + "_3dModel.jpg";
+  private String generateFilename(boolean isPhoto) {
+    String pathHeader = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator;
+    String fileName = pathHeader + TEMP_PICTURE_NAME;
+    if (isPhoto){
+      String date = new SimpleDateFormat(DATE_FORMAT_PATTERN, java.util.Locale.getDefault()).format(new Date());
+      fileName = pathHeader + String.format(USER_PICTURE_NAME_FORMAT_PATTERN,date);
+    }
+    return fileName;
   }
 
   private void showAlertDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setTitle("窓枠のサイズ")
-            .setMessage("縦幅：" + mModelScales[0] + "mm\n" + "横幅：" + mModelScales[1] + "mm")
-            .setPositiveButton("OK", null)
-            .setNegativeButton("キャンセル", null);
+    builder.setTitle(getString(R.string.object_installation_alert_title))
+            .setMessage(String.format(ALERT_MESSAGE_FORMAT,mModelScales[0],mModelScales[1]))
+            .setPositiveButton(getString(R.string.ok), null)
+            .setNegativeButton(getString(R.string.cancel), null);
     AlertDialog dialog = builder.show();
+
     Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-    positiveButton.setOnClickListener(view -> {
-      judgeOriginalTransition(transitionNum,dialog);
-    });
+    positiveButton.setOnClickListener(view -> judgeOriginalTransition(transitionNum, dialog));
+
     Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
     negativeButton.setOnClickListener(view -> {
       dialog.dismiss();
-     viewPhotoPreview.setVisibility(View.INVISIBLE);
+      viewPhotoPreview.setVisibility(View.INVISIBLE);
     });
   }
 
   private void judgeOriginalTransition(int transitionNum, AlertDialog dialog) {
-    if (transitionNum == 0){
+    if (transitionNum == 0) {
       mIntent = new Intent(this, AddDataActivity.class);
-      mIntent.putExtra("imageTempPath", TMP_FILE);
-      mIntent.putExtra("imagePath", filename);
-      mIntent.putExtra(EXTRA_TRANSITION_NAME,"Object");
+      mIntent.putExtra(EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
+      mIntent.putExtra(EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
+      mIntent.putExtra(EXTRA_TRANSITION_NAME, TRANSITION_NAME_OBJECT);
       startActivity(mIntent);
       dialog.dismiss();
     } else if (transitionNum == 1) {
       mIntent = getIntent();
-      mIntent.putExtra("imageTempPath", TMP_FILE);
-      mIntent.putExtra("imagePath", filename);
+      mIntent.putExtra(EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
+      mIntent.putExtra(EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
       setResult(RESULT_OK, mIntent);
       dialog.dismiss();
       finish();
