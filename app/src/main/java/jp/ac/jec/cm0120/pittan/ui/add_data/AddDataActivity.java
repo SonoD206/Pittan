@@ -3,6 +3,7 @@ package jp.ac.jec.cm0120.pittan.ui.add_data;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
@@ -58,6 +60,7 @@ public class AddDataActivity extends AppCompatActivity {
   private InputMethodManager mInputMethodManager;
   private String transitionName;
   private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
+  private Bitmap photoBitmap;
 
   ///DBItem
   private int placeDeleteFlag = 0;
@@ -79,23 +82,6 @@ public class AddDataActivity extends AppCompatActivity {
     setListener();
   }
 
-  @Override
-  public boolean dispatchTouchEvent(MotionEvent ev) {
-    if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-      View view = getCurrentFocus();
-      if (view instanceof EditText) {
-        Rect outRect = new Rect();
-        view.getGlobalVisibleRect(outRect);
-        if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
-          view.clearFocus();
-          mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-      }
-    }
-
-    return super.dispatchTouchEvent(ev);
-  }
-
   /// 初期設定
   private void initialize() {
     mLinearLayout = findViewById(R.id.add_main_layout);
@@ -107,47 +93,15 @@ public class AddDataActivity extends AppCompatActivity {
     editWidthSize = findViewById(R.id.edit_view_size_width);
     editComments = findViewById(R.id.edit_view_comments);
     imageViewPhoto = findViewById(R.id.add_image_view_user_photo);
-
     productCategory = getString(R.string.add_segment_first_item);
-
     mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     setTransitionName();
   }
-
-  private void setTransitionName() {
-    mIntent = getIntent();
-    transitionName = mIntent.getStringExtra(DetailActivity.EXTRA_TRANSITION_NAME);
-    if (transitionName.equals("Detail")){
-      pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
-      setDetailData(pittanProductDataModelArrayList);
-    } else if (transitionName.equals("Object")){
-      productImagePath = mIntent.getStringExtra("imagePath");
-      String tempPath = mIntent.getStringExtra("imageTempPath");
-      imageViewPhoto.setVisibility(View.VISIBLE);
-      imageViewPhoto.setImageBitmap(PictureIO.outputPicture(tempPath));
-    }
-  }
-
-  private void setDetailData(ArrayList<PittanProductDataModel> models) {
-    if (models != null){
-      for (PittanProductDataModel model: models) {
-        editLocation.setText(model.getPlaceName());
-//        textViewItemCategory.setText(model.getProductCategory());
-        editHeightSize.setText(String.valueOf(model.getProductHeight()));
-        editWidthSize.setText(String.valueOf(model.getProductWidth()));
-        editComments.setText(model.getProductComment());
-        // TODO: 2022/01/31 ImagePath -> file -> bitmap -> 反映
-//        imagePath = model.getProductImagePath();
-      }
-    }
-  }
-
   /// AppToolBarの作成
   private void buildAppTopBar() {
     mToolbar.setTitle("");
     setSupportActionBar(mToolbar);
   }
-
   /// 各ListenerのSet
   private void setListener() {
     /// StartActivityForResult
@@ -161,8 +115,7 @@ public class AddDataActivity extends AppCompatActivity {
               if (data != null) {
                 productImagePath = data.getStringExtra("imagePath");
                 String tempPath = data.getStringExtra("imageTempPath");
-                imageViewPhoto.setVisibility(View.VISIBLE);
-                imageViewPhoto.setImageBitmap(PictureIO.outputPicture(tempPath));
+                setPhotoImage(tempPath);
               }
             }
     );
@@ -185,18 +138,63 @@ public class AddDataActivity extends AppCompatActivity {
     /// SegmentedControl
     segmentedControl.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
       if (checkedId == R.id.button_curtain) {
-        segmentedControl.check(R.id.button_curtain);
-        segmentedControl.uncheck(R.id.button_rug);
-        productCategory = getString(R.string.add_segment_first_item);
+        checkSegmentControl(true);
       } else if (checkedId == R.id.button_rug) {
-        segmentedControl.check(R.id.button_rug);
-        segmentedControl.uncheck(R.id.button_curtain);
-        productCategory = getString(R.string.add_segment_second_item);
+        checkSegmentControl(false);
       }
     });
     editLocation.setOnKeyListener(this::doCloseKeyboard);
     editWidthSize.setOnKeyListener(this::doCloseKeyboard);
     editHeightSize.setOnKeyListener(this::doCloseKeyboard);
+  }
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent ev) {
+    if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+      View view = getCurrentFocus();
+      if (view instanceof EditText) {
+        Rect outRect = new Rect();
+        view.getGlobalVisibleRect(outRect);
+        if (!outRect.contains((int) ev.getRawX(), (int) ev.getRawY())) {
+          view.clearFocus();
+          mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+      }
+    }
+    return super.dispatchTouchEvent(ev);
+  }
+
+  private void setTransitionName() {
+    mIntent = getIntent();
+    transitionName = mIntent.getStringExtra(DetailActivity.EXTRA_TRANSITION_NAME);
+    if (transitionName.equals("Detail")){
+      pittanProductDataModelArrayList = (ArrayList<PittanProductDataModel>) mIntent.getSerializableExtra(DetailActivity.EXTRA_MODEL);
+      setDetailData(pittanProductDataModelArrayList);
+    } else if (transitionName.equals("Object")){
+      productImagePath = mIntent.getStringExtra("imagePath");
+      String tempPath = mIntent.getStringExtra("imageTempPath");
+      photoBitmap = PictureIO.outputPicture(tempPath);
+      imageViewPhoto.setVisibility(View.VISIBLE);
+      imageViewPhoto.setImageBitmap(photoBitmap);
+    }
+  }
+
+  private void setDetailData(ArrayList<PittanProductDataModel> models) {
+    if (models != null){
+      for (PittanProductDataModel model: models) {
+        editLocation.setText(model.getPlaceName());
+        editHeightSize.setText(String.valueOf(model.getProductHeight()));
+        editWidthSize.setText(String.valueOf(model.getProductWidth()));
+        editComments.setText(model.getProductComment());
+        if (model.getProductCategory().equals("カーテン") || model.getProductCategory().equals("")){
+          checkSegmentControl(true);
+        } else if (model.getProductCategory().equals("ラグ")){
+          checkSegmentControl(false);
+        }
+        String imagePath = model.getProductImagePath();
+        setPhotoImage(imagePath);
+      }
+    }
   }
 
   private boolean doCloseKeyboard(View view, int keyCode, KeyEvent keyEvent) {
@@ -224,6 +222,11 @@ public class AddDataActivity extends AppCompatActivity {
       }
       if (editLocation.getText().toString().length() != 0) {
         insertPittanDB();
+        try {
+          PictureIO.saveBitmapToDisk(photoBitmap,productImagePath);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
         mIntent = new Intent(this, HomeActivity.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -261,5 +264,22 @@ public class AddDataActivity extends AppCompatActivity {
     } catch (RuntimeException runtimeException) {
       runtimeException.printStackTrace();
     }
+  }
+
+  private void checkSegmentControl(boolean isCheckSegmentControl) {
+    if (isCheckSegmentControl){
+      segmentedControl.check(R.id.button_curtain);
+      segmentedControl.uncheck(R.id.button_rug);
+      productCategory = getString(R.string.add_segment_first_item);
+    } else {
+      segmentedControl.check(R.id.button_rug);
+      segmentedControl.uncheck(R.id.button_curtain);
+      productCategory = getString(R.string.add_segment_second_item);
+    }
+  }
+
+  private void setPhotoImage(String imagePath) {
+    imageViewPhoto.setVisibility(View.VISIBLE);
+    imageViewPhoto.setImageBitmap(PictureIO.outputPicture(imagePath));
   }
 }

@@ -3,7 +3,6 @@ package jp.ac.jec.cm0120.pittan.ui.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.database.PittanSQLiteOpenHelper;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.home.HomeActivity;
+import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -34,7 +34,7 @@ public class DetailActivity extends AppCompatActivity {
   // Component
   private MaterialToolbar mToolbar;
   private CardView cardView;
-  private ImageView imageView;
+  private ImageView imageViewPhoto;
   private TextView textViewPlaceTitle;
   private TextView textViewItemCategory;
   private TextView textViewItemHeight;
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
 
     mToolbar = findViewById(R.id.detail_top_bar);
     cardView = findViewById(R.id.detail_card_view_item_photo_frame);
-    imageView = findViewById(R.id.detail_image_view_item_photo);
+    imageViewPhoto = findViewById(R.id.detail_image_view_item_photo);
     textViewPlaceTitle = findViewById(R.id.detail_text_view_item_place_title);
     textViewItemCategory = findViewById(R.id.detail_text_view_item_category);
     textViewItemHeight = findViewById(R.id.detail_text_view_item_height);
@@ -94,8 +94,8 @@ public class DetailActivity extends AppCompatActivity {
         textViewItemHeight.setText(itemHeight);
         textViewItemWidth.setText(itemWidth);
         textViewComments.setText(item.getProductComment());
-        // TODO: 2022/01/31 ImagePath -> file -> bitmap -> 反映
         imagePath = item.getProductImagePath();
+        imageViewPhoto.setImageBitmap(PictureIO.outputPicture(imagePath));
       }
 
     } else {

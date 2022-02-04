@@ -391,28 +391,32 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     AlertDialog dialog = builder.show();
     Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
     positiveButton.setOnClickListener(view -> {
-      if (transitionNum == 0){
-        mIntent = new Intent(this, AddDataActivity.class);
-        mIntent.putExtra("imageTempPath", TMP_FILE);
-        mIntent.putExtra("imagePath", filename);
-        mIntent.putExtra(EXTRA_TRANSITION_NAME,"Object");
-        startActivity(mIntent);
-        dialog.dismiss();
-      } else if (transitionNum == 1) {
-        mIntent = getIntent();
-        mIntent.putExtra("imageTempPath", TMP_FILE);
-        mIntent.putExtra("imagePath", filename);
-        setResult(RESULT_OK, mIntent);
-        dialog.dismiss();
-        finish();
-      } else {
-        Log.i(TAG, "You transitioned from an unexpected screen.");
-      }
+      judgeOriginalTransition(transitionNum,dialog);
     });
     Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
     negativeButton.setOnClickListener(view -> {
       dialog.dismiss();
      viewPhotoPreview.setVisibility(View.INVISIBLE);
     });
+  }
+
+  private void judgeOriginalTransition(int transitionNum, AlertDialog dialog) {
+    if (transitionNum == 0){
+      mIntent = new Intent(this, AddDataActivity.class);
+      mIntent.putExtra("imageTempPath", TMP_FILE);
+      mIntent.putExtra("imagePath", filename);
+      mIntent.putExtra(EXTRA_TRANSITION_NAME,"Object");
+      startActivity(mIntent);
+      dialog.dismiss();
+    } else if (transitionNum == 1) {
+      mIntent = getIntent();
+      mIntent.putExtra("imageTempPath", TMP_FILE);
+      mIntent.putExtra("imagePath", filename);
+      setResult(RESULT_OK, mIntent);
+      dialog.dismiss();
+      finish();
+    } else {
+      Log.i(TAG, "You transitioned from an unexpected screen.");
+    }
   }
 }

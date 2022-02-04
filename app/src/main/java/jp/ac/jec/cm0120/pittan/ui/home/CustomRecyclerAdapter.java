@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
+import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
 
@@ -65,6 +67,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     holder.textViewDataHeight.setText(String.valueOf(model.getProductHeight()) + "mm");
     holder.textViewDataWidth.setText(String.valueOf(model.getProductWidth()) + "mm");
     holder.textViewCategory.setText(model.getProductCategory());
+    holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
   }
 
   @Override
@@ -78,6 +81,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     private final TextView textViewDataHeight;
     private final TextView textViewDataWidth;
     private final TextView textViewCategory;
+    private final ImageView imageViewPhoto;
 
     public CustomViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
       super(itemView);
@@ -85,6 +89,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
       textViewDataHeight = itemView.findViewById(R.id.text_view_data_height);
       textViewDataWidth = itemView.findViewById(R.id.text_view_data_width);
       textViewCategory = itemView.findViewById(R.id.text_view_data_category);
+      imageViewPhoto = itemView.findViewById(R.id.home_image_view_data_photo);
 
       itemView.setOnClickListener(view -> {
         if (listener != null) {
