@@ -25,10 +25,6 @@ import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class DetailActivity extends AppCompatActivity {
-
-  /// Constants
-  private static final String TAG = "###";
-
   // Component
   private MaterialToolbar mToolbar;
   private ImageView imageViewPhoto;

@@ -249,7 +249,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
               }
             })
             .exceptionally(throwable -> {
-              Toast.makeText(ObjectInstallationActivity.this, "Unable to load model", Toast.LENGTH_LONG).show();
+              Toast.makeText(this, "Unable to load model", Toast.LENGTH_LONG).show();
               return null;
             });
   }
@@ -290,7 +290,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     } else if (kind == textureNum) {
       path = String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,name);
     } else {
-      AppLog.info( "Not the right kind.");
+      AppLog.info("Not the right kind.");
     }
     return path;
   }
@@ -380,8 +380,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       setResult(RESULT_OK, mIntent);
       dialog.dismiss();
       finish();
-    } else {
-      AppLog.info("You transitioned from an unexpected screen.");
     }
   }
 }
