@@ -8,13 +8,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.Objects;
 
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ProductChangeSizeFragment;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 
 public class BottomMenuAdapter extends FragmentStateAdapter {
-
-  /// Constants
-  public static final int FRAGMENT_PAGE_NUM = 2;
 
   public BottomMenuAdapter(FragmentActivity activity) {
     super(activity);
@@ -33,7 +31,5 @@ public class BottomMenuAdapter extends FragmentStateAdapter {
   }
 
   @Override
-  public int getItemCount() {
-    return FRAGMENT_PAGE_NUM;
-  }
+  public int getItemCount() { return AppConstant.Objection.FRAGMENT_PAGE_NUM; }
 }

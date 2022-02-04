@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppConstant;
 
 public class ProductMenuFragment extends Fragment {
 
@@ -27,10 +28,6 @@ public class ProductMenuFragment extends Fragment {
   public interface OnClickRecyclerViewListener {
     void onClickRecyclerItem(String textureName);
   }
-
-  /// Constants
-  private static final String FILE_PATH_FORMAT_PATTERN = "textures/%s";
-  private static final String ASSETS_FILE_NAME = "textures";
 
   /// Components
   private RecyclerView productMenuRecyclerView;
@@ -87,7 +84,7 @@ public class ProductMenuFragment extends Fragment {
     AssetManager assets = getResources().getAssets();
     InputStream inputStream = null;
     try {
-      inputStream = assets.open(String.format(FILE_PATH_FORMAT_PATTERN,textureName));
+      inputStream = assets.open(String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,textureName));
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -100,7 +97,7 @@ public class ProductMenuFragment extends Fragment {
     AssetManager assetManager = getResources().getAssets();
     String[] fileNames;
     try {
-      fileNames = assetManager.list(ASSETS_FILE_NAME);
+      fileNames = assetManager.list(AppConstant.Objection.ASSETS_FILE_NAME);
       nameArrayList.addAll(Arrays.asList(fileNames));
     } catch (IOException e) {
       e.printStackTrace();
