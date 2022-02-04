@@ -189,9 +189,9 @@ public class AddDataActivity extends AppCompatActivity {
         editHeightSize.setText(String.valueOf(model.getProductHeight()));
         editWidthSize.setText(String.valueOf(model.getProductWidth()));
         editComments.setText(model.getProductComment());
-        if (model.getProductCategory().equals("カーテン") || model.getProductCategory().equals("")){
+        if (model.getProductCategory().equals(getString(R.string.add_segment_first_item)) || model.getProductCategory().equals("")){
           checkSegmentControl(true);
-        } else if (model.getProductCategory().equals("ラグ")){
+        } else if (model.getProductCategory().equals(getString(R.string.add_segment_second_item))){
           checkSegmentControl(false);
         }
         String imagePath = model.getProductImagePath();
