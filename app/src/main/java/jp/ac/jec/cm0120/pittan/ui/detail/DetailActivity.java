@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -33,7 +32,6 @@ public class DetailActivity extends AppCompatActivity {
 
   // Component
   private MaterialToolbar mToolbar;
-  private CardView cardView;
   private ImageView imageViewPhoto;
   private TextView textViewPlaceTitle;
   private TextView textViewItemCategory;
@@ -44,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
   /// Fields
   private Intent mIntent;
   private int placeID;
-  private String imagePath;
   private ArrayList<PittanProductDataModel> selectItem = new ArrayList<>();
 
   @Override
@@ -60,7 +57,6 @@ public class DetailActivity extends AppCompatActivity {
   private void initialize() {
 
     mToolbar = findViewById(R.id.detail_top_bar);
-    cardView = findViewById(R.id.detail_card_view_item_photo_frame);
     imageViewPhoto = findViewById(R.id.detail_image_view_item_photo);
     textViewPlaceTitle = findViewById(R.id.detail_text_view_item_place_title);
     textViewItemCategory = findViewById(R.id.detail_text_view_item_category);
@@ -88,14 +84,15 @@ public class DetailActivity extends AppCompatActivity {
       for (PittanProductDataModel item : selectItem) {
         String itemHeight = item.getProductHeight() + getResources().getString(R.string.millimetre);
         String itemWidth = item.getProductWidth() + getResources().getString(R.string.millimetre);
+        String photoImagePath = item.getProductImagePath();
 
         textViewPlaceTitle.setText(item.getPlaceName());
         textViewItemCategory.setText(item.getProductCategory());
         textViewItemHeight.setText(itemHeight);
         textViewItemWidth.setText(itemWidth);
         textViewComments.setText(item.getProductComment());
-        imagePath = item.getProductImagePath();
-        imageViewPhoto.setImageBitmap(PictureIO.outputPicture(imagePath));
+
+        imageViewPhoto.setImageBitmap(PictureIO.outputPicture(photoImagePath));
       }
 
     } else {

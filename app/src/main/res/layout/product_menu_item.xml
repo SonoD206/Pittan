@@ -16,6 +16,6 @@
       android:layout_height="match_parent"
       android:adjustViewBounds="true"
       android:layout_margin="4dp"
-      android:contentDescription="3Dモデルのイメージ画像"/>
+      android:contentDescription="@string/product_menu_image_view_description"/>
 
 </jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView>

@@ -10,7 +10,7 @@
       android:layout_width="match_parent"
       android:layout_height="0dp"
       android:layout_weight="6"
-      android:contentDescription="撮影した写真をプレビューする"
+      android:contentDescription="@string/preview_image_button_photo_description"
       android:padding="20dp"
       android:scaleType="fitXY"/>
 
@@ -24,7 +24,7 @@
       android:minWidth="160dp"
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
-      android:text="保存"
+      android:text="@string/add_menu_item_title"
       android:textAlignment="center"
       android:textSize="28sp"
       android:textStyle="bold" />

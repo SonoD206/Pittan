@@ -42,7 +42,8 @@
           android:layout_weight="1"
           android:background="@color/white"
           android:minHeight="120dp"
-          android:orientation="horizontal" />
+          android:orientation="horizontal"
+          tools:ignore="NestedWeights" />
 
       <ImageButton
           android:id="@+id/image_button_shutter"
@@ -52,7 +53,7 @@
           android:layout_marginBottom="32dp"
           android:background="@null"
           android:src="@drawable/icon_shutter_button"
-          android:contentDescription="3Dモデルを含んだ写真を撮るボタン"/>
+          android:contentDescription="@string/object_installation_image_button_shutter_description"/>
     </LinearLayout>
 
 
@@ -63,7 +64,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:background="@null"
-      android:contentDescription="前の画面に戻る"
+      android:contentDescription="@string/object_installation_image_button_close_description"
       android:padding="16dp"
       android:src="@drawable/icon_close" />
 
@@ -73,7 +74,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="end"
       android:background="@null"
-      android:contentDescription="前の画面に戻る"
+      android:contentDescription="@string/object_installation_image_button_delete_description"
       android:padding="16dp"
       android:src="@drawable/icon_delete_object_installation" />
 

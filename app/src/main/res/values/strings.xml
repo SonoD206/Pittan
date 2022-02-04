@@ -33,7 +33,12 @@
   <string name="detail_menu_item_description">表示しているデータの編集画面に遷移する</string>
   <string name="detail_size_container_height_title">縦幅</string>
   <string name="detail_size_container_width_title">横幅</string>
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <!-- object installation -->
+  <string name="object_installation_image_button_shutter_description">3Dモデルを含んだ写真を撮るボタン</string>
+  <string name="object_installation_image_button_close_description">前の画面に戻る</string>
+  <string name="object_installation_image_button_delete_description">表示中の3DModelを消す</string>
+  <string name="preview_image_button_photo_description">撮影した写真をプレビューする</string>
+  <string name="product_menu_image_view_description">3Dモデルのイメージ画像</string>
+
 
 </resources>

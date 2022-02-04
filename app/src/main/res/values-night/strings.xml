@@ -32,4 +32,10 @@
   <string name="detail_size_container_height_title">縦幅</string>
   <string name="detail_size_container_width_title">横幅</string>
   <string name="home_size_height_title">縦幅：</string>
+  <!-- object installation-->
+  <string name="object_installation_image_button_shutter_description">3Dモデルを含んだ写真を撮るボタン</string>
+  <string name="object_installation_image_button_close_description">前の画面に戻る</string>
+  <string name="object_installation_image_button_delete_description">前の画面に戻る</string>
+  <string name="preview_image_button_photo_description">撮影した写真をプレビューする</string>
+  <string name="product_menu_image_view_description">3Dモデルのイメージ画像</string>
 </resources>
