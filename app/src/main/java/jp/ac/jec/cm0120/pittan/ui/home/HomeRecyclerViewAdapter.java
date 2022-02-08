@@ -18,16 +18,9 @@ import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.database.PittanProductDataModel;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAdapter.CustomViewHolder> {
+public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.CustomViewHolder> {
 
-  /// Fields
-  private final Context context;
-  private final ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
-  private int mRecentlyDeletedItemPosition;
-  private OnItemClickListener onItemClickListener;
-  private PittanProductDataModel mRecentlyDeletedItem;
-  private CustomRecyclerAdapter.SnackbarListener snackbarListener;
-
+  /// interface
   public interface OnItemClickListener {
     void onItemClick(int position);
   }
@@ -35,6 +28,15 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
   public interface SnackbarListener {
     void showUndoSnackbar(int position, String placeName, String placeID);
   }
+
+
+  /// Fields
+  private final Context context;
+  private final ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
+  private int mRecentlyDeletedItemPosition;
+  private OnItemClickListener onItemClickListener;
+  private PittanProductDataModel mRecentlyDeletedItem;
+  private HomeRecyclerViewAdapter.SnackbarListener snackbarListener;
 
   public Context getContext() {
     return context;
@@ -48,7 +50,7 @@ public class CustomRecyclerAdapter extends RecyclerView.Adapter<CustomRecyclerAd
     this.snackbarListener = snackbarListener;
   }
 
-  public CustomRecyclerAdapter(ArrayList<PittanProductDataModel> pittanProductDataModelArrayList, Context context) {
+  public HomeRecyclerViewAdapter(ArrayList<PittanProductDataModel> pittanProductDataModelArrayList, Context context) {
     this.pittanProductDataModelArrayList = pittanProductDataModelArrayList;
     this.context = context;
   }

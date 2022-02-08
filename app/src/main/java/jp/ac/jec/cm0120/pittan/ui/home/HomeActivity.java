@@ -33,13 +33,13 @@ public class HomeActivity extends AppCompatActivity {
   private Toolbar mToolbar;
   private FloatingActionButton fab;
   private LinearLayout centralLinear;
-  private RecyclerView mRecyclerView;
+  private RecyclerView homeRecyclerView;
 
   /// Fields
   private Intent mIntent;
   private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
   private PittanSQLiteOpenHelper helper;
-  private CustomRecyclerAdapter mAdapter;
+  private HomeRecyclerViewAdapter mAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
 
   private void initialize() {
     mToolbar = findViewById(R.id.toolbar);
-    mRecyclerView = findViewById(R.id.recycler_view_home);
+    homeRecyclerView = findViewById(R.id.recycler_view_home);
     centralLinear = findViewById(R.id.linear_layout_central_woman);
     fab = findViewById(R.id.fab);
   }
@@ -70,10 +70,10 @@ public class HomeActivity extends AppCompatActivity {
 
 //　DBにデータがあるかないか
     if (pittanProductDataModelArrayList.size() > 0) {
-      mRecyclerView.setVisibility(View.VISIBLE);
+      homeRecyclerView.setVisibility(View.VISIBLE);
       centralLinear.setVisibility(View.GONE);
     } else {
-      mRecyclerView.setVisibility(View.GONE);
+      homeRecyclerView.setVisibility(View.GONE);
       centralLinear.setVisibility(View.VISIBLE);
     }
   }
@@ -96,11 +96,11 @@ public class HomeActivity extends AppCompatActivity {
 
   /// RecyclerViewの作成
   private void buildRecyclerView() {
-    mRecyclerView.setHasFixedSize(true);
+    homeRecyclerView.setHasFixedSize(true);
     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-    mAdapter = new CustomRecyclerAdapter(pittanProductDataModelArrayList, this);
-    mRecyclerView.setLayoutManager(mLayoutManager);
-    mRecyclerView.setAdapter(mAdapter);
+    mAdapter = new HomeRecyclerViewAdapter(pittanProductDataModelArrayList, this);
+    homeRecyclerView.setLayoutManager(mLayoutManager);
+    homeRecyclerView.setAdapter(mAdapter);
 
     mAdapter.setOnItemClickListener(position -> {
       int currentPlaceID = pittanProductDataModelArrayList.get(position).getPlaceID();
@@ -125,10 +125,10 @@ public class HomeActivity extends AppCompatActivity {
             helper.isUpdatePlaceTable(placeID);
           }
           if (pittanProductDataModelArrayList.size() > 0) {
-            mRecyclerView.setVisibility(View.VISIBLE);
+            homeRecyclerView.setVisibility(View.VISIBLE);
             centralLinear.setVisibility(View.GONE);
           } else {
-            mRecyclerView.setVisibility(View.GONE);
+            homeRecyclerView.setVisibility(View.GONE);
             centralLinear.setVisibility(View.VISIBLE);
           }
         }
@@ -142,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
     });
 
     ItemTouchHelper touchHelper = new ItemTouchHelper(new CustomSwipeHelper(mAdapter));
-    touchHelper.attachToRecyclerView(mRecyclerView);
+    touchHelper.attachToRecyclerView(homeRecyclerView);
   }
 
   //　FloatingActionButtonを押した時の処理

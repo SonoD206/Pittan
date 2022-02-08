@@ -45,6 +45,9 @@
   <string name="object_installation_tab_title_first">設置</string>
   <string name="object_installation_tab_title_second">サイズ</string>
   <string name="object_installation_alert_title">窓枠のサイズ</string>
+  <!-- setting -->
+  <string name="setting_license">ライセンス表示</string>
+  <string name="setting">設定</string>
 
 
 </resources>

@@ -16,11 +16,11 @@ import jp.ac.jec.cm0120.pittan.R;
 public class CustomSwipeHelper extends ItemTouchHelper.SimpleCallback {
 
   /// Fields
-  private final CustomRecyclerAdapter mAdapter;
+  private final HomeRecyclerViewAdapter mAdapter;
   private final Drawable icon;
   private final ColorDrawable swipeBackGround;
 
-  CustomSwipeHelper(CustomRecyclerAdapter mAdapter) {
+  CustomSwipeHelper(HomeRecyclerViewAdapter mAdapter) {
     super(0, ItemTouchHelper.LEFT);
     this.mAdapter = mAdapter;
     this.icon = ContextCompat.getDrawable(mAdapter.getContext(), R.drawable.icon_delete);

@@ -3,13 +3,11 @@ package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
@@ -22,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ServiceCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
@@ -36,8 +35,6 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
-import com.google.ar.sceneform.Camera;
-import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.Sceneform;
 import com.google.ar.sceneform.math.Vector3;
@@ -55,9 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
@@ -144,9 +139,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonClose.setOnClickListener(view -> finish());
 
-    imageButtonDelete.setOnClickListener(view -> {
-      delete3DModel();
-    });
+    imageButtonDelete.setOnClickListener(view -> delete3DModel());
 
     buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
@@ -161,7 +154,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         float tmpValue = seekBar.getProgress();
         float modelChangeValue = tmpValue / 10;
-        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x, modelChangeValue, anchorNode.getLocalPosition().z);
+        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x,anchorNode.getLocalPosition().y + modelChangeValue, anchorNode.getLocalPosition().z);
         anchorNode.setLocalPosition(finalScale);
         mModel.setLocalPosition(finalScale);
       }
@@ -390,7 +383,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
     positiveButton.setOnClickListener(view -> judgeOriginalTransition(transitionNum, dialog));
-
     Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
     negativeButton.setOnClickListener(view -> {
       dialog.dismiss();
@@ -422,14 +414,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     mModel = null;
   }
 
-
   @Override
   public void changeSeekbar(float modelChangeValue, String kindName) {
     if (mModel == null) {
       return;
     }
     if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)){
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x + modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+      Vector3 finalScale = new Vector3(modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
     } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT)) {
