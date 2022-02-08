@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import com.google.android.gms.oss.licenses.OssLicensesActivity;
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 
 import java.util.ArrayList;
 
 import jp.ac.jec.cm0120.pittan.R;
-import jp.ac.jec.cm0120.pittan.app.AppLog;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -53,7 +56,9 @@ public class SettingActivity extends AppCompatActivity {
     settingRecyclerView.setAdapter(mAdapter);
 
     mAdapter.setOnItemClickListener(position -> {
-      AppLog.info("kita");
+      Intent intent = new Intent(this, OssLicensesMenuActivity.class);
+      OssLicensesMenuActivity.setActivityTitle(getString(R.string.oss_license_title));
+      startActivity(intent);
     });
   }
 

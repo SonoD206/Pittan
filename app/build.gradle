@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.android.gms.oss-licenses-plugin'
 }
 
 android {
@@ -45,4 +46,6 @@ dependencies {
     implementation 'com.google.ar:core:1.28.0'
     implementation 'com.gorisse.thomas.sceneform:sceneform:1.20.3'
 
+    // OSS
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 }
