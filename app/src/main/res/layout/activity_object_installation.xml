@@ -10,22 +10,22 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-    android:orientation="vertical"
+      android:orientation="vertical"
       android:weightSum="3">
 
+    <!-- Bottom Menu -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/arFragment"
         android:name="com.google.ar.sceneform.ux.ArFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"/>
+        android:layout_weight="2" />
 
-    <!-- Bottom Menu -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
+        android:layout_weight="1"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -52,8 +52,8 @@
           android:layout_gravity="center"
           android:layout_marginBottom="32dp"
           android:background="@null"
-          android:src="@drawable/icon_shutter_button"
-          android:contentDescription="@string/object_installation_image_button_shutter_description"/>
+          android:contentDescription="@string/object_installation_image_button_shutter_description"
+          android:src="@drawable/icon_shutter_button" />
     </LinearLayout>
 
 
@@ -78,11 +78,22 @@
       android:padding="16dp"
       android:src="@drawable/icon_delete_object_installation" />
 
+  <SeekBar
+      android:id="@+id/seekbar_model_height"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="end"
+      android:layout_marginTop="240dp"
+      android:layout_marginEnd="-130dp"
+      android:minWidth="300dp"
+      android:progressDrawable="@drawable/custom_seekbar"
+      android:rotation="270" />
 
-  <include layout="@layout/layout_preview"
-    android:id="@+id/view_preview"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-      android:visibility="invisible"/>
+  <include
+      android:id="@+id/view_preview"
+      layout="@layout/layout_preview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="invisible" />
 
 </FrameLayout>

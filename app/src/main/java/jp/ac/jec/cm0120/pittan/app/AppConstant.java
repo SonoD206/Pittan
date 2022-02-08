@@ -40,5 +40,7 @@ public final class AppConstant {
     public static final String TEXTURES_PATH_FORMAT_PATTERN = "textures/%s";
     public static final String ASSETS_FILE_NAME = "textures";
     public static final String DATA_SIZE_FORMAT = "%smm";
+    public static final String CHANGE_HEIGHT = "height";
+    public static final String CHANGE_WIDTH = "width";
   }
 }

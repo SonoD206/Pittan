@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +35,8 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.Camera;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.Sceneform;
 import com.google.ar.sceneform.math.Vector3;
@@ -50,16 +54,19 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ProductChangeSizeFragment;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener {
+public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ProductChangeSizeFragment.ChangeSeekbarListener {
 
   /// Components
   private TabLayout mTabLayout;
@@ -71,6 +78,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private View viewPhotoPreview;
   private Button buttonPhotoSave;
   private ImageView imagePhotoPreview;
+  private SeekBar seekBarModelHeight;
 
   /// Fields
   private String userPhotoFileName;
@@ -105,6 +113,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     viewPhotoPreview = findViewById(R.id.view_preview);
     buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
+    seekBarModelHeight = findViewById(R.id.seekbar_model_height);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
     setTransitionNum();
@@ -117,6 +126,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
 
     loadModels(getPath(AppConstant.Objection.MODEL_NUM, AppConstant.Objection.FIRST_MODEL));
+    buildSeekbarModelHeight();
+  }
+
+  private void buildSeekbarModelHeight() {
+    seekBarModelHeight.setMax(100);
   }
 
   private void setTransitionNum() {
@@ -129,8 +143,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonClose.setOnClickListener(view -> finish());
 
-    imageButtonDelete.setOnClickListener(view -> {
-    });
+    imageButtonDelete.setOnClickListener(view -> { });
 
     buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
@@ -138,6 +151,23 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       viewPhotoPreview.setVisibility(View.VISIBLE);
       takePhoto();
       new Handler().postDelayed(() -> imagePhotoPreview.setImageBitmap(mPreviewBitmap), 1000);
+    });
+
+    seekBarModelHeight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        float tmpValue = seekBar.getProgress();
+        float modelChangeValue = tmpValue / 10;
+        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x, modelChangeValue, anchorNode.getLocalPosition().z);
+        anchorNode.setLocalPosition(finalScale);
+        mModel.setLocalPosition(finalScale);
+      }
+
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) { }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) { }
     });
 
   }
@@ -380,6 +410,25 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       setResult(RESULT_OK, mIntent);
       dialog.dismiss();
       finish();
+    }
+  }
+
+  @Override
+  public void changeSeekbar(float modelChangeValue, String kindName) {
+    if (mModel == null) {
+      return;
+    }
+
+    Log.i(AppLog.TAG, "changeSeekbar:"  + modelChangeValue);
+
+    if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)){
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x+modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+      anchorNode.setLocalScale(finalScale);
+      mModel.setLocalScale(finalScale);
+    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT)){
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y + modelChangeValue, anchorNode.getLocalScale().z);
+      anchorNode.setLocalScale(finalScale);
+      mModel.setLocalScale(finalScale);
     }
   }
 }
