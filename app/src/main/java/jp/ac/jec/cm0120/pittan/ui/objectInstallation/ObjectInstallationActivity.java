@@ -3,6 +3,7 @@ package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -143,7 +144,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonClose.setOnClickListener(view -> finish());
 
-    imageButtonDelete.setOnClickListener(view -> { });
+    imageButtonDelete.setOnClickListener(view -> {
+      delete3DModel();
+    });
 
     buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
@@ -171,7 +174,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
   }
-
   private void buildViewPager2() {
     /// Fields
     BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
@@ -330,6 +332,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   public void onClickRecyclerItem(String textureName) {
     String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
     loadTexture(path);
+    delete3DModel();
   }
 
   ///写真を撮る
@@ -413,19 +416,23 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
   }
 
+  private void delete3DModel() {
+    anchorNode.setAnchor(null);
+    anchorNode.removeChild(mModel);
+    mModel = null;
+  }
+
+
   @Override
   public void changeSeekbar(float modelChangeValue, String kindName) {
     if (mModel == null) {
       return;
     }
-
-    Log.i(AppLog.TAG, "changeSeekbar:"  + modelChangeValue);
-
     if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)){
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x+modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x + modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
-    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT)){
+    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT)) {
       Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y + modelChangeValue, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
