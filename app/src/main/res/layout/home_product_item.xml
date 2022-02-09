@@ -14,14 +14,14 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal">
+      android:orientation="horizontal"
+      android:weightSum="1">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:layout_weight="0.4"
-        android:visibility="visible"
         app:cardCornerRadius="4dp">
 
       <ImageView
@@ -30,20 +30,21 @@
           android:layout_height="wrap_content"
           android:background="@drawable/corner_radius_photo_input"
           android:contentDescription="@string/card_image_description"
-          android:scaleType="fitXY" />
+          android:scaleType="fitXY"
+          android:adjustViewBounds="true"/>
     </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.6"
         android:orientation="vertical">
 
       <TextView
           android:id="@+id/text_view_data_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="8dp"
+          android:layout_marginTop="16dp"
           android:padding="4dp"
           android:textAlignment="viewStart"
           android:textSize="28sp"
@@ -53,7 +54,8 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          android:padding="4dp">
+          android:padding="4dp"
+          android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="0dp"
@@ -104,7 +106,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="end"
-          android:layout_marginTop="28dp"
+          android:layout_marginTop="20dp"
           android:layout_marginEnd="8dp"
           android:background="@drawable/corner_radius_tag"
           android:padding="8dp"

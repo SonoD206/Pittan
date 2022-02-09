@@ -1,40 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    android:orientation="vertical"
     android:layout_gravity="center"
-    android:weightSum="3">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-  <androidx.cardview.widget.CardView
+  <FrameLayout
       android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="2"
-      app:cardCornerRadius="8dp"
-      android:layout_margin="24dp">
-    <ImageView
-        android:id="@+id/image_view_photo"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="46dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/object_installation_preview_loading"
+        android:textSize="28sp"/>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/corner_radius_photo_input"
-        android:contentDescription="@string/preview_image_button_photo_description"
-        android:scaleType="fitXY" />
-  </androidx.cardview.widget.CardView>
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:cardCornerRadius="8dp">
 
-  <View
-      android:layout_width="match_parent"
-      android:layout_height="0dp"
-      android:layout_weight="0.2" />
+      <ImageView
+          android:id="@+id/image_view_photo"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:adjustViewBounds="true"
+          android:background="@drawable/corner_radius_photo_input"
+          android:contentDescription="@string/preview_image_button_photo_description"
+          android:scaleType="fitXY" />
+    </androidx.cardview.widget.CardView>
+
+
+  </FrameLayout>
 
   <Button
       android:id="@+id/button_save_photo"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:layout_marginBottom="20dp"
-      android:layout_weight="0.1"
+      android:layout_marginTop="16dp"
       android:minWidth="160dp"
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
@@ -42,4 +52,5 @@
       android:textAlignment="center"
       android:textSize="28sp"
       android:textStyle="bold" />
+
 </LinearLayout>

@@ -49,6 +49,7 @@
   <!-- setting -->
   <string name="setting_license">ライセンス表示</string>
   <string name="setting">設定</string>
+  <string name="object_installation_preview_loading">Loading...</string>
 
 
 </resources>
