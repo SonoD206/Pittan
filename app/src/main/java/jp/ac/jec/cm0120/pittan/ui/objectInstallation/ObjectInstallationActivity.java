@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ServiceCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
@@ -127,6 +126,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void buildSeekbarModelHeight() {
     seekBarModelHeight.setMax(100);
+    seekBarModelHeight.setVisibility(View.INVISIBLE);
   }
 
   private void setTransitionNum() {
@@ -140,7 +140,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonClose.setOnClickListener(view -> finish());
 
     imageButtonDelete.setOnClickListener(view -> {
-      if (mModel != null){
+      if (mModel != null) {
         delete3DModel();
       }
     });
@@ -156,12 +156,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     seekBarModelHeight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        if (mModel == null){
+        if (mModel == null) {
           return;
         }
         float tmpValue = seekBar.getProgress();
         float modelChangeValue = tmpValue / 10;
-        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x,anchorNode.getLocalPosition().y + modelChangeValue, anchorNode.getLocalPosition().z);
+        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x, anchorNode.getLocalPosition().y + modelChangeValue, anchorNode.getLocalPosition().z);
         anchorNode.setLocalPosition(finalScale);
         mModel.setLocalPosition(finalScale);
       }
@@ -174,6 +174,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
   }
+
   private void buildViewPager2() {
     /// Fields
     BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
@@ -194,6 +195,24 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
               }
             }
     ).attach();
+
+    mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { super.onPageScrolled(position, positionOffset, positionOffsetPixels); }
+
+      @Override
+      public void onPageSelected(int position) { super.onPageSelected(position);
+        AppLog.info( "" + position);
+        if (position == 0){
+          seekBarModelHeight.setVisibility(View.INVISIBLE);
+        } else if (position == 1){
+          seekBarModelHeight.setVisibility(View.VISIBLE);
+        }
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) { super.onPageScrollStateChanged(state); }
+    });
   }
 
   @Override
@@ -318,9 +337,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     final int textureNum = 2;
     String path = "";
     if (kind == modelNum) {
-      path = String.format(AppConstant.Objection.MODELS_PATH_FORMAT_PATTERN,name);
+      path = String.format(AppConstant.Objection.MODELS_PATH_FORMAT_PATTERN, name);
     } else if (kind == textureNum) {
-      path = String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,name);
+      path = String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN, name);
     } else {
       AppLog.info("Not the right kind.");
     }
@@ -330,7 +349,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String textureName) {
-    if (mModel != null){
+    if (mModel != null) {
       delete3DModel();
     }
     String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
@@ -356,7 +375,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       PixelCopy.request(view, mPreviewBitmap, (copyResult) -> {
         if (copyResult == PixelCopy.SUCCESS) {
           try {
-            PictureIO.saveBitmapToDisk(mPreviewBitmap,generateFilename(false));
+            PictureIO.saveBitmapToDisk(mPreviewBitmap, generateFilename(false));
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -375,9 +394,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private String generateFilename(boolean isPhoto) {
     String pathHeader = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator;
     String fileName = pathHeader + AppConstant.Objection.TEMP_PICTURE_NAME;
-    if (isPhoto){
+    if (isPhoto) {
       String date = new SimpleDateFormat(AppConstant.Objection.DATE_FORMAT_PATTERN, java.util.Locale.getDefault()).format(new Date());
-      fileName = pathHeader + String.format(AppConstant.Objection.USER_PICTURE_NAME_FORMAT_PATTERN,date);
+      fileName = pathHeader + String.format(AppConstant.Objection.USER_PICTURE_NAME_FORMAT_PATTERN, date);
     }
     return fileName;
   }
@@ -385,7 +404,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void showAlertDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.object_installation_alert_title))
-            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT,mModelScales[0],mModelScales[1]))
+            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, mModelScales[0], mModelScales[1]))
             .setPositiveButton(getString(R.string.ok), null)
             .setNegativeButton(getString(R.string.cancel), null);
     AlertDialog dialog = builder.show();
@@ -428,7 +447,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     if (mModel == null) {
       return;
     }
-    if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)){
+    if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)) {
       Vector3 finalScale = new Vector3(modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
