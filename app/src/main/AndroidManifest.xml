@@ -14,6 +14,7 @@
 
   <application
       android:allowBackup="true"
+      android:name=".app.LightApplication"
       android:icon="@mipmap/ic_pittan_launcher"
       android:label="@string/app_name"
       android:roundIcon="@mipmap/ic_pittan_launcher_round"
