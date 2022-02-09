@@ -149,6 +149,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonShutter.setOnClickListener(view -> {
       viewPhotoPreview.setVisibility(View.VISIBLE);
+      imageButtonClose.setEnabled(false);
+      imageButtonDelete.setEnabled(false);
       takePhoto();
       new Handler().postDelayed(() -> imagePhotoPreview.setImageBitmap(mPreviewBitmap), 1000);
     });
@@ -415,6 +417,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     negativeButton.setOnClickListener(view -> {
       dialog.dismiss();
       viewPhotoPreview.setVisibility(View.INVISIBLE);
+      imageButtonClose.setEnabled(true);
+      imageButtonDelete.setEnabled(true);
     });
   }
 
