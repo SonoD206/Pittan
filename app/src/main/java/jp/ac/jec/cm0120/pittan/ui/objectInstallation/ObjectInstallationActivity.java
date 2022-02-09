@@ -156,6 +156,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     seekBarModelHeight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        if (mModel == null){
+          return;
+        }
         float tmpValue = seekBar.getProgress();
         float modelChangeValue = tmpValue / 10;
         Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x,anchorNode.getLocalPosition().y + modelChangeValue, anchorNode.getLocalPosition().z);
