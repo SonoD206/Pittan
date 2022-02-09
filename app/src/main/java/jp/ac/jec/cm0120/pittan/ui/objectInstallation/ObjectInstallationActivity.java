@@ -139,7 +139,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonClose.setOnClickListener(view -> finish());
 
-    imageButtonDelete.setOnClickListener(view -> delete3DModel());
+    imageButtonDelete.setOnClickListener(view -> {
+      if (mModel != null){
+        delete3DModel();
+      }
+    });
 
     buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
@@ -323,9 +327,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String textureName) {
+    if (mModel != null){
+      delete3DModel();
+    }
     String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
     loadTexture(path);
-    delete3DModel();
   }
 
   ///写真を撮る
