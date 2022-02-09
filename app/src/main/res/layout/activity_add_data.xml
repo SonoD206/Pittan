@@ -44,18 +44,6 @@
           android:background="@drawable/corner_radius_photo_not_input"
           android:minHeight="182dp">
 
-        <TextView
-            android:id="@+id/text_view_photo_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/add_photo_info"
-            android:textColor="@color/base_color"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:drawableStartCompat="@drawable/icon_camera" />
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
