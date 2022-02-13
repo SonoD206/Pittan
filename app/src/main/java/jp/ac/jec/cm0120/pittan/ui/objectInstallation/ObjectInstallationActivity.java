@@ -63,6 +63,11 @@ import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ProductChangeSizeFragment.ChangeSeekbarListener {
 
+  /// Interface
+  interface SetValueSeekBarListener {
+    void setValueSeekbar(float modelSize);
+  }
+
   /// Components
   private TabLayout mTabLayout;
   private ViewPager2 mViewPager2;
@@ -125,7 +130,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void buildSeekbarModelHeight() {
-    seekBarModelHeight.setMax(100);
     seekBarModelHeight.setVisibility(View.INVISIBLE);
   }
 
@@ -204,7 +208,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
       @Override
       public void onPageSelected(int position) { super.onPageSelected(position);
-        AppLog.info( "" + position);
         if (position == 0){
           seekBarModelHeight.setVisibility(View.INVISIBLE);
         } else if (position == 1){
@@ -249,7 +252,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
 
     ArSceneViewKt.setLightEstimationConfig(arFragment.getArSceneView(), LightEstimationConfig.DISABLED);
-
+//    arFragment.getArSceneView()._mainLight = null;
     /// 垂直面と平面の分岐
     if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
       // Create the Anchor.
@@ -259,8 +262,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
       // Create the transformable model and add it to the anchor;
       mModel = new TransformableNode(arFragment.getTransformationSystem());
-      mModel.getScaleController().setMaxScale(5.0f);
-      mModel.getScaleController().setMinScale(0.01f);
+      mModel.getScaleController().setMaxScale(1.0f);
+      mModel.getScaleController().setMinScale(0.1f);
 
       /// ここを変えたら最初のポジションが変わる
       mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
@@ -394,6 +397,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private String generateFilename(boolean isPhoto) {
+    /* FIXME: 2022/02/11 画像の保存ができない */
     String pathHeader = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator;
     String fileName = pathHeader + AppConstant.Objection.TEMP_PICTURE_NAME;
     if (isPhoto) {

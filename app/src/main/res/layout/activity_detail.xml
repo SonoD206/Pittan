@@ -40,7 +40,6 @@
           android:layout_marginStart="16dp"
           android:layout_marginTop="20dp"
           android:layout_marginEnd="16dp"
-          android:background="@drawable/corner_radius_detail_size_container"
           android:minHeight="182dp">
 
         <TextView
@@ -58,16 +57,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:cardCornerRadius="4dp">
+            app:cardCornerRadius="8dp">
 
           <ImageView
               android:id="@+id/detail_image_view_item_photo"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:adjustViewBounds="true"
-              android:background="@drawable/corner_radius_photo_input"
-              android:contentDescription="@string/add_photo_description"
-              android:src="@drawable/sample_curtain" />
+              android:contentDescription="@string/add_photo_description"/>
         </androidx.cardview.widget.CardView>
       </FrameLayout>
 
