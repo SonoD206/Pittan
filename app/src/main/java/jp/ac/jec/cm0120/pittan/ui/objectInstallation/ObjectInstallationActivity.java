@@ -57,16 +57,12 @@ import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
+import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ChangeSeekbarListener;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ProductChangeSizeFragment;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ProductChangeSizeFragment.ChangeSeekbarListener {
-
-  /// Interface
-  interface SetValueSeekBarListener {
-    void setValueSeekbar(float modelSize);
-  }
+public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener {
 
   /// Components
   private TabLayout mTabLayout;
@@ -79,6 +75,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private Button buttonPhotoSave;
   private ImageView imagePhotoPreview;
   private SeekBar seekBarModelHeight;
+  private ProductChangeSizeFragment fragment;
 
   /// Fields
   private String userPhotoFileName;
@@ -160,23 +157,36 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
     seekBarModelHeight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+      float beforeChangeValue = 0.0f;
+      float modelChangeValue = 0.0f;
+
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (mModel == null) {
           return;
         }
         float tmpValue = seekBar.getProgress();
-        float modelChangeValue = tmpValue / 10;
-        Vector3 finalScale = new Vector3(anchorNode.getLocalPosition().x, anchorNode.getLocalPosition().y + modelChangeValue, anchorNode.getLocalPosition().z);
-        anchorNode.setLocalPosition(finalScale);
-        mModel.setLocalPosition(finalScale);
+        modelChangeValue = tmpValue / 1000;
+        Vector3 finalPosition;
+        if (modelChangeValue > beforeChangeValue) {
+          finalPosition = new Vector3(mModel.getLocalPosition().x, mModel.getLocalPosition().y + modelChangeValue, mModel.getLocalPosition().z);
+        } else {
+          finalPosition = new Vector3(mModel.getLocalPosition().x, mModel.getLocalPosition().y - modelChangeValue, mModel.getLocalPosition().z);
+        }
+        beforeChangeValue = modelChangeValue;
+        anchorNode.setLocalPosition(finalPosition);
+        mModel.setLocalPosition(finalPosition);
       }
 
       @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
 
       @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
+      public void onStopTrackingTouch(SeekBar seekBar) {
+
+      }
     });
 
   }
@@ -204,19 +214,24 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     mViewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
       @Override
-      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { super.onPageScrolled(position, positionOffset, positionOffsetPixels); }
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+      }
 
       @Override
-      public void onPageSelected(int position) { super.onPageSelected(position);
-        if (position == 0){
+      public void onPageSelected(int position) {
+        super.onPageSelected(position);
+        if (position == 0) {
           seekBarModelHeight.setVisibility(View.INVISIBLE);
-        } else if (position == 1){
+        } else if (position == 1) {
           seekBarModelHeight.setVisibility(View.VISIBLE);
         }
       }
 
       @Override
-      public void onPageScrollStateChanged(int state) { super.onPageScrollStateChanged(state); }
+      public void onPageScrollStateChanged(int state) {
+        super.onPageScrollStateChanged(state);
+      }
     });
   }
 
@@ -265,11 +280,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.getScaleController().setMaxScale(1.0f);
       mModel.getScaleController().setMinScale(0.1f);
 
+      mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
+
       /// ここを変えたら最初のポジションが変わる
       mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
 
       /// ここを変えたら最初の大きさが変わる
       mModel.setLocalScale(new Vector3(0.3f, 0.3f, 0.3f));
+
 
       /// モデルのサイズ
       mModelScales[0] = mModel.getLocalScale().x;
@@ -397,7 +415,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private String generateFilename(boolean isPhoto) {
-    /* FIXME: 2022/02/11 画像の保存ができない */
     String pathHeader = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator;
     String fileName = pathHeader + AppConstant.Objection.TEMP_PICTURE_NAME;
     if (isPhoto) {
@@ -410,7 +427,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void showAlertDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.object_installation_alert_title))
-            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, mModelScales[0], mModelScales[1]))
+//            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, mModelScales[0], mModelScales[1]))
+            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, 2089, 898))
             .setPositiveButton(getString(R.string.ok), null)
             .setNegativeButton(getString(R.string.cancel), null);
     AlertDialog dialog = builder.show();
@@ -451,16 +469,25 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   @Override
-  public void changeSeekbar(float modelChangeValue, String kindName) {
+  public void changeSeekbar(float modelChangeValue, float beforeChangeValue, String kindName) {
+
     if (mModel == null) {
       return;
     }
-    if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH)) {
-      Vector3 finalScale = new Vector3(modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+    if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH) && modelChangeValue > beforeChangeValue) {
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x + modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
-    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT)) {
+    } else if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH) && modelChangeValue < beforeChangeValue) {
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x - modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+      anchorNode.setLocalScale(finalScale);
+      mModel.setLocalScale(finalScale);
+    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT) && modelChangeValue > beforeChangeValue) {
       Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y + modelChangeValue, anchorNode.getLocalScale().z);
+      anchorNode.setLocalScale(finalScale);
+      mModel.setLocalScale(finalScale);
+    } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT) && modelChangeValue < beforeChangeValue) {
+      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y - modelChangeValue, anchorNode.getLocalScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
     }

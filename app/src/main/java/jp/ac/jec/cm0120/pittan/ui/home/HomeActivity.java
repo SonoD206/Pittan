@@ -122,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
           super.onDismissed(transientBottomBar, event);
           if (event == DISMISS_EVENT_TIMEOUT || event == DISMISS_EVENT_SWIPE
                   || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_MANUAL) {
-            helper.isUpdatePlaceTable(placeID);
+            helper.isUpdatePlaceDeleteFlag(placeID);
           }
           if (pittanProductDataModelArrayList.size() > 0) {
             homeRecyclerView.setVisibility(View.VISIBLE);

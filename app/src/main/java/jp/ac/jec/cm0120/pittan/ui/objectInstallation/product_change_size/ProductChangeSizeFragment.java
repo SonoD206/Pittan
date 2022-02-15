@@ -16,17 +16,12 @@ import jp.ac.jec.cm0120.pittan.app.AppConstant;
 
 public class ProductChangeSizeFragment extends Fragment {
 
-  /// Interface
-  public interface ChangeSeekbarListener {
-    void changeSeekbar(float size, String kindName);
-  }
-
   /// Components
   private SeekBar seekBarHeight;
   private SeekBar seekBarWidth;
 
   /// Fields
-  private ChangeSeekbarListener mListener;
+  private ChangeSeekbarListener changeSeekbarListener;
 
   public ProductChangeSizeFragment() {}
 
@@ -47,7 +42,7 @@ public class ProductChangeSizeFragment extends Fragment {
   public void onAttach(@NonNull Context context) {
     super.onAttach(context);
     if (context instanceof  ChangeSeekbarListener){
-      mListener = (ChangeSeekbarListener) context;
+      changeSeekbarListener = (ChangeSeekbarListener) context;
     }
   }
 
@@ -60,13 +55,15 @@ public class ProductChangeSizeFragment extends Fragment {
 
   private void setListener() {
     seekBarHeight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      float beforeChangeValue = 0.0f;
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         float tmpValue = seekBar.getProgress();
-        float modelChangeValue = tmpValue / 10;
-        if (mListener != null){
-          mListener.changeSeekbar(modelChangeValue, AppConstant.Objection.CHANGE_HEIGHT);
+        float modelVerticalValue = tmpValue / 100;
+        if (changeSeekbarListener != null){
+          changeSeekbarListener.changeSeekbar(modelVerticalValue,beforeChangeValue,AppConstant.Objection.CHANGE_HEIGHT);
         }
+        beforeChangeValue = modelVerticalValue;
       }
 
       @Override
@@ -78,13 +75,16 @@ public class ProductChangeSizeFragment extends Fragment {
     });
 
     seekBarWidth.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+      float beforeChangeValue = 0.0f;
+
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         float tmpValue = seekBar.getProgress();
-        float modelVerticalValue = tmpValue / 10;
-        if (mListener != null){
-          mListener.changeSeekbar(modelVerticalValue, AppConstant.Objection.CHANGE_WIDTH);
+        float modelHorizontalValue = tmpValue / 100;
+        if (changeSeekbarListener != null){
+          changeSeekbarListener.changeSeekbar(modelHorizontalValue,beforeChangeValue, AppConstant.Objection.CHANGE_WIDTH);
         }
+        beforeChangeValue = modelHorizontalValue;
       }
       @Override
       public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -93,6 +93,13 @@ public class ProductChangeSizeFragment extends Fragment {
       public void onStopTrackingTouch(SeekBar seekBar) {}
 
     });
+  }
+
+  public void setSeekBarHeightValue(float modelHeightValue){
+    seekBarHeight.setMax((int)modelHeightValue);
+  }
+  public void setSeekBarWidthValue(float modelWidthValue){
+    seekBarHeight.setMax((int)modelWidthValue);
   }
 
 }
