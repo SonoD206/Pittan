@@ -49,8 +49,10 @@ public class ProductChangeSizeFragment extends Fragment {
   private void buildSeekbar(View view) {
     seekBarHeight = view.findViewById(R.id.seek_bar_model_vertical);
     seekBarHeight.setMax(10);
+    seekBarHeight.setProgress(0);
     seekBarWidth = view.findViewById(R.id.seek_bar_model_horizontal);
     seekBarWidth.setMax(10);
+    seekBarWidth.setProgress(0);
   }
 
   private void setListener() {
