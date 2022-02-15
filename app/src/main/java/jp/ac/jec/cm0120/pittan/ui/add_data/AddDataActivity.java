@@ -175,6 +175,8 @@ public class AddDataActivity extends AppCompatActivity {
       photoBitmap = PictureIO.outputPicture(tempPath);
       imageViewPhoto.setVisibility(View.VISIBLE);
       imageViewPhoto.setImageBitmap(photoBitmap);
+      editHeightSize.setText(String.valueOf(mIntent.getIntExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT,0)));
+      editWidthSize.setText(String.valueOf(mIntent.getIntExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH,0)));
     }
   }
 

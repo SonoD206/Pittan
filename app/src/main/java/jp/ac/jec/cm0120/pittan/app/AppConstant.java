@@ -42,5 +42,7 @@ public final class AppConstant {
     public static final String DATA_SIZE_FORMAT = "%smm";
     public static final String CHANGE_HEIGHT = "height";
     public static final String CHANGE_WIDTH = "width";
+    public static final String EXTRA_MODEL_SIZE_WIDTH = "widthSize";
+    public static final String EXTRA_MODEL_SIZE_HEIGHT = "heightSize";
   }
 }

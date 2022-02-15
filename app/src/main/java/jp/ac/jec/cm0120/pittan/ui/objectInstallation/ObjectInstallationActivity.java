@@ -146,7 +146,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
 
-    buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
+    buttonPhotoSave.setOnClickListener(view -> {
+//      showAlertDialog();
+      judgeOriginalTransition(transitionNum, null);
+  });
 
     imageButtonShutter.setOnClickListener(view -> {
       viewPhotoPreview.setVisibility(View.VISIBLE);
@@ -449,9 +452,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mIntent = new Intent(this, AddDataActivity.class);
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
+//      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT, mModelScales[0]);
+//      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH, mModelScales[1]);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT, 2089);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH, 898);
       mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME, AppConstant.Objection.ACTIVITY_NAME);
       startActivity(mIntent);
-      dialog.dismiss();
+//      dialog.dismiss();
     } else if (transitionNum == 1) {
       mIntent = getIntent();
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
