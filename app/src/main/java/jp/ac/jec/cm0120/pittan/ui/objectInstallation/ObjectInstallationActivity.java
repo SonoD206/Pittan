@@ -154,6 +154,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   });
 
     imageButtonShutter.setOnClickListener(view -> {
+      if (mModel != null){ getModelSize(); }
       viewPhotoPreview.setVisibility(View.VISIBLE);
       imageButtonClose.setEnabled(false);
       imageButtonDelete.setEnabled(false);
@@ -183,15 +184,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         anchorNode.setLocalPosition(finalPosition);
         mModel.setLocalPosition(finalPosition);
       }
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) { }
 
       @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-
-      }
+      public void onStopTrackingTouch(SeekBar seekBar) { }
     });
 
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
@@ -292,15 +289,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       /// ここを変えたら最初の大きさが変わる
       mModel.setLocalScale(new Vector3(0.3f, 0.3f, 0.3f));
 
-
-      /// モデルのサイズ
-      mModelScales[0] = mModel.getLocalScale().x;
-      mModelScales[1] = mModel.getLocalScale().y;
-      mModelScales[2] = mModel.getLocalScale().z;
-
       mModel.setParent(anchorNode);
 
-      ///切り分け
       if (texture != null) {
         RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
         modelInstance.getMaterial().setInt(AppConstant.Objection.BASE_COLOR_INDEX, 0);
@@ -499,6 +489,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     viewPhotoPreview.setVisibility(View.INVISIBLE);
     imageButtonClose.setEnabled(true);
     imageButtonDelete.setEnabled(true);
+  }
+
+  private void getModelSize() {
+    mModelScales[0] = mModel.getLocalScale().x;
+    mModelScales[1] = mModel.getLocalScale().y;
+    mModelScales[2] = mModel.getLocalScale().z;
   }
 
 }

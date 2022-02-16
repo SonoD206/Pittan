@@ -29,7 +29,6 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     void showUndoSnackbar(int position, String placeName, String placeID);
   }
 
-
   /// Fields
   private final Context context;
   private final ArrayList<PittanProductDataModel> pittanProductDataModelArrayList;
