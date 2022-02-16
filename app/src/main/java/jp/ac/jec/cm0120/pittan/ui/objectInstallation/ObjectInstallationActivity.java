@@ -149,8 +149,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
     buttonPhotoSave.setOnClickListener(view -> {
-//      showAlertDialog();
-      judgeOriginalTransition(transitionNum, null);
+      showAlertDialog();
+//      judgeOriginalTransition(transitionNum, null);
   });
 
     imageButtonShutter.setOnClickListener(view -> {

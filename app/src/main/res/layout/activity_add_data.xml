@@ -51,7 +51,8 @@
           <ImageView
               android:id="@+id/add_image_view_user_photo"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="400dp"
+              android:maxHeight="400dp"
               android:contentDescription="@string/add_photo_description"
               android:scaleType="fitXY"
               android:src="@drawable/sample_curtain"
@@ -86,7 +87,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             android:maxLines="1"
-            android:minLines="1"/>
+            android:minLines="1" />
 
       </com.google.android.material.textfield.TextInputLayout>
       <!--　Category　-->

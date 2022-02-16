@@ -70,7 +70,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     holder.textViewDataHeight.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductHeight()));
     holder.textViewDataWidth.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductWidth()));
     holder.textViewCategory.setText(model.getProductCategory());
-    holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
+    if (model.getProductImagePath() != null){
+      holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
+    }
   }
 
   @Override
