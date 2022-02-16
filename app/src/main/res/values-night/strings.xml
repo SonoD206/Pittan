@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="app_name">Pittan</string>
   <!-- Anywhere -->
-  <string name="millimetre">mm</string>
+  <string name="centimeter">cm</string>
   <!-- home -->
   <string name="home_menu_item_settings_description">設定ボタン</string>
   <string name="card_image_description">カーテン・ラグの写真</string>
@@ -18,8 +18,8 @@
   <string name="add_third_title">窓枠のサイズ</string>
   <string name="add_forth_title">コメント</string>
   <string name="add_first_edit_hint">例：子供部屋</string>
-  <string name="add_second_edit_first_hint">縦幅 mm</string>
-  <string name="add_second_edit_second_hint">横幅 mm</string>
+  <string name="add_second_edit_first_hint">縦幅 cm</string>
+  <string name="add_second_edit_second_hint">横幅 cm</string>
   <string name="add_third_edit_hint">柄、遮光性、こだわり</string>
   <string name="add_segment_description">セグメントコントロール</string>
   <string name="add_segment_first_item">カーテン</string>
@@ -46,5 +46,5 @@
   <string name="setting_license">ライセンス表示</string>
   <string name="setting">設定</string>
   <string name="object_installation_preview_button">追加</string>
-  <string name="object_installation_preview_loading">Loading...</string>
+  <string name="object_installation_preview_loading" tools:ignore="TypographyEllipsis">Loading...</string>
 </resources>

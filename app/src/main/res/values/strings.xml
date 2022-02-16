@@ -1,7 +1,7 @@
 <resources>
   <string name="app_name">Pittan</string>
   <!-- Anywhere -->
-  <string name="millimetre">mm</string>
+  <string name="centimeter">cm</string>
   <string name="ok">OK</string>
   <string name="cancel">キャンセル</string>
   <!-- home -->
@@ -22,8 +22,8 @@
   <string name="add_third_title">窓枠のサイズ</string>
   <string name="add_forth_title">コメント</string>
   <string name="add_first_edit_hint">例：子供部屋</string>
-  <string name="add_second_edit_first_hint">縦幅 mm</string>
-  <string name="add_second_edit_second_hint">横幅 mm</string>
+  <string name="add_second_edit_first_hint">縦幅 cm</string>
+  <string name="add_second_edit_second_hint">横幅 cm</string>
   <string name="add_third_edit_hint">柄、遮光性、こだわり</string>
   <string name="add_segment_description">セグメントコントロール</string>
   <string name="add_segment_first_item">カーテン</string>

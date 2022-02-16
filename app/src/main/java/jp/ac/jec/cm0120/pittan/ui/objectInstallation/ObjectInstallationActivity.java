@@ -1,5 +1,6 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -75,7 +76,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private Button buttonPhotoSave;
   private ImageView imagePhotoPreview;
   private SeekBar seekBarModelHeight;
-  private ProductChangeSizeFragment fragment;
+  private ImageButton imageButtonReplay;
 
   /// Fields
   private String userPhotoFileName;
@@ -108,9 +109,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonDelete = findViewById(R.id.image_button_delete);
     imageButtonShutter = findViewById(R.id.image_button_shutter);
     viewPhotoPreview = findViewById(R.id.view_preview);
+    seekBarModelHeight = findViewById(R.id.seekbar_model_height);
     buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
-    seekBarModelHeight = findViewById(R.id.seekbar_model_height);
+    imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
     setTransitionNum();
@@ -192,6 +194,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
 
+    imageButtonReplay.setOnClickListener(view -> closePreview(null));
   }
 
   private void buildViewPager2() {
@@ -268,9 +271,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
       return;
     }
-
     ArSceneViewKt.setLightEstimationConfig(arFragment.getArSceneView(), LightEstimationConfig.DISABLED);
-//    arFragment.getArSceneView()._mainLight = null;
     /// 垂直面と平面の分岐
     if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
       // Create the Anchor.
@@ -430,8 +431,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void showAlertDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setTitle(getString(R.string.object_installation_alert_title))
-//            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, mModelScales[0], mModelScales[1]))
-            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, 2089, 898))
+            .setMessage(String.format(AppConstant.Objection.ALERT_MESSAGE_FORMAT, mModelScales[0], mModelScales[1]))
             .setPositiveButton(getString(R.string.ok), null)
             .setNegativeButton(getString(R.string.cancel), null);
     AlertDialog dialog = builder.show();
@@ -439,12 +439,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
     positiveButton.setOnClickListener(view -> judgeOriginalTransition(transitionNum, dialog));
     Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-    negativeButton.setOnClickListener(view -> {
-      dialog.dismiss();
-      viewPhotoPreview.setVisibility(View.INVISIBLE);
-      imageButtonClose.setEnabled(true);
-      imageButtonDelete.setEnabled(true);
-    });
+    negativeButton.setOnClickListener(view -> closePreview(dialog));
   }
 
   private void judgeOriginalTransition(int transitionNum, AlertDialog dialog) {
@@ -452,13 +447,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mIntent = new Intent(this, AddDataActivity.class);
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH, userPhotoFileName);
-//      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT, mModelScales[0]);
-//      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH, mModelScales[1]);
-      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT, 2089);
-      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH, 898);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_HEIGHT, mModelScales[0]);
+      mIntent.putExtra(AppConstant.Objection.EXTRA_MODEL_SIZE_WIDTH, mModelScales[1]);
       mIntent.putExtra(AppConstant.EXTRA_TRANSITION_NAME, AppConstant.Objection.ACTIVITY_NAME);
       startActivity(mIntent);
-//      dialog.dismiss();
+      dialog.dismiss();
     } else if (transitionNum == 1) {
       mIntent = getIntent();
       mIntent.putExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH, generateFilename(false));
@@ -499,4 +492,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setLocalScale(finalScale);
     }
   }
+  private void closePreview(AlertDialog dialog){
+    if (dialog != null){
+      dialog.dismiss();
+    }
+    viewPhotoPreview.setVisibility(View.INVISIBLE);
+    imageButtonClose.setEnabled(true);
+    imageButtonDelete.setEnabled(true);
+  }
+
 }

@@ -303,7 +303,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/delete/baseline_delete_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/replay/baseline_replay_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -313,8 +313,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="icon_delete_object_installation" />
+                            <entry key="color" value="333333" />
+                            <entry key="outputName" value="icon_replay" />
                             <entry key="sourceFile" value="$USER_HOME$/Desktop/SVG/SVG/curtain_double_white.svg" />
                           </map>
                         </option>

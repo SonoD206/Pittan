@@ -38,7 +38,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="20dp"
+          android:layout_marginTop="24dp"
           android:layout_marginEnd="16dp"
           android:minHeight="182dp">
 
@@ -63,8 +63,11 @@
               android:id="@+id/detail_image_view_item_photo"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:maxHeight="400dp"
+              android:scaleType="fitXY"
               android:adjustViewBounds="true"
-              android:contentDescription="@string/add_photo_description"/>
+              android:contentDescription="@string/add_photo_description"
+              android:src="@drawable/sample_curtain"/>
         </androidx.cardview.widget.CardView>
       </FrameLayout>
 

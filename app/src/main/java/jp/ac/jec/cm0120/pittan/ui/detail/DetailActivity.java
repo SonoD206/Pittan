@@ -3,7 +3,6 @@ package jp.ac.jec.cm0120.pittan.ui.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -76,8 +75,8 @@ public class DetailActivity extends AppCompatActivity {
 
     if (selectItem.size() > 0) {
       for (PittanProductDataModel item : selectItem) {
-        String itemHeight = item.getProductHeight() + getResources().getString(R.string.millimetre);
-        String itemWidth = item.getProductWidth() + getResources().getString(R.string.millimetre);
+        String itemHeight = item.getProductHeight() + getResources().getString(R.string.centimeter);
+        String itemWidth = item.getProductWidth() + getResources().getString(R.string.centimeter);
         String photoImagePath = item.getProductImagePath();
 
         textViewPlaceTitle.setText(item.getPlaceName());

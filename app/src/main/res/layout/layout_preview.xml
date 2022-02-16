@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/object_installation_preview_loading"
-        android:textSize="28sp"/>
+        android:textSize="28sp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -39,18 +39,36 @@
 
   </FrameLayout>
 
-  <Button
-      android:id="@+id/button_save_photo"
-      android:layout_width="wrap_content"
+  <LinearLayout
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_gravity="center"
       android:layout_marginTop="16dp"
-      android:minWidth="160dp"
       android:paddingStart="16dp"
       android:paddingEnd="16dp"
-      android:text="@string/object_installation_preview_button"
-      android:textAlignment="center"
-      android:textSize="28sp"
-      android:textStyle="bold" />
+      android:orientation="horizontal"
+      android:weightSum="2.8">
+
+    <ImageButton
+        android:id="@+id/image_button_replay"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:background="@null"
+        android:src="@drawable/icon_replay"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="カメラに戻る"/>
+
+    <Button
+        android:id="@+id/button_save_photo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.8"
+        android:text="@string/object_installation_preview_button"
+        android:textAlignment="center"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+  </LinearLayout>
+
 
 </LinearLayout>
