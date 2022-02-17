@@ -31,7 +31,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   @Override
   public void onCreate(SQLiteDatabase db) {
 
-    //　テーブル作成
+    /// Create tables
     String createProductTable = "CREATE TABLE " +
             TABLE_PRODUCT +
             "(product_id INTEGER PRIMARY KEY AUTOINCREMENT" +
@@ -215,8 +215,11 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     return ret > 0;
   }
 
+  // endregion
+
+  /// region SQLite UPDATE statement
   // Update place TABLE
-  public boolean isUpdatePlaceTable(String placeID){
+  public boolean isUpdatePlaceDeleteFlag(String placeID){
     ContentValues contentValues = new ContentValues();
     contentValues.put("place_delete_flag",1);
 
@@ -232,5 +235,5 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     }
     return ret > 0;
   }
-  // endregion
+  /// endregion
 }
