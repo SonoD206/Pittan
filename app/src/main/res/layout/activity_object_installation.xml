@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pale_gray"
-    tools:context=".ui.objectInstallation.ObjectInstallationActivity">
+    tools:context=".ui.objectInstallation.ObjectInstallationActivity"
+    android:id="@+id/frame_layout_object_installation">
 
   <LinearLayout
       android:layout_width="match_parent"
