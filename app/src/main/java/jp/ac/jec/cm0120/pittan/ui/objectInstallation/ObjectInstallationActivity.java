@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -88,6 +88,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private final float[] mModelScales = new float[3];
   private int transitionNum;
   private GestureDetectorCompat mDetector;
+  private int tabHeight;
+  private int viewPagerHeight;
 
   /// ARCore
   private Renderable mRenderModel;
@@ -123,6 +125,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
 
+    /// Gestureの取得
     mDetector = new GestureDetectorCompat(this,this);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
@@ -134,9 +137,24 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
                 .commit();
       }
     }
+    mTabLayout.post(() -> {
+      tabHeight = mTabLayout.getHeight();
+    });
+    mViewPager2.post(() -> {
+      viewPagerHeight = mViewPager2.getHeight();
+    });
 
-    loadModels(getPath(AppConstant.Objection.MODEL_NUM, AppConstant.Objection.FIRST_MODEL));
     buildSeekbarModelHeight();
+  }
+  @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
+    ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
+    ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
+    margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin - 8, shutterButtonMarginBottom + 40);
+    imageButtonShutter.setVisibility(View.VISIBLE);
+    imageButtonShutter.setLayoutParams(margin);
   }
 
   private void buildSeekbarModelHeight() {
@@ -202,8 +220,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
   }
 
+  ///region ViewPager2
   private void buildViewPager2() {
-    /// Fields
+
     BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
     mViewPager2.setUserInputEnabled(false);
     mViewPager2.setAdapter(bottomMenuAdapter);
@@ -245,6 +264,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
   }
+  /// endregion
 
   @Override
   public void onAttachFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment) {
@@ -272,8 +292,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
-
-    Log.i("###", "onTapPlane: " + motionEvent.getAction());
 
     if (mRenderModel == null) {
       Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
@@ -315,10 +333,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setOnTouchListener(new Node.OnTouchListener() {
         @Override
         public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
-          if (mDetector.onTouchEvent(motionEvent)) {
-            return true;
-          }
-          return false;
+          return mDetector.onTouchEvent(motionEvent);
         }
       });
     }
@@ -387,12 +402,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   /// Interfaceの実装
   @Override
-  public void onClickRecyclerItem(String textureName) {
+  public void onClickRecyclerItem(String modelName) {
     if (mModel != null) {
       delete3DModel();
     }
-    String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
-    loadTexture(path);
+    loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
   }
 
   ///写真を撮る

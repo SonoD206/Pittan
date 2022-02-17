@@ -3,25 +3,23 @@ package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 import android.graphics.Bitmap;
 
 public class ProductMenuModel {
-  /// Test
-  private Bitmap itemTextureImage;
-  private String itemTextureName;
 
-  public Bitmap getItemTextureImage() {
-    return itemTextureImage;
+  private int itemModelImage;
+  private String itemModelName;
+
+  public int getItemModelImage() {
+    return itemModelImage;
   }
 
-  public void setItemTextureImage(Bitmap itemTextureImage) {
-    this.itemTextureImage = itemTextureImage;
+  public void setItemModelImage(int itemModelImage) {
+    this.itemModelImage = itemModelImage;
   }
 
-  public String getItemTextureName() {
-    return itemTextureName;
+  public String getItemModelName() {
+    return itemModelName;
   }
 
-  public void setItemTextureName(String itemTextureName) {
-    this.itemTextureName = itemTextureName;
+  public void setItemModelName(String itemModelName) {
+    this.itemModelName = itemModelName;
   }
-
-
 }

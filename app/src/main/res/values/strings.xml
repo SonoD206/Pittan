@@ -42,7 +42,7 @@
   <string name="object_installation_image_button_delete_description">表示中の3DModelを消す</string>
   <string name="preview_image_button_photo_description">撮影した写真をプレビューする</string>
   <string name="product_menu_image_view_description">3Dモデルのイメージ画像</string>
-  <string name="object_installation_tab_title_first">設置</string>
+  <string name="object_installation_tab_title_first">カーテン</string>
   <string name="object_installation_tab_title_second">サイズ</string>
   <string name="object_installation_alert_title">窓枠のサイズ</string>
   <string name="object_installation_preview_button">追加</string>

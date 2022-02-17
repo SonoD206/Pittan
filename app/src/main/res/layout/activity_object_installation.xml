@@ -34,7 +34,8 @@
           android:id="@+id/tab_menu_category"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:tabGravity="center" />
+          app:tabGravity="center"
+          android:contentDescription="カーテンとサイズのタブ"/>
 
       <androidx.viewpager2.widget.ViewPager2
           android:id="@+id/view_pager2_menu_item"
@@ -51,10 +52,10 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
-      android:layout_marginBottom="200dp"
       android:background="@null"
       android:contentDescription="@string/object_installation_image_button_shutter_description"
-      android:src="@drawable/icon_shutter_button" />
+      android:src="@drawable/icon_shutter_button"
+      android:visibility="invisible"/>
 
   <ImageButton
       android:id="@+id/image_button_close"

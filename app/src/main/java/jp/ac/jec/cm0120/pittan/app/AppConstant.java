@@ -38,7 +38,7 @@ public final class AppConstant {
     public static final String USER_PICTURE_NAME_FORMAT_PATTERN = "Pittan/%s_3dModel.jpg";
     public static final String MODELS_PATH_FORMAT_PATTERN = "models/%s";
     public static final String TEXTURES_PATH_FORMAT_PATTERN = "textures/%s";
-    public static final String ASSETS_FILE_NAME = "textures";
+    public static final String ASSETS_FILE_NAME = "models";
     public static final String DATA_SIZE_FORMAT = "%scm";
     public static final String CHANGE_HEIGHT = "height";
     public static final String CHANGE_WIDTH = "width";
