@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/texture_black"
+      android:title="ブラック"/>
+  <item
+      android:id="@+id/texture_blue"
+      android:title="ブルー" />
+  <item
+      android:id="@+id/texture_indigo"
+      android:title="インディゴ" />
+  <item
+      android:id="@+id/texture_greige"
+      android:title="グレージュ" />
+  <item
+      android:id="@+id/texture_iris"
+      android:title="杜若色" />
+  <item
+      android:id="@+id/texture_sky"
+      android:title="空" />
+</menu>

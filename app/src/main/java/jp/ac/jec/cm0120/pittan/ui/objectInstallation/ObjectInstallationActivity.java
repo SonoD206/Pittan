@@ -8,12 +8,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -69,6 +74,7 @@ import jp.ac.jec.cm0120.pittan.util.PictureIO;
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
 
   /// Components
+  private FrameLayout mFrameLayout;
   private TabLayout mTabLayout;
   private ViewPager2 mViewPager2;
   private ImageButton imageButtonClose;
@@ -114,6 +120,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void initialize(Bundle savedInstanceState) {
 
+    mFrameLayout = findViewById(R.id.frame_layout_object_installation);
     mTabLayout = findViewById(R.id.tab_menu_category);
     mViewPager2 = findViewById(R.id.view_pager2_menu_item);
     imageButtonClose = findViewById(R.id.image_button_close);
@@ -126,7 +133,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
 
     /// Gestureの取得
-    mDetector = new GestureDetectorCompat(this,this);
+    mDetector = new GestureDetectorCompat(this, this);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
     setTransitionNum();
@@ -145,7 +152,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     });
 
     buildSeekbarModelHeight();
+    registerForContextMenu(mFrameLayout);
   }
+
   @Override
   public void onWindowFocusChanged(boolean hasFocus) {
     super.onWindowFocusChanged(hasFocus);
@@ -155,6 +164,44 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin - 8, shutterButtonMarginBottom + 40);
     imageButtonShutter.setVisibility(View.VISIBLE);
     imageButtonShutter.setLayoutParams(margin);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.object_textures_list, menu);
+    return true;
+  }
+
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    getMenuInflater().inflate(R.menu.object_textures_list, menu);
+  }
+
+  @Override
+  public boolean onContextItemSelected(@NonNull MenuItem item) {
+    String textureName;
+    CharSequence title = item.getTitle();
+    if ("ブラック".contentEquals(title)) {
+      textureName = "black";
+    } else if ("ブルー".contentEquals(title)) {
+      textureName = "blue";
+    } else if ("インディゴ".contentEquals(title)) {
+      textureName = "indigo";
+    } else if ("グレージュ".contentEquals(title)) {
+      textureName = "greige";
+    } else if ("杜若色".contentEquals(title)) {
+      textureName = "iris";
+    } else if ("空".contentEquals(title)) {
+      textureName = "sky";
+    } else {
+      textureName = "";
+    }
+    loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format("%s.jpg", textureName)));
+    delete3DModel();
+    return super.onContextItemSelected(item);
   }
 
   private void buildSeekbarModelHeight() {
@@ -180,7 +227,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
     imageButtonShutter.setOnClickListener(view -> {
-      if (mModel != null){ getModelSize(); }
+      if (mModel != null) {
+        getModelSize();
+      }
       viewPhotoPreview.setVisibility(View.VISIBLE);
       imageButtonClose.setEnabled(false);
       imageButtonDelete.setEnabled(false);
@@ -210,11 +259,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         anchorNode.setLocalPosition(finalPosition);
         mModel.setLocalPosition(finalPosition);
       }
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
 
       @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
     });
 
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
@@ -333,6 +385,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setOnTouchListener(new Node.OnTouchListener() {
         @Override
         public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+          ObjectInstallationActivity.super.onTouchEvent(motionEvent);
           return mDetector.onTouchEvent(motionEvent);
         }
       });
@@ -519,8 +572,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
   }
 
-  private void closePreview(AlertDialog dialog){
-    if (dialog != null){
+  private void closePreview(AlertDialog dialog) {
+    if (dialog != null) {
       dialog.dismiss();
     }
     viewPhotoPreview.setVisibility(View.INVISIBLE);
@@ -541,7 +594,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onShowPress(MotionEvent motionEvent) {
-
+    AppLog.info("hoge");
   }
 
   @Override
@@ -556,11 +609,23 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onLongPress(MotionEvent motionEvent) {
-    /* TODO: 2022/02/17 contextMenu 表示 */
+    View parent = (View) arFragment.getArSceneView().getParent();
+    parent.showContextMenu(motionEvent.getX(), motionEvent.getY());
+//    parent.showContextMenu();
+
   }
 
   @Override
   public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
     return false;
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Session session = arFragment.getArSceneView().getSession();
+    if (session != null) {
+      session.close();
+    }
   }
 }
