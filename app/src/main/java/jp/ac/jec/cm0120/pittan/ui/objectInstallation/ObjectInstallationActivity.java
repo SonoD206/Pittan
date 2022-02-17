@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
@@ -34,6 +37,8 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.HitTestResult;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.Sceneform;
 import com.google.ar.sceneform.math.Vector3;
@@ -61,7 +66,7 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ChangeS
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener {
+public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
 
   /// Components
   private TabLayout mTabLayout;
@@ -82,6 +87,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private Intent mIntent;
   private final float[] mModelScales = new float[3];
   private int transitionNum;
+  private GestureDetectorCompat mDetector;
 
   /// ARCore
   private Renderable mRenderModel;
@@ -96,6 +102,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     initialize(savedInstanceState);
     buildViewPager2();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
     setListener();
   }
 
@@ -111,6 +122,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
+
+    mDetector = new GestureDetectorCompat(this,this);
 
     getSupportFragmentManager().addFragmentOnAttachListener(this);
     setTransitionNum();
@@ -146,10 +159,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
 
-    buttonPhotoSave.setOnClickListener(view -> {
-      showAlertDialog();
-//      judgeOriginalTransition(transitionNum, null);
-  });
+    buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
     imageButtonShutter.setOnClickListener(view -> {
       if (mModel != null){ getModelSize(); }
@@ -262,10 +272,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
+
+    Log.i("###", "onTapPlane: " + motionEvent.getAction());
+
     if (mRenderModel == null) {
       Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
       return;
     }
+
     ArSceneViewKt.setLightEstimationConfig(arFragment.getArSceneView(), LightEstimationConfig.DISABLED);
     /// 垂直面と平面の分岐
     if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
@@ -297,6 +311,16 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         mModel.setRenderable(mRenderModel);
       }
       mModel.select();
+
+      mModel.setOnTouchListener(new Node.OnTouchListener() {
+        @Override
+        public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+          if (mDetector.onTouchEvent(motionEvent)) {
+            return true;
+          }
+          return false;
+        }
+      });
     }
   }
 
@@ -480,6 +504,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setLocalScale(finalScale);
     }
   }
+
   private void closePreview(AlertDialog dialog){
     if (dialog != null){
       dialog.dismiss();
@@ -495,4 +520,33 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     mModelScales[2] = mModel.getLocalScale().z;
   }
 
+  @Override
+  public boolean onDown(MotionEvent motionEvent) {
+    return false;
+  }
+
+  @Override
+  public void onShowPress(MotionEvent motionEvent) {
+
+  }
+
+  @Override
+  public boolean onSingleTapUp(MotionEvent motionEvent) {
+    return false;
+  }
+
+  @Override
+  public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
+
+  @Override
+  public void onLongPress(MotionEvent motionEvent) {
+    /* TODO: 2022/02/17 contextMenu 表示 */
+  }
+
+  @Override
+  public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
 }
