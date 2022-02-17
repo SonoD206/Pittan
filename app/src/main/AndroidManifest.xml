@@ -15,9 +15,9 @@
   <application
       android:allowBackup="true"
       android:name=".app.LightApplication"
-      android:icon="@mipmap/ic_pittan_launcher"
+      android:icon="@mipmap/icon_launcher_pittan"
       android:label="@string/app_name"
-      android:roundIcon="@mipmap/ic_pittan_launcher_round"
+      android:roundIcon="@mipmap/icon_launcher_pittan_round"
       android:supportsRtl="true"
       tools:ignore="LockedOrientationActivity">
 
