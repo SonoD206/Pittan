@@ -2,20 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/texture_black"
-      android:title="ブラック"/>
+      android:title="@string/object_installation_texture_name_black"/>
   <item
       android:id="@+id/texture_blue"
-      android:title="ブルー" />
+      android:title="@string/object_installation_texture_name_blue" />
   <item
       android:id="@+id/texture_indigo"
-      android:title="インディゴ" />
+      android:title="@string/object_installation_texture_name_indigo" />
   <item
       android:id="@+id/texture_greige"
-      android:title="グレージュ" />
+      android:title="@string/object_installation_texture_name_greige" />
   <item
       android:id="@+id/texture_iris"
-      android:title="杜若色" />
-  <item
-      android:id="@+id/texture_sky"
-      android:title="空" />
+      android:title="@string/object_installation_texture_name_iris" />
 </menu>

@@ -46,9 +46,15 @@
   <string name="object_installation_tab_title_second">サイズ</string>
   <string name="object_installation_alert_title">窓枠のサイズ</string>
   <string name="object_installation_preview_button">追加</string>
+  <string name="object_installation_texture_name_black">ブラック</string>
+  <string name="object_installation_texture_name_blue">ブルー</string>
+  <string name="object_installation_texture_name_indigo">インディゴ</string>
+  <string name="object_installation_texture_name_greige">グレージュ</string>
+  <string name="object_installation_texture_name_iris">杜若色</string>
   <!-- setting -->
   <string name="setting_license">ライセンス表示</string>
   <string name="setting">設定</string>
   <string name="object_installation_preview_loading">Loading...</string>
+
 
 </resources>
