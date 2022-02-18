@@ -1,6 +1,5 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,10 +8,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.view.ContextMenu;
+import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.PixelCopy;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -21,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
@@ -35,6 +42,8 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
+import com.google.ar.sceneform.HitTestResult;
+import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.SceneView;
 import com.google.ar.sceneform.Sceneform;
 import com.google.ar.sceneform.math.Vector3;
@@ -59,13 +68,13 @@ import jp.ac.jec.cm0120.pittan.app.AppConstant;
 import jp.ac.jec.cm0120.pittan.app.AppLog;
 import jp.ac.jec.cm0120.pittan.ui.add_data.AddDataActivity;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ChangeSeekbarListener;
-import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ProductChangeSizeFragment;
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener {
+public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
 
   /// Components
+  private FrameLayout mFrameLayout;
   private TabLayout mTabLayout;
   private ViewPager2 mViewPager2;
   private ImageButton imageButtonClose;
@@ -84,6 +93,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private Intent mIntent;
   private final float[] mModelScales = new float[3];
   private int transitionNum;
+  private GestureDetectorCompat mDetector;
+  private int tabHeight;
+  private int viewPagerHeight;
 
   /// ARCore
   private Renderable mRenderModel;
@@ -98,11 +110,17 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     initialize(savedInstanceState);
     buildViewPager2();
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
     setListener();
   }
 
   private void initialize(Bundle savedInstanceState) {
 
+    mFrameLayout = findViewById(R.id.frame_layout_object_installation);
     mTabLayout = findViewById(R.id.tab_menu_category);
     mViewPager2 = findViewById(R.id.view_pager2_menu_item);
     imageButtonClose = findViewById(R.id.image_button_close);
@@ -114,6 +132,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
 
+    /// Gestureの取得
+    mDetector = new GestureDetectorCompat(this, this);
+
     getSupportFragmentManager().addFragmentOnAttachListener(this);
     setTransitionNum();
     if (savedInstanceState == null) {
@@ -123,9 +144,62 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
                 .commit();
       }
     }
+    mTabLayout.post(() -> {
+      tabHeight = mTabLayout.getHeight();
+    });
+    mViewPager2.post(() -> {
+      viewPagerHeight = mViewPager2.getHeight();
+    });
 
-    loadModels(getPath(AppConstant.Objection.MODEL_NUM, AppConstant.Objection.FIRST_MODEL));
     buildSeekbarModelHeight();
+    registerForContextMenu(mFrameLayout);
+  }
+
+  @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
+    ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
+    ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
+    margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin - 8, shutterButtonMarginBottom + 40);
+    imageButtonShutter.setVisibility(View.VISIBLE);
+    imageButtonShutter.setLayoutParams(margin);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    super.onCreateOptionsMenu(menu);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.object_textures_list, menu);
+    return true;
+  }
+
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    getMenuInflater().inflate(R.menu.object_textures_list, menu);
+  }
+
+  @Override
+  public boolean onContextItemSelected(@NonNull MenuItem item) {
+    String textureName;
+    CharSequence title = item.getTitle();
+    if (getString(R.string.object_installation_texture_name_black).contentEquals(title)) {
+      textureName = "black";
+    } else if (getString(R.string.object_installation_texture_name_blue).contentEquals(title)) {
+      textureName = "blue";
+    } else if (getString(R.string.object_installation_texture_name_indigo).contentEquals(title)) {
+      textureName = "indigo";
+    } else if (getString(R.string.object_installation_texture_name_greige).contentEquals(title)) {
+      textureName = "greige";
+    } else if (getString(R.string.object_installation_texture_name_iris).contentEquals(title)) {
+      textureName = "iris";
+    } else {
+      textureName = "";
+    }
+    loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format(AppConstant.Objection.MODEL_IMAGE_EXPAND_FORMAT, textureName)));
+    delete3DModel();
+    return super.onContextItemSelected(item);
   }
 
   private void buildSeekbarModelHeight() {
@@ -148,13 +222,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
 
-    buttonPhotoSave.setOnClickListener(view -> {
-      showAlertDialog();
-//      judgeOriginalTransition(transitionNum, null);
-  });
+    buttonPhotoSave.setOnClickListener(view -> showAlertDialog());
 
     imageButtonShutter.setOnClickListener(view -> {
-      if (mModel != null){ getModelSize(); }
+      if (mModel != null) {
+        getModelSize();
+      }
       viewPhotoPreview.setVisibility(View.VISIBLE);
       imageButtonClose.setEnabled(false);
       imageButtonDelete.setEnabled(false);
@@ -184,18 +257,22 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         anchorNode.setLocalPosition(finalPosition);
         mModel.setLocalPosition(finalPosition);
       }
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
 
       @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
     });
 
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
   }
 
+  ///region ViewPager2
   private void buildViewPager2() {
-    /// Fields
+
     BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
     mViewPager2.setUserInputEnabled(false);
     mViewPager2.setAdapter(bottomMenuAdapter);
@@ -237,6 +314,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
   }
+  /// endregion
 
   @Override
   public void onAttachFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment) {
@@ -264,10 +342,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
+
     if (mRenderModel == null) {
       Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
       return;
     }
+
     ArSceneViewKt.setLightEstimationConfig(arFragment.getArSceneView(), LightEstimationConfig.DISABLED);
     /// 垂直面と平面の分岐
     if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
@@ -299,6 +379,14 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         mModel.setRenderable(mRenderModel);
       }
       mModel.select();
+
+      mModel.setOnTouchListener(new Node.OnTouchListener() {
+        @Override
+        public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+          ObjectInstallationActivity.super.onTouchEvent(motionEvent);
+          return mDetector.onTouchEvent(motionEvent);
+        }
+      });
     }
   }
 
@@ -365,12 +453,11 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   /// Interfaceの実装
   @Override
-  public void onClickRecyclerItem(String textureName) {
+  public void onClickRecyclerItem(String modelName) {
     if (mModel != null) {
       delete3DModel();
     }
-    String path = getPath(AppConstant.Objection.TEXTURE_NUM, textureName);
-    loadTexture(path);
+    loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
   }
 
   ///写真を撮る
@@ -482,8 +569,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       mModel.setLocalScale(finalScale);
     }
   }
-  private void closePreview(AlertDialog dialog){
-    if (dialog != null){
+
+  private void closePreview(AlertDialog dialog) {
+    if (dialog != null) {
       dialog.dismiss();
     }
     viewPhotoPreview.setVisibility(View.INVISIBLE);
@@ -497,4 +585,45 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     mModelScales[2] = mModel.getLocalScale().z;
   }
 
+  @Override
+  public boolean onDown(MotionEvent motionEvent) {
+    return false;
+  }
+
+  @Override
+  public void onShowPress(MotionEvent motionEvent) {
+    AppLog.info("hoge");
+  }
+
+  @Override
+  public boolean onSingleTapUp(MotionEvent motionEvent) {
+    return false;
+  }
+
+  @Override
+  public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
+
+  @Override
+  public void onLongPress(MotionEvent motionEvent) {
+    View parent = (View) arFragment.getArSceneView().getParent();
+    parent.showContextMenu(motionEvent.getX(), motionEvent.getY());
+//    parent.showContextMenu();
+
+  }
+
+  @Override
+  public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+    return false;
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Session session = arFragment.getArSceneView().getSession();
+    if (session != null) {
+      session.close();
+    }
+  }
 }

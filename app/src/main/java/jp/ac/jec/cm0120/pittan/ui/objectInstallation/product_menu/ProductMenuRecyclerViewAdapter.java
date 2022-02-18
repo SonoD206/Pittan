@@ -1,7 +1,6 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +47,13 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
   @Override
   public void onBindViewHolder(@NonNull ProductMenuRecyclerViewHolder holder, int position) {
 
-    Bitmap itemMenuImage = productMenuModelArrayList.get(position).getItemTextureImage();
-    holder.imageViewTexture.setImageBitmap(itemMenuImage);
+    int itemMenuImage = productMenuModelArrayList.get(position).getItemModelImage();
+    holder.imageViewModel.setImageResource(itemMenuImage);
     holder.itemView.setOnClickListener(view -> {
       if (onItemClickListener != null) {
         if (position != RecyclerView.NO_POSITION) {
-          String textureName = productMenuModelArrayList.get(position).getItemTextureName();
-          onItemClickListener.onItemClick(textureName);
+          String modelName = productMenuModelArrayList.get(position).getItemModelName();
+          onItemClickListener.onItemClick(modelName);
         }
       }
     });
@@ -66,11 +65,11 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
   }
 
   public static class ProductMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
-    private final ImageView imageViewTexture;
+    private final ImageView imageViewModel;
 
     public ProductMenuRecyclerViewHolder(@NonNull View itemView) {
       super(itemView);
-      imageViewTexture = itemView.findViewById(R.id.image_view_model);
+      imageViewModel = itemView.findViewById(R.id.image_view_model);
     }
   }
 }

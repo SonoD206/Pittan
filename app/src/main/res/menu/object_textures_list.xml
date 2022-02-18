@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/texture_black"
+      android:title="@string/object_installation_texture_name_black"/>
+  <item
+      android:id="@+id/texture_blue"
+      android:title="@string/object_installation_texture_name_blue" />
+  <item
+      android:id="@+id/texture_indigo"
+      android:title="@string/object_installation_texture_name_indigo" />
+  <item
+      android:id="@+id/texture_greige"
+      android:title="@string/object_installation_texture_name_greige" />
+  <item
+      android:id="@+id/texture_iris"
+      android:title="@string/object_installation_texture_name_iris" />
+</menu>

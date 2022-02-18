@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pale_gray"
-    tools:context=".ui.objectInstallation.ObjectInstallationActivity">
+    tools:context=".ui.objectInstallation.ObjectInstallationActivity"
+    android:id="@+id/frame_layout_object_installation">
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
-      android:weightSum="3">
+      android:weightSum="4">
 
     <!-- Bottom Menu -->
     <androidx.fragment.app.FragmentContainerView
@@ -19,7 +20,7 @@
         android:name="com.google.ar.sceneform.ux.ArFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" />
+        android:layout_weight="3" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,31 +34,28 @@
           android:id="@+id/tab_menu_category"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:tabGravity="center" />
+          app:tabGravity="center"
+          android:contentDescription="カーテンとサイズのタブ"/>
 
       <androidx.viewpager2.widget.ViewPager2
           android:id="@+id/view_pager2_menu_item"
           android:layout_width="match_parent"
-          android:layout_height="0dp"
-          android:layout_weight="1"
+          android:layout_height="match_parent"
           android:background="@color/white"
           android:minHeight="120dp"
-          android:orientation="horizontal"
-          tools:ignore="NestedWeights" />
-
-      <ImageButton
-          android:id="@+id/image_button_shutter"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginBottom="32dp"
-          android:background="@null"
-          android:contentDescription="@string/object_installation_image_button_shutter_description"
-          android:src="@drawable/icon_shutter_button" />
+          android:orientation="horizontal" />
     </LinearLayout>
-
-
   </LinearLayout>
+
+  <ImageButton
+      android:id="@+id/image_button_shutter"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|end"
+      android:background="@null"
+      android:contentDescription="@string/object_installation_image_button_shutter_description"
+      android:src="@drawable/icon_shutter_button"
+      android:visibility="invisible"/>
 
   <ImageButton
       android:id="@+id/image_button_close"

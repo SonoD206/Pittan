@@ -35,6 +35,7 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
+  private ArrayList<Integer> productMenuImageArrayList;
 
   public ProductMenuFragment() {}
 
@@ -66,32 +67,22 @@ public class ProductMenuFragment extends Fragment {
 
   private void addProductData() {
     ArrayList<String> productMenuCurtainName = getProductName();
-    productMenuArrayList = getProductMenuData(productMenuCurtainName);
+    ArrayList<Integer> productMenuCurtainImage = getProductImage();
+    productMenuArrayList = getProductMenuData(productMenuCurtainName, productMenuCurtainImage);
   }
 
-  private ArrayList<ProductMenuModel> getProductMenuData(ArrayList<String> textureNames) {
+  private ArrayList<ProductMenuModel> getProductMenuData(ArrayList<String> textureNames, ArrayList<Integer> modelImages) {
     ArrayList<ProductMenuModel> ary = new ArrayList<>();
-    for (String textureName :textureNames) {
+    for (int i = 0; i < textureNames.size(); i++) {
       ProductMenuModel tmp = new ProductMenuModel();
-      tmp.setItemTextureName(textureName);
-      tmp.setItemTextureImage(getBitmapTexture(textureName));
+      tmp.setItemModelName(textureNames.get(i));
+      tmp.setItemModelImage(modelImages.get(i));
       ary.add(tmp);
     }
     return ary;
   }
 
-  private Bitmap getBitmapTexture(String textureName) {
-    AssetManager assets = getResources().getAssets();
-    InputStream inputStream = null;
-    try {
-      inputStream = assets.open(String.format(AppConstant.Objection.TEXTURES_PATH_FORMAT_PATTERN,textureName));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return  BitmapFactory.decodeStream(inputStream);
-  }
-
-  /// Load the name from Assets/textures
+  // Load the name from Assets/models
   private ArrayList<String> getProductName() {
     ArrayList<String> nameArrayList = new ArrayList<>();
     AssetManager assetManager = getResources().getAssets();
@@ -105,13 +96,20 @@ public class ProductMenuFragment extends Fragment {
     return nameArrayList;
   }
 
+  private ArrayList<Integer> getProductImage() {
+    ArrayList<Integer> images = new ArrayList<>();
+    images.add(0,R.drawable.icon_curtain_double);
+    images.add(1,R.drawable.icon_curtain_single);
+    return images;
+  }
+
   private void buildProductMenuRecyclerView() {
     ProductMenuRecyclerViewAdapter productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
     productMenuRecyclerView.setAdapter(productMenuAdapter);
     productMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-    productMenuAdapter.setOnItemClickListener(textureName -> {
+    productMenuAdapter.setOnItemClickListener(modelName -> {
       if (mOnClickRecyclerViewListener != null) {
-        mOnClickRecyclerViewListener.onClickRecyclerItem(textureName);
+        mOnClickRecyclerViewListener.onClickRecyclerItem(modelName);
       }
     });
   }

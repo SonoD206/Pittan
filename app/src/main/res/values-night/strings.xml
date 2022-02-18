@@ -39,7 +39,7 @@
   <string name="preview_image_button_photo_description">撮影した写真をプレビューする</string>
   <string name="product_menu_image_view_description">3Dモデルのイメージ画像</string>
   <string name="home_snackbar_action_text">元に戻す</string>
-  <string name="object_installation_tab_title_first">設置</string>
+  <string name="object_installation_tab_title_first">カーテン</string>
   <string name="object_installation_tab_title_second">サイズ</string>
   <string name="object_installation_alert_title">窓枠のサイズ</string>
   <!-- setting -->
@@ -47,4 +47,9 @@
   <string name="setting">設定</string>
   <string name="object_installation_preview_button">追加</string>
   <string name="object_installation_preview_loading" tools:ignore="TypographyEllipsis">Loading...</string>
+  <string name="object_installation_texture_name_black">ブラック</string>
+  <string name="object_installation_texture_name_blue">ブルー</string>
+  <string name="object_installation_texture_name_indigo">インディゴ</string>
+  <string name="object_installation_texture_name_greige">グレージュ</string>
+  <string name="object_installation_texture_name_iris">杜若色</string>
 </resources>
