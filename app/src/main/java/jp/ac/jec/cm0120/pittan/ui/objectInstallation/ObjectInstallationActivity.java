@@ -35,7 +35,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.ar.core.Anchor;
@@ -91,7 +90,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private ImageView imagePhotoPreview;
   private SeekBar seekBarModelHeight;
   private ImageButton imageButtonReplay;
-  private TextView textViewArcoreMessage;
 
   /// Fields
   private String userPhotoFileName;
@@ -138,7 +136,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonShutter = findViewById(R.id.image_button_shutter);
     viewPhotoPreview = findViewById(R.id.view_preview);
     seekBarModelHeight = findViewById(R.id.seekbar_model_height);
-    textViewArcoreMessage = findViewById(R.id.text_view_arcore_message);
     buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
@@ -270,10 +267,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
 
       @Override
-      public void onStartTrackingTouch(SeekBar seekBar) { }
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
 
       @Override
-      public void onStopTrackingTouch(SeekBar seekBar) { }
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
     });
 
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
@@ -361,8 +360,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       boolean hitTestChanged = updateHitTest();
       if (hitTestChanged) {
         Toast toast;
-        if (mModel != null){
-          AppLog.info ("モデルがあるよ");
+        if (mModel != null) {
+          AppLog.info("モデルがあるよ");
         } else {
           toast = Toast.makeText(this, "モデルの設置ができます", Toast.LENGTH_SHORT);
           toast.setGravity(Gravity.TOP, 0, 0);
@@ -402,7 +401,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private android.graphics.Point getScreenCenter() {
-    return new android.graphics.Point(arFragment.getArSceneView().getWidth()/2, arFragment.getArSceneView().getHeight()/2);
+    return new android.graphics.Point(arFragment.getArSceneView().getWidth() / 2, arFragment.getArSceneView().getHeight() / 2);
   }
 
   @Override

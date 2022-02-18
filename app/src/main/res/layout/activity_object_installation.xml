@@ -76,18 +76,6 @@
       android:padding="16dp"
       android:src="@drawable/icon_delete_object_installation" />
 
-  <TextView
-      android:id="@+id/text_view_arcore_message"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="モデルを設置できます"
-      android:textSize="20sp"
-      android:visibility="invisible"
-      android:layout_marginTop="76dp"
-      android:gravity="center"
-      android:padding="16dp"/>
-
-
   <SeekBar
       android:id="@+id/seekbar_model_height"
       android:layout_width="wrap_content"
