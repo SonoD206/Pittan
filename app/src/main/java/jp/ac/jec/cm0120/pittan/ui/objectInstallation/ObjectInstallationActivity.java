@@ -184,22 +184,20 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   public boolean onContextItemSelected(@NonNull MenuItem item) {
     String textureName;
     CharSequence title = item.getTitle();
-    if ("ブラック".contentEquals(title)) {
+    if (getString(R.string.object_installation_texture_name_black).contentEquals(title)) {
       textureName = "black";
-    } else if ("ブルー".contentEquals(title)) {
+    } else if (getString(R.string.object_installation_texture_name_blue).contentEquals(title)) {
       textureName = "blue";
-    } else if ("インディゴ".contentEquals(title)) {
+    } else if (getString(R.string.object_installation_texture_name_indigo).contentEquals(title)) {
       textureName = "indigo";
-    } else if ("グレージュ".contentEquals(title)) {
+    } else if (getString(R.string.object_installation_texture_name_greige).contentEquals(title)) {
       textureName = "greige";
-    } else if ("杜若色".contentEquals(title)) {
+    } else if (getString(R.string.object_installation_texture_name_iris).contentEquals(title)) {
       textureName = "iris";
-    } else if ("空".contentEquals(title)) {
-      textureName = "sky";
     } else {
       textureName = "";
     }
-    loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format("%s.jpg", textureName)));
+    loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format(AppConstant.Objection.MODEL_IMAGE_EXPAND_FORMAT, textureName)));
     delete3DModel();
     return super.onContextItemSelected(item);
   }

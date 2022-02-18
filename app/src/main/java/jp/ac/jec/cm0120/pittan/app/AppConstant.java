@@ -44,5 +44,6 @@ public final class AppConstant {
     public static final String CHANGE_WIDTH = "width";
     public static final String EXTRA_MODEL_SIZE_WIDTH = "widthSize";
     public static final String EXTRA_MODEL_SIZE_HEIGHT = "heightSize";
+    public static final String MODEL_IMAGE_EXPAND_FORMAT = "%s.jpg";
   }
 }
