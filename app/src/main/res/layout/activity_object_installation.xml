@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frame_layout_object_installation"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pale_gray"
-    tools:context=".ui.objectInstallation.ObjectInstallationActivity"
-    android:id="@+id/frame_layout_object_installation">
+    tools:context=".ui.objectInstallation.ObjectInstallationActivity">
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -34,8 +34,8 @@
           android:id="@+id/tab_menu_category"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          app:tabGravity="center"
-          android:contentDescription="カーテンとサイズのタブ"/>
+          android:contentDescription="カーテンとサイズのタブ"
+          app:tabGravity="center" />
 
       <androidx.viewpager2.widget.ViewPager2
           android:id="@+id/view_pager2_menu_item"
@@ -55,7 +55,7 @@
       android:background="@null"
       android:contentDescription="@string/object_installation_image_button_shutter_description"
       android:src="@drawable/icon_shutter_button"
-      android:visibility="invisible"/>
+      android:visibility="invisible" />
 
   <ImageButton
       android:id="@+id/image_button_close"
@@ -75,6 +75,18 @@
       android:contentDescription="@string/object_installation_image_button_delete_description"
       android:padding="16dp"
       android:src="@drawable/icon_delete_object_installation" />
+
+  <TextView
+      android:id="@+id/text_view_arcore_message"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="モデルを設置できます"
+      android:textSize="20sp"
+      android:visibility="invisible"
+      android:layout_marginTop="76dp"
+      android:gravity="center"
+      android:padding="16dp"/>
+
 
   <SeekBar
       android:id="@+id/seekbar_model_height"

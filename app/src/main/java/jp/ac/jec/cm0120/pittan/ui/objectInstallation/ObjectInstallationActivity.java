@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,13 +35,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentOnAttachListener;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Config;
+import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
+import com.google.ar.core.Trackable;
+import com.google.ar.core.TrackingState;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.HitTestResult;
@@ -62,6 +68,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
@@ -73,8 +80,6 @@ import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
 public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
 
-  /// Components
-  private FrameLayout mFrameLayout;
   private TabLayout mTabLayout;
   private ViewPager2 mViewPager2;
   private ImageButton imageButtonClose;
@@ -86,6 +91,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private ImageView imagePhotoPreview;
   private SeekBar seekBarModelHeight;
   private ImageButton imageButtonReplay;
+  private TextView textViewArcoreMessage;
 
   /// Fields
   private String userPhotoFileName;
@@ -102,6 +108,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private TransformableNode mModel;
   private AnchorNode anchorNode;
   private Texture texture;
+  private final PointerDrawable pointer = new PointerDrawable();
+  private boolean isTracking;
+  private boolean isHitting;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +129,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void initialize(Bundle savedInstanceState) {
 
-    mFrameLayout = findViewById(R.id.frame_layout_object_installation);
+    /// Components
+    FrameLayout mFrameLayout = findViewById(R.id.frame_layout_object_installation);
     mTabLayout = findViewById(R.id.tab_menu_category);
     mViewPager2 = findViewById(R.id.view_pager2_menu_item);
     imageButtonClose = findViewById(R.id.image_button_close);
@@ -128,6 +138,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonShutter = findViewById(R.id.image_button_shutter);
     viewPhotoPreview = findViewById(R.id.view_preview);
     seekBarModelHeight = findViewById(R.id.seekbar_model_height);
+    textViewArcoreMessage = findViewById(R.id.text_view_arcore_message);
     buttonPhotoSave = viewPhotoPreview.findViewById(R.id.button_save_photo);
     imagePhotoPreview = viewPhotoPreview.findViewById(R.id.image_view_photo);
     imageButtonReplay = viewPhotoPreview.findViewById(R.id.image_button_replay);
@@ -161,7 +172,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
     ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
     ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
-    margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin - 8, shutterButtonMarginBottom + 40);
+    margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin + 16, shutterButtonMarginBottom + 60);
     imageButtonShutter.setVisibility(View.VISIBLE);
     imageButtonShutter.setLayoutParams(margin);
   }
@@ -259,12 +270,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
 
       @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-      }
+      public void onStartTrackingTouch(SeekBar seekBar) { }
 
       @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-      }
+      public void onStopTrackingTouch(SeekBar seekBar) { }
     });
 
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
@@ -331,6 +340,69 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     arFragment.setOnViewCreatedListener(null);
     // Fine adjust the maximum frame rate
     arSceneView.setFrameRateFactor(SceneView.FrameRate.FULL);
+    arSceneView.getScene().addOnUpdateListener(frameTime -> {
+      arFragment.onUpdate(frameTime);
+      onUpdate();
+    });
+  }
+
+  private void onUpdate() {
+    View contentView = findViewById(android.R.id.content);
+    boolean trackingChanged = updateTracking();
+    if (trackingChanged) {
+      if (isTracking) {
+        AppLog.info("Tacking now");
+      } else {
+        AppLog.info("don't Tacking");
+      }
+      contentView.invalidate();
+    }
+    if (isTracking) {
+      boolean hitTestChanged = updateHitTest();
+      if (hitTestChanged) {
+        Toast toast;
+        if (mModel != null){
+          AppLog.info ("モデルがあるよ");
+        } else {
+          toast = Toast.makeText(this, "モデルの設置ができます", Toast.LENGTH_SHORT);
+          toast.setGravity(Gravity.TOP, 0, 0);
+          toast.show();
+        }
+        contentView.invalidate();
+      }
+    }
+  }
+
+  private boolean updateTracking() {
+    Frame frame = arFragment.getArSceneView().getArFrame();
+    boolean wasTracking = isTracking;
+    isTracking = frame != null &&
+            frame.getCamera().getTrackingState() == TrackingState.TRACKING;
+    return isTracking != wasTracking;
+  }
+
+  private boolean updateHitTest() {
+    Frame frame = arFragment.getArSceneView().getArFrame();
+    android.graphics.Point pt = getScreenCenter();
+    List<HitResult> hits;
+    boolean wasHitting = isHitting;
+    isHitting = false;
+    if (frame != null) {
+      hits = frame.hitTest(pt.x, pt.y);
+      for (HitResult hit : hits) {
+        Trackable trackable = hit.getTrackable();
+        if (trackable instanceof Plane &&
+                ((Plane) trackable).isPoseInPolygon(hit.getHitPose())) {
+          isHitting = true;
+          break;
+        }
+      }
+    }
+    return wasHitting != isHitting;
+  }
+
+  private android.graphics.Point getScreenCenter() {
+    return new android.graphics.Point(arFragment.getArSceneView().getWidth()/2, arFragment.getArSceneView().getHeight()/2);
   }
 
   @Override
@@ -338,13 +410,16 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
       config.setDepthMode(Config.DepthMode.AUTOMATIC);
     }
+    config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
   }
 
   @Override
   public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
 
     if (mRenderModel == null) {
-      Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
+      Toast toast = Toast.makeText(this, "モデルを選択してください", Toast.LENGTH_SHORT);
+      toast.setGravity(Gravity.TOP, 0, 0);
+      toast.show();
       return;
     }
 
@@ -609,8 +684,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   public void onLongPress(MotionEvent motionEvent) {
     View parent = (View) arFragment.getArSceneView().getParent();
     parent.showContextMenu(motionEvent.getX(), motionEvent.getY());
-//    parent.showContextMenu();
-
   }
 
   @Override
