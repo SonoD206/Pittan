@@ -23,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,7 +76,7 @@ import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_change_size.ChangeS
 import jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.ProductMenuFragment;
 import jp.ac.jec.cm0120.pittan.util.PictureIO;
 
-public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnTapArPlaneListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
+public class ObjectInstallationActivity extends AppCompatActivity implements FragmentOnAttachListener, BaseArFragment.OnSessionConfigurationListener, ArFragment.OnViewCreatedListener, ProductMenuFragment.OnClickRecyclerViewListener, ChangeSeekbarListener, GestureDetector.OnGestureListener {
 
   private TabLayout mTabLayout;
   private ViewPager2 mViewPager2;
@@ -104,11 +103,12 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// ARCore
   private Renderable mRenderModel;
   private TransformableNode mModel;
+  private TransformableNode tmpModel;
   private AnchorNode anchorNode;
   private Texture texture;
-  private final PointerDrawable pointer = new PointerDrawable();
   private boolean isTracking;
   private boolean isHitting;
+  private boolean isFirstFocus = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -166,12 +166,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onWindowFocusChanged(boolean hasFocus) {
     super.onWindowFocusChanged(hasFocus);
-    int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
-    ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
-    ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
-    margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin + 16, shutterButtonMarginBottom + 60);
-    imageButtonShutter.setVisibility(View.VISIBLE);
-    imageButtonShutter.setLayoutParams(margin);
+      if (isFirstFocus){
+        int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
+        ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
+        ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
+        margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin + 16, shutterButtonMarginBottom + 60);
+        imageButtonShutter.setVisibility(View.VISIBLE);
+        imageButtonShutter.setLayoutParams(margin);
+      }
+      isFirstFocus = false;
   }
 
   @Override
@@ -207,6 +210,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     }
     loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format(AppConstant.Objection.MODEL_IMAGE_EXPAND_FORMAT, textureName)));
     delete3DModel();
+//    set3dModel();
     return super.onContextItemSelected(item);
   }
 
@@ -330,7 +334,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       arFragment = (ArFragment) fragment;
       arFragment.setOnSessionConfigurationListener(this);
       arFragment.setOnViewCreatedListener(this);
-      arFragment.setOnTapArPlaneListener(this);
     }
   }
 
@@ -339,6 +342,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     arFragment.setOnViewCreatedListener(null);
     // Fine adjust the maximum frame rate
     arSceneView.setFrameRateFactor(SceneView.FrameRate.FULL);
+    ArSceneViewKt.setLightEstimationConfig(arSceneView, LightEstimationConfig.DISABLED);
     arSceneView.getScene().addOnUpdateListener(frameTime -> {
       arFragment.onUpdate(frameTime);
       onUpdate();
@@ -359,11 +363,10 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     if (isTracking) {
       boolean hitTestChanged = updateHitTest();
       if (hitTestChanged) {
-        Toast toast;
         if (mModel != null) {
           AppLog.info("モデルがあるよ");
         } else {
-          toast = Toast.makeText(this, "モデルの設置ができます", Toast.LENGTH_SHORT);
+          Toast toast = Toast.makeText(this, "モデルの設置ができます", Toast.LENGTH_SHORT);
           toast.setGravity(Gravity.TOP, 0, 0);
           toast.show();
         }
@@ -412,55 +415,51 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
   }
 
-  @Override
-  public void onTapPlane(HitResult hitResult, Plane plane, MotionEvent motionEvent) {
+  private void set3dModel() {
+    Frame frame = arFragment.getArSceneView().getArFrame();
+    android.graphics.Point pt = getScreenCenter();
+    List<HitResult> hits;
+    if (frame != null) {
+      hits = frame.hitTest(pt.x, pt.y);
+      for (HitResult hit : hits) {
+        Trackable hitResult = hit.getTrackable();
+        if (hitResult instanceof Plane &&
+                ((Plane) hitResult).isPoseInPolygon(hit.getHitPose())) {
+          // Create the Anchor.
+          Anchor anchor = hitResult.createAnchor(hit.getHitPose());
+          anchorNode = new AnchorNode(anchor);
+          anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-    if (mRenderModel == null) {
-      Toast toast = Toast.makeText(this, "モデルを選択してください", Toast.LENGTH_SHORT);
-      toast.setGravity(Gravity.TOP, 0, 0);
-      toast.show();
-      return;
-    }
+          // Create the transformable model and add it to the anchor;
+          mModel = new TransformableNode(arFragment.getTransformationSystem());
+          mModel.getScaleController().setMaxScale(1.0f);
+          mModel.getScaleController().setMinScale(0.01f);
+          mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
+          /// ここを変えたら最初のポジションが変わる
+          mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
+          /// ここを変えたら最初の大きさが変わる
+          mModel.setLocalScale(new Vector3(0.05f, 0.05f, 0.05f));
+          mModel.setParent(anchorNode);
 
-    ArSceneViewKt.setLightEstimationConfig(arFragment.getArSceneView(), LightEstimationConfig.DISABLED);
-    /// 垂直面と平面の分岐
-    if (plane.getType().equals(Plane.Type.HORIZONTAL_UPWARD_FACING) && mModel == null) {
-      // Create the Anchor.
-      Anchor anchor = hitResult.createAnchor();
-      anchorNode = new AnchorNode(anchor);
-      anchorNode.setParent(arFragment.getArSceneView().getScene());
+          if (texture != null) {
+            RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
+            modelInstance.getMaterial().setInt(AppConstant.Objection.BASE_COLOR_INDEX, 0);
+            modelInstance.getMaterial().setTexture(AppConstant.Objection.BASE_COLOR_MAP, texture);
+          } else {
+            mModel.setRenderable(mRenderModel);
+          }
+          mModel.select();
 
-      // Create the transformable model and add it to the anchor;
-      mModel = new TransformableNode(arFragment.getTransformationSystem());
-      mModel.getScaleController().setMaxScale(1.0f);
-      mModel.getScaleController().setMinScale(0.1f);
-
-      mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
-
-      /// ここを変えたら最初のポジションが変わる
-      mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
-
-      /// ここを変えたら最初の大きさが変わる
-      mModel.setLocalScale(new Vector3(0.3f, 0.3f, 0.3f));
-
-      mModel.setParent(anchorNode);
-
-      if (texture != null) {
-        RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
-        modelInstance.getMaterial().setInt(AppConstant.Objection.BASE_COLOR_INDEX, 0);
-        modelInstance.getMaterial().setTexture(AppConstant.Objection.BASE_COLOR_MAP, texture);
-      } else {
-        mModel.setRenderable(mRenderModel);
-      }
-      mModel.select();
-
-      mModel.setOnTouchListener(new Node.OnTouchListener() {
-        @Override
-        public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
-          ObjectInstallationActivity.super.onTouchEvent(motionEvent);
-          return mDetector.onTouchEvent(motionEvent);
+          mModel.setOnTouchListener(new Node.OnTouchListener() {
+            @Override
+            public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
+              ObjectInstallationActivity.super.onTouchEvent(motionEvent);
+              return mDetector.onTouchEvent(motionEvent);
+            }
+          });
         }
-      });
+        break;
+      }
     }
   }
 
@@ -527,11 +526,19 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   /// Interfaceの実装
   @Override
-  public void onClickRecyclerItem(String modelName) {
+  public void onClickRecyclerItem(String modelName, String beforeModelName) {
+    AppLog.info(modelName + ":" +beforeModelName);
+    if (mRenderModel == null || !beforeModelName.equals(modelName)){
+      Toast.makeText(this, "モデルのロードをしています。もう一度選択してください", Toast.LENGTH_SHORT).show();
+      loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
+      return;
+    }
     if (mModel != null) {
+      AppLog.info("mModel != null");
+      tmpModel = mModel;
       delete3DModel();
     }
-    loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
+    set3dModel();
   }
 
   ///写真を撮る
@@ -616,6 +623,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void delete3DModel() {
     anchorNode.setAnchor(null);
     anchorNode.removeChild(mModel);
+    tmpModel = mModel;
     mModel = null;
   }
 
@@ -666,7 +674,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   @Override
   public void onShowPress(MotionEvent motionEvent) {
-    AppLog.info("hoge");
   }
 
   @Override
