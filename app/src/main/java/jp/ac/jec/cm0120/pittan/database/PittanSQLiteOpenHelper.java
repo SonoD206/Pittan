@@ -41,8 +41,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
             ", product_type TEXT" +
             ", product_comment TEXT" +
             ", product_recommended_size REAL" +
-            ", product_height REAL" +
-            ", product_width REAL)";
+            ", product_height INTGER" +
+            ", product_width INTGER)";
 
     String createProductImageTable = "CREATE TABLE " +
             TABLE_PRODUCT_IMAGE +
@@ -91,8 +91,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
       while (cursor.moveToNext()){
         PittanProductDataModel temps = new PittanProductDataModel();
         temps.setPlaceName(cursor.getString(0));
-        temps.setProductHeight(cursor.getFloat(1));
-        temps.setProductWidth(cursor.getFloat(2));
+        temps.setProductHeight(cursor.getInt(1));
+        temps.setProductWidth(cursor.getInt(2));
         temps.setProductCategory(cursor.getString(3));
         temps.setProductImagePath(cursor.getString(4));
         temps.setPlaceID(cursor.getInt(5));
@@ -127,8 +127,8 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
       while (cursor.moveToNext()){
         PittanProductDataModel tmp = new PittanProductDataModel();
         tmp.setPlaceName(cursor.getString(0));
-        tmp.setProductHeight(cursor.getFloat(1));
-        tmp.setProductWidth(cursor.getFloat(2));
+        tmp.setProductHeight(cursor.getInt(1));
+        tmp.setProductWidth(cursor.getInt(2));
         tmp.setProductCategory(cursor.getString(3));
         tmp.setProductComment(cursor.getString(4));
         tmp.setProductImagePath(cursor.getString(5));
