@@ -54,8 +54,10 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
     holder.itemView.setOnClickListener(view -> {
       if (onItemClickListener != null) {
         if (position != RecyclerView.NO_POSITION) {
+//          holder.imageViewType.setVisibility(View.VISIBLE);
           String modelName = productMenuModelArrayList.get(position).getItemModelName();
           onItemClickListener.onItemClick(modelName);
+
         }
       }
     });
@@ -68,12 +70,14 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
 
   public static class ProductMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
     private final ImageView imageViewModel;
+    private final ImageView imageViewType;
     private final TextView textViewModelType;
 
     public ProductMenuRecyclerViewHolder(@NonNull View itemView) {
       super(itemView);
       imageViewModel = itemView.findViewById(R.id.image_view_model);
       textViewModelType = itemView.findViewById(R.id.text_view_model_type);
+      imageViewType = itemView.findViewById(R.id.image_view_check);
     }
   }
 }
