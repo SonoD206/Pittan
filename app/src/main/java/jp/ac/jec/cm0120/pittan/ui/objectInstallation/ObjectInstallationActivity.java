@@ -103,7 +103,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// ARCore
   private Renderable mRenderModel;
   private TransformableNode mModel;
-  private TransformableNode tmpModel;
   private AnchorNode anchorNode;
   private Texture texture;
   private boolean isTracking;
@@ -450,7 +449,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
           /// ここを変えたら最初の大きさが変わる
           mModel.setLocalScale(new Vector3(0.05f, 0.05f, 0.05f));
           mModel.setParent(anchorNode);
-
           if (texture != null) {
             RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
             modelInstance.getMaterial().setInt(AppConstant.Objection.BASE_COLOR_INDEX, 0);
@@ -542,9 +540,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
     }
 
-    if (mModel != null && (!modelName.equals(beforeModelName))){
+    if (mModel != null && (!modelName.equals(beforeModelName))) {
       AppLog.info("mModel != null");
-      tmpModel = mModel;
       delete3DModel();
       Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
       toast.setGravity(Gravity.TOP, 0, 0);
@@ -557,7 +554,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
         }
       }, 2000);
 
-    } else if (!modelName.equals(beforeModelName)){
+    } else if (!modelName.equals(beforeModelName)) {
 
       Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
       toast.setGravity(Gravity.TOP, 0, 0);
@@ -660,7 +657,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void delete3DModel() {
     anchorNode.setAnchor(null);
     anchorNode.removeChild(mModel);
-    tmpModel = mModel;
     mModel = null;
   }
 
@@ -671,19 +667,19 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       return;
     }
     if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH) && modelChangeValue > beforeChangeValue) {
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x + modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
-      anchorNode.setLocalScale(finalScale);
-      mModel.setLocalScale(finalScale);
+      Vector3 finalScale = new Vector3(anchorNode.getWorldScale().x + modelChangeValue, anchorNode.getWorldScale().y, anchorNode.getWorldScale().z);
+      anchorNode.setWorldScale(finalScale);
+      mModel.setWorldScale(finalScale);
     } else if (kindName.equals(AppConstant.Objection.CHANGE_WIDTH) && modelChangeValue < beforeChangeValue) {
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x - modelChangeValue, anchorNode.getLocalScale().y, anchorNode.getLocalScale().z);
+      Vector3 finalScale = new Vector3(anchorNode.getWorldScale().x - modelChangeValue, anchorNode.getWorldScale().y, anchorNode.getWorldScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
     } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT) && modelChangeValue > beforeChangeValue) {
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y + modelChangeValue, anchorNode.getLocalScale().z);
+      Vector3 finalScale = new Vector3(anchorNode.getWorldScale().x, anchorNode.getWorldScale().y + modelChangeValue, anchorNode.getWorldScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
     } else if (kindName.equals(AppConstant.Objection.CHANGE_HEIGHT) && modelChangeValue < beforeChangeValue) {
-      Vector3 finalScale = new Vector3(anchorNode.getLocalScale().x, anchorNode.getLocalScale().y - modelChangeValue, anchorNode.getLocalScale().z);
+      Vector3 finalScale = new Vector3(anchorNode.getWorldScale().x, anchorNode.getWorldScale().y - modelChangeValue, anchorNode.getWorldScale().z);
       anchorNode.setLocalScale(finalScale);
       mModel.setLocalScale(finalScale);
     }
@@ -699,13 +695,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void getModelSize() {
-    AppLog.info("" + mModel.getWorldScale().x);
-    AppLog.info("" + mModel.getLocalScale().x);
-    AppLog.info("" + 2000 * mModel.getWorldScale().x);
-    AppLog.info("" + 2000 * mModel.getLocalScale().x);
-
-    mModelScales[0] =  ((double)Math.round((2000 * mModel.getWorldScale().x) * 10))/10;
-    mModelScales[1] = ((double)Math.round((2100 * mModel.getWorldScale().x) * 10))/10;
+    mModelScales[0] = ((double) Math.round((2000 * mModel.getWorldScale().x) * 10)) / 10;
+    mModelScales[1] = ((double) Math.round((2100 * mModel.getWorldScale().x) * 10)) / 10;
     mModelScales[2] = mModel.getLocalScale().z;
   }
 
