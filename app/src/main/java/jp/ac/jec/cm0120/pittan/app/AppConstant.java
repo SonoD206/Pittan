@@ -33,12 +33,12 @@ public final class AppConstant {
     public static final String HANDLER_THREAD_NAME = "PixelCopier";
     public static final String DATE_FORMAT_PATTERN = "yyyy_MM_dd_HHmm";
     public static final String TEMP_PICTURE_NAME = "temp.jpg";
-    public static final String ALERT_MESSAGE_FORMAT = "縦幅：%scm\n" + "横幅：%scm";
+    public static final String ALERT_MESSAGE_FORMAT = "縦幅：%smm\n" + "横幅：%smm";
     public static final String USER_PICTURE_NAME_FORMAT_PATTERN = "Pittan/%s_3dModel.jpg";
     public static final String MODELS_PATH_FORMAT_PATTERN = "models/%s";
     public static final String TEXTURES_PATH_FORMAT_PATTERN = "textures/%s";
     public static final String ASSETS_FILE_NAME = "models";
-    public static final String DATA_SIZE_FORMAT = "%scm";
+    public static final String DATA_SIZE_FORMAT = "%smm";
     public static final String CHANGE_HEIGHT = "height";
     public static final String CHANGE_WIDTH = "width";
     public static final String EXTRA_MODEL_SIZE_WIDTH = "widthSize";
