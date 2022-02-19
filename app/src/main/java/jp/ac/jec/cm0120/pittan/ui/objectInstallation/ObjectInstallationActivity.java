@@ -94,11 +94,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private String userPhotoFileName;
   private Bitmap mPreviewBitmap;
   private Intent mIntent;
-  private final double[] mModelScales = new double[3];
+  private final int[] mModelScales = new int[3];
   private int transitionNum;
   private GestureDetectorCompat mDetector;
   private int tabHeight;
   private int viewPagerHeight;
+  private int[] modelDoubleSizes = {20985, 22518};
+  private int[] modelSingleSizes = {20994, 21962};
 
   /// ARCore
   private Renderable mRenderModel;
@@ -108,6 +110,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private boolean isTracking;
   private boolean isHitting;
   private boolean isFirstFocus = true;
+  private String modelName = "";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +197,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   public boolean onContextItemSelected(@NonNull MenuItem item) {
     String textureName;
     CharSequence title = item.getTitle();
-    if (getString(R.string.object_installation_texture_name_black).contentEquals(title)) {
+    if (getString(R.string.object_installation_texture_name_brown).contentEquals(title)) {
       textureName = "black";
     } else if (getString(R.string.object_installation_texture_name_blue).contentEquals(title)) {
       textureName = "blue";
@@ -534,7 +537,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String modelName, String beforeModelName) {
-
+    this.modelName = modelName;
     if (mRenderModel == null || !modelName.equals(beforeModelName)) {
       AppLog.info("選択されたモデルと前のモデルの名前が異なる");
       loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
@@ -695,9 +698,22 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void getModelSize() {
-    mModelScales[0] = ((double) Math.round((2000 * mModel.getWorldScale().x) * 10)) / 10;
-    mModelScales[1] = ((double) Math.round((2100 * mModel.getWorldScale().x) * 10)) / 10;
-    mModelScales[2] = mModel.getLocalScale().z;
+
+    AppLog.info("model raw Height"+ mModel.getWorldScale().y);
+    AppLog.info("model raw width"+mModel.getWorldScale().x);
+
+    if (modelName.equals("curtain_double.glb")){
+      AppLog.info("model raw Height"+modelDoubleSizes[0]);
+      AppLog.info("model raw width"+modelDoubleSizes[1]);
+      AppLog.info(""+modelDoubleSizes[1] * mModel.getWorldScale().x);
+      AppLog.info(""+modelDoubleSizes[0] * mModel.getWorldScale().y);
+
+      mModelScales[0] = (int) ((modelDoubleSizes[0] * mModel.getWorldScale().y * 1000)/1000);
+      mModelScales[1] = (int) ((modelDoubleSizes[1] * mModel.getWorldScale().x * 1000)/1000);
+    } else {
+      mModelScales[0] = (int) ((modelSingleSizes[0] * mModel.getWorldScale().y * 1000)/1000);
+      mModelScales[1] = (int) ((modelSingleSizes[1] * mModel.getWorldScale().x * 1000)/1000);
+    }
   }
 
   @Override
