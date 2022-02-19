@@ -57,16 +57,17 @@ public class AddDataActivity extends AppCompatActivity {
   private InputMethodManager mInputMethodManager;
   private String transitionName;
   private Bitmap photoBitmap;
+  private boolean isChangePhoto = false;
 
   ///DBItem
   public static final int PLACE_DELETE_FLAG = 0;
   private float productHeight = 0f;
   private float productWidth = 0f;
   private String productCategory;
-  private String productColorCode;
-  private String productDesign;
-  private String productType;
   private String productImagePath;
+  private int productId;
+  private int placeId;
+  private int productImageId;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class AddDataActivity extends AppCompatActivity {
                 productImagePath = data.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_FILE_PATH);
                 String tempPath = data.getStringExtra(AppConstant.Objection.EXTRA_IMAGE_TEMP_FILE_PATH);
                 setPhotoImage(tempPath);
+                isChangePhoto = true;
               }
             }
     );
@@ -183,6 +185,9 @@ public class AddDataActivity extends AppCompatActivity {
   private void setDetailData(ArrayList<PittanProductDataModel> models) {
     if (models != null){
       for (PittanProductDataModel model: models) {
+        productId = model.getProductID();
+        placeId = model.getPlaceID();
+        productImageId = model.getProductImageID();
         editLocation.setText(model.getPlaceName());
         editHeightSize.setText(String.valueOf(model.getProductHeight()));
         editWidthSize.setText(String.valueOf(model.getProductWidth()));
@@ -222,11 +227,13 @@ public class AddDataActivity extends AppCompatActivity {
         productWidth = Float.parseFloat(editWidthSize.getText().toString());
       }
       if (Objects.requireNonNull(editLocation.getText()).toString().length() != 0) {
-        insertPittanDB();
-        try {
-          PictureIO.saveBitmapToDisk(photoBitmap,productImagePath);
-        } catch (IOException e) {
-          e.printStackTrace();
+
+        if (transitionName.equals(AppConstant.Objection.ACTIVITY_NAME)){
+          insertPittanDB();
+          savePhoto();
+        } else if (transitionName.equals(AppConstant.Detail.ACTIVITY_NAME)){
+          upDatePittanDB();
+          if (isChangePhoto) savePhoto();
         }
         mIntent = new Intent(this, HomeActivity.class);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -251,9 +258,6 @@ public class AddDataActivity extends AppCompatActivity {
     model.setProductHeight(productHeight);
     model.setProductWidth(productWidth);
     model.setProductCategory(productCategory);
-    model.setProductColorCode(productColorCode);
-    model.setProductDesign(productDesign);
-    model.setProductType(productType);
     model.setProductComment(Objects.requireNonNull(editComments.getText()).toString());
 
     ///productImageテーブル
@@ -264,6 +268,35 @@ public class AddDataActivity extends AppCompatActivity {
       helper.insertProductData(model);
     } catch (RuntimeException runtimeException) {
       runtimeException.printStackTrace();
+    }
+  }
+
+  private void upDatePittanDB() {
+    PittanProductDataModel model = new PittanProductDataModel();
+
+    model.setPlaceName(Objects.requireNonNull(editLocation.getText()).toString());
+    model.setProductHeight(productHeight);
+    model.setProductWidth(productWidth);
+    model.setProductCategory(productCategory);
+    model.setProductComment(Objects.requireNonNull(editComments.getText()).toString());
+    model.setProductImagePath(productImagePath);
+
+    PittanSQLiteOpenHelper helper = new PittanSQLiteOpenHelper(this);
+    try {
+      helper.isUpdatePlaceData(model, placeId);
+      helper.isUpdateProductDate(model, productId);
+      helper.isUpdateProductImagePath(productImagePath, productImageId);
+    } catch (RuntimeException runtimeException) {
+      runtimeException.printStackTrace();
+    }
+
+  }
+
+  private void savePhoto() {
+    try {
+      PictureIO.saveBitmapToDisk(photoBitmap,productImagePath);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 

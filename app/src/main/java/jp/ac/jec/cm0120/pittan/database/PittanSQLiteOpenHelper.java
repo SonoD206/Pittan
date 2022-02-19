@@ -7,11 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -73,7 +70,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   // region SQLite SELECT statement
 
   // Get Data Display In CardView
-  public ArrayList<PittanProductDataModel> getSelectCardData(){
+  public ArrayList<PittanProductDataModel> getSelectCardData() {
     ArrayList<PittanProductDataModel> arrayList = new ArrayList<>();
     String selectAllSql = "SELECT place_name,product_height,product_width,product_category,product_image_path,place_id FROM product " +
             "LEFT OUTER JOIN place ON product.product_id = place.product_id " +
@@ -81,14 +78,14 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
             "WHERE place_delete_flag = 0";
 
     SQLiteDatabase db = getReadableDatabase();
-    if (db == null){
+    if (db == null) {
       return null;
     }
 
     try {
       @SuppressLint("Recycle")
-      Cursor cursor = db.rawQuery(selectAllSql,null);
-      while (cursor.moveToNext()){
+      Cursor cursor = db.rawQuery(selectAllSql, null);
+      while (cursor.moveToNext()) {
         PittanProductDataModel temps = new PittanProductDataModel();
         temps.setPlaceName(cursor.getString(0));
         temps.setProductHeight(cursor.getInt(1));
@@ -100,7 +97,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
         arrayList.add(temps);
       }
 
-    } catch (SQLiteException e){
+    } catch (SQLiteException e) {
       e.printStackTrace();
     } finally {
       db.close();
@@ -109,22 +106,22 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     return arrayList;
   }
 
-  public ArrayList<PittanProductDataModel> getSelectDetailData(int placeID){
+  public ArrayList<PittanProductDataModel> getSelectDetailData(int placeID) {
     ArrayList<PittanProductDataModel> ary = new ArrayList<>();
-    String selectDetailItemSql = "SELECT place_name,product_height,product_width,product_category,product_comment,product_image_path,place_id FROM product " +
+    String selectDetailItemSql = "SELECT place_name,product_height,product_width,product_category,product_comment,product_image_path,place_id,place.product_id, product_image.product_id FROM product " +
             "LEFT OUTER JOIN place ON product.product_id = place.product_id " +
             "LEFT OUTER JOIN product_image ON product.product_id = product_image.product_id " +
             "WHERE place_id = " + placeID;
 
     SQLiteDatabase db = getReadableDatabase();
-    if (db == null){
+    if (db == null) {
       return null;
     }
 
     try {
       @SuppressLint("Recycle")
-      Cursor cursor = db.rawQuery(selectDetailItemSql,null);
-      while (cursor.moveToNext()){
+      Cursor cursor = db.rawQuery(selectDetailItemSql, null);
+      while (cursor.moveToNext()) {
         PittanProductDataModel tmp = new PittanProductDataModel();
         tmp.setPlaceName(cursor.getString(0));
         tmp.setProductHeight(cursor.getInt(1));
@@ -132,9 +129,11 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
         tmp.setProductCategory(cursor.getString(3));
         tmp.setProductComment(cursor.getString(4));
         tmp.setProductImagePath(cursor.getString(5));
+        tmp.setPlaceID(cursor.getInt(6));
+        tmp.setProductID(cursor.getInt(7));
         ary.add(tmp);
       }
-    } catch (SQLiteException e){
+    } catch (SQLiteException e) {
       e.printStackTrace();
     } finally {
       db.close();
@@ -149,11 +148,7 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   public boolean insertProductData(PittanProductDataModel item) {
     ContentValues contentValues = new ContentValues();
     contentValues.put("product_category", item.getProductCategory());
-    contentValues.put("product_color_code", item.getProductColorCode());
-    contentValues.put("product_design", item.getProductDesign());
-    contentValues.put("product_type", item.getProductType());
     contentValues.put("product_comment", item.getProductComment());
-    contentValues.put("product_recommended_size", item.getProductComment());
     contentValues.put("product_height", item.getProductHeight());
     contentValues.put("product_width", item.getProductWidth());
 
@@ -185,7 +180,6 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
     long ret = -1;
 
     try {
-
       ret = db.insert(TABLE_PLACE, null, contentValues);
     } catch (SQLiteException e) {
       e.printStackTrace();
@@ -218,17 +212,80 @@ public class PittanSQLiteOpenHelper extends SQLiteOpenHelper {
   // endregion
 
   /// region SQLite UPDATE statement
-  // Update place TABLE
-  public boolean isUpdatePlaceDeleteFlag(String placeID){
+
+  public boolean isUpdatePlaceDeleteFlag(String placeID) {
     ContentValues contentValues = new ContentValues();
-    contentValues.put("place_delete_flag",1);
+    contentValues.put("place_delete_flag", 1);
 
     SQLiteDatabase db = getWritableDatabase();
     long ret = -1;
 
     try {
-      ret = db.update(TABLE_PLACE,contentValues,"place_id = " + placeID,null);
-    } catch (SQLiteException e){
+      ret = db.update(TABLE_PLACE, contentValues, "place_id = " + placeID, null);
+    } catch (SQLiteException e) {
+      e.printStackTrace();
+    } finally {
+      db.close();
+    }
+    return ret > 0;
+  }
+
+  public boolean isUpdateProductDate(PittanProductDataModel model, int productId) {
+    ContentValues contentValues = new ContentValues();
+
+    if (model.getProductCategory().length() > 0) {
+      contentValues.put("product_category", model.getProductCategory());
+    }
+    if (model.getProductHeight() > 0) {
+      contentValues.put("product_height", model.getProductHeight());
+    }
+    if (model.getProductWidth() > 0) {
+      contentValues.put("product_width", model.getProductWidth());
+    }
+    if (model.getProductComment().length() != 0) {
+      contentValues.put("product_comment", model.getProductComment());
+    }
+
+    SQLiteDatabase db = getWritableDatabase();
+    long ret = -1;
+
+    try {
+      ret = db.update(TABLE_PRODUCT, contentValues, "product_id = " + productId, null);
+    } catch (SQLiteException e) {
+      e.printStackTrace();
+    } finally {
+      db.close();
+    }
+    return ret > 0;
+  }
+
+  public boolean isUpdatePlaceData(PittanProductDataModel model, int placeId) {
+    ContentValues contentValues = new ContentValues();
+    contentValues.put("place_name", model.getPlaceName());
+
+    SQLiteDatabase db = getWritableDatabase();
+    long ret = -1;
+
+    try {
+      ret = db.update(TABLE_PLACE, contentValues, "place_id = " + placeId, null);
+    } catch (SQLiteException e) {
+      e.printStackTrace();
+    } finally {
+      db.close();
+    }
+    return ret > 0;
+  }
+
+  public boolean isUpdateProductImagePath(String productImageId, int productImagePath) {
+    ContentValues contentValues = new ContentValues();
+    contentValues.put("product_image_path", productImagePath);
+
+    SQLiteDatabase db = getWritableDatabase();
+    long ret = -1;
+
+    try {
+      ret = db.update(TABLE_PRODUCT_IMAGE, contentValues, "product_image_id = " + productImageId, null);
+    } catch (SQLiteException e) {
       e.printStackTrace();
     } finally {
       db.close();
