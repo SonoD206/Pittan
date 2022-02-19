@@ -94,7 +94,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private String userPhotoFileName;
   private Bitmap mPreviewBitmap;
   private Intent mIntent;
-  private final float[] mModelScales = new float[3];
+  private final double[] mModelScales = new double[3];
   private int transitionNum;
   private GestureDetectorCompat mDetector;
   private int tabHeight;
@@ -166,15 +166,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onWindowFocusChanged(boolean hasFocus) {
     super.onWindowFocusChanged(hasFocus);
-      if (isFirstFocus){
-        int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
-        ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
-        ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
-        margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin + 16, shutterButtonMarginBottom + 60);
-        imageButtonShutter.setVisibility(View.VISIBLE);
-        imageButtonShutter.setLayoutParams(margin);
-      }
-      isFirstFocus = false;
+    if (isFirstFocus) {
+      int shutterButtonMarginBottom = tabHeight + viewPagerHeight;
+      ViewGroup.LayoutParams params = imageButtonShutter.getLayoutParams();
+      ViewGroup.MarginLayoutParams margin = (ViewGroup.MarginLayoutParams) params;
+      margin.setMargins(margin.leftMargin, margin.topMargin, margin.rightMargin + 16, shutterButtonMarginBottom + 60);
+      imageButtonShutter.setVisibility(View.VISIBLE);
+      imageButtonShutter.setLayoutParams(margin);
+    }
+    isFirstFocus = false;
   }
 
   @Override
@@ -209,8 +209,18 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       textureName = "";
     }
     loadTexture(getPath(AppConstant.Objection.TEXTURE_NUM, String.format(AppConstant.Objection.MODEL_IMAGE_EXPAND_FORMAT, textureName)));
+    Toast toast = Toast.makeText(this, "テクスチャを読み込んでいます。", Toast.LENGTH_SHORT);
+    toast.setGravity(Gravity.TOP, 0, 0);
+    toast.show();
     delete3DModel();
-//    set3dModel();
+
+    Handler handler = new Handler(getMainLooper());
+    handler.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        set3dModel();
+      }
+    }, 2000);
     return super.onContextItemSelected(item);
   }
 
@@ -449,7 +459,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
             mModel.setRenderable(mRenderModel);
           }
           mModel.select();
-
           mModel.setOnTouchListener(new Node.OnTouchListener() {
             @Override
             public boolean onTouch(HitTestResult hitTestResult, MotionEvent motionEvent) {
@@ -527,18 +536,46 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   /// Interfaceの実装
   @Override
   public void onClickRecyclerItem(String modelName, String beforeModelName) {
-    AppLog.info(modelName + ":" +beforeModelName);
-    if (mRenderModel == null || !beforeModelName.equals(modelName)){
-      Toast.makeText(this, "モデルのロードをしています。もう一度選択してください", Toast.LENGTH_SHORT).show();
+
+    if (mRenderModel == null || !modelName.equals(beforeModelName)) {
+      AppLog.info("選択されたモデルと前のモデルの名前が異なる");
       loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
-      return;
     }
-    if (mModel != null) {
+
+    if (mModel != null && (!modelName.equals(beforeModelName))){
       AppLog.info("mModel != null");
       tmpModel = mModel;
       delete3DModel();
+      Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
+      toast.setGravity(Gravity.TOP, 0, 0);
+      toast.show();
+      Handler handler = new Handler(getMainLooper());
+      handler.postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          set3dModel();
+        }
+      }, 2000);
+
+    } else if (!modelName.equals(beforeModelName)){
+
+      Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
+      toast.setGravity(Gravity.TOP, 0, 0);
+      toast.show();
+      Handler handler = new Handler(getMainLooper());
+      handler.postDelayed(new Runnable() {
+        @Override
+        public void run() {
+          set3dModel();
+        }
+      }, 2000);
+
+    } else {
+      Toast toast = Toast.makeText(this, "すでに選択されています", Toast.LENGTH_SHORT);
+      toast.setGravity(Gravity.TOP, 0, 0);
+      toast.show();
     }
-    set3dModel();
+
   }
 
   ///写真を撮る
@@ -662,8 +699,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void getModelSize() {
-    mModelScales[0] = mModel.getLocalScale().x;
-    mModelScales[1] = mModel.getLocalScale().y;
+    AppLog.info("" + mModel.getWorldScale().x);
+    AppLog.info("" + mModel.getLocalScale().x);
+    AppLog.info("" + 2000 * mModel.getWorldScale().x);
+    AppLog.info("" + 2000 * mModel.getLocalScale().x);
+
+    mModelScales[0] =  ((double)Math.round((2000 * mModel.getWorldScale().x) * 10))/10;
+    mModelScales[1] = ((double)Math.round((2100 * mModel.getWorldScale().x) * 10))/10;
     mModelScales[2] = mModel.getLocalScale().z;
   }
 
