@@ -2,6 +2,7 @@ package jp.ac.jec.cm0120.pittan.ui.add_data;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -226,7 +229,7 @@ public class AddDataActivity extends AppCompatActivity {
       if (Objects.requireNonNull(editWidthSize.getText()).toString().length() != 0) {
         productWidth = Float.parseFloat(editWidthSize.getText().toString());
       }
-      if (Objects.requireNonNull(editLocation.getText()).toString().length() != 0) {
+      if (Objects.requireNonNull(editLocation.getText()).toString().length() != 0 && productCategory.equals(getString(R.string.add_segment_first_item))) {
 
         if (transitionName.equals(AppConstant.Objection.ACTIVITY_NAME)){
           insertPittanDB();
@@ -239,6 +242,12 @@ public class AddDataActivity extends AppCompatActivity {
         mIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         mIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(mIntent);
+      } else if (productCategory.equals(getString(R.string.add_segment_second_item))){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("大変申し訳ございません")
+                .setMessage("只今ラグは開発中でございます。楽しみにしていただいた方にはご迷惑をおかけしますが、ご理解のほどよろしくお願いいたします。")
+                .setPositiveButton(getString(R.string.ok), null)
+                .setNegativeButton(getString(R.string.cancel), null).show();
       } else {
         Snackbar.make(mLinearLayout, "設置場所を入力してください", Snackbar.LENGTH_SHORT).setDuration(1000).show();
       }
