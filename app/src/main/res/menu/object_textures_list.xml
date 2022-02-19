@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
       android:id="@+id/texture_black"
-      android:title="@string/object_installation_texture_name_black"/>
+      android:title="@string/object_installation_texture_name_brown"/>
   <item
       android:id="@+id/texture_blue"
       android:title="@string/object_installation_texture_name_blue" />
