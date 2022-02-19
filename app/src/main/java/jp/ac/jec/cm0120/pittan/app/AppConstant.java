@@ -28,7 +28,6 @@ public final class AppConstant {
     public static final String ACTIVITY_NAME = "Objection";
     public static final String EXTRA_IMAGE_TEMP_FILE_PATH = "imageTempPath";
     public static final String EXTRA_IMAGE_FILE_PATH = "imagePath";
-    public static final String FIRST_MODEL = "white_curtain.glb";
     public static final String BASE_COLOR_INDEX = "baseColorIndex";
     public static final String BASE_COLOR_MAP = "baseColorMap";
     public static final String HANDLER_THREAD_NAME = "PixelCopier";

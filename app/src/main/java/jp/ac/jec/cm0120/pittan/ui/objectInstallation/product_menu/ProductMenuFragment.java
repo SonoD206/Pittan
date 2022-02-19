@@ -2,8 +2,6 @@ package jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
@@ -26,7 +24,7 @@ public class ProductMenuFragment extends Fragment {
 
   /// Interface
   public interface OnClickRecyclerViewListener {
-    void onClickRecyclerItem(String textureName);
+    void onClickRecyclerItem(String textureName, String beforeName);
   }
 
   /// Components
@@ -35,7 +33,6 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
-  private ArrayList<Integer> productMenuImageArrayList;
 
   public ProductMenuFragment() {}
 
@@ -71,11 +68,11 @@ public class ProductMenuFragment extends Fragment {
     productMenuArrayList = getProductMenuData(productMenuCurtainName, productMenuCurtainImage);
   }
 
-  private ArrayList<ProductMenuModel> getProductMenuData(ArrayList<String> textureNames, ArrayList<Integer> modelImages) {
+  private ArrayList<ProductMenuModel> getProductMenuData(ArrayList<String> modelNames, ArrayList<Integer> modelImages) {
     ArrayList<ProductMenuModel> ary = new ArrayList<>();
-    for (int i = 0; i < textureNames.size(); i++) {
+    for (int i = 0; i < modelNames.size(); i++) {
       ProductMenuModel tmp = new ProductMenuModel();
-      tmp.setItemModelName(textureNames.get(i));
+      tmp.setItemModelName(modelNames.get(i));
       tmp.setItemModelImage(modelImages.get(i));
       ary.add(tmp);
     }
@@ -107,9 +104,11 @@ public class ProductMenuFragment extends Fragment {
     ProductMenuRecyclerViewAdapter productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
     productMenuRecyclerView.setAdapter(productMenuAdapter);
     productMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
+    AtomicReference<String> beforeName = new AtomicReference<>("");
     productMenuAdapter.setOnItemClickListener(modelName -> {
       if (mOnClickRecyclerViewListener != null) {
-        mOnClickRecyclerViewListener.onClickRecyclerItem(modelName);
+        mOnClickRecyclerViewListener.onClickRecyclerItem(modelName, beforeName.get());
+        beforeName.set(modelName);
       }
     });
   }

@@ -48,10 +48,10 @@ public class ProductChangeSizeFragment extends Fragment {
 
   private void buildSeekbar(View view) {
     seekBarHeight = view.findViewById(R.id.seek_bar_model_vertical);
-    seekBarHeight.setMax(10);
+    seekBarHeight.setMax(50);
     seekBarHeight.setProgress(0);
     seekBarWidth = view.findViewById(R.id.seek_bar_model_horizontal);
-    seekBarWidth.setMax(10);
+    seekBarWidth.setMax(50);
     seekBarWidth.setProgress(0);
   }
 
@@ -61,7 +61,7 @@ public class ProductChangeSizeFragment extends Fragment {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         float tmpValue = seekBar.getProgress();
-        float modelVerticalValue = tmpValue / 100;
+        float modelVerticalValue = tmpValue / 50;
         if (changeSeekbarListener != null){
           changeSeekbarListener.changeSeekbar(modelVerticalValue,beforeChangeValue,AppConstant.Objection.CHANGE_HEIGHT);
         }
@@ -82,7 +82,7 @@ public class ProductChangeSizeFragment extends Fragment {
       @Override
       public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         float tmpValue = seekBar.getProgress();
-        float modelHorizontalValue = tmpValue / 100;
+        float modelHorizontalValue = tmpValue / 50;
         if (changeSeekbarListener != null){
           changeSeekbarListener.changeSeekbar(modelHorizontalValue,beforeChangeValue, AppConstant.Objection.CHANGE_WIDTH);
         }
