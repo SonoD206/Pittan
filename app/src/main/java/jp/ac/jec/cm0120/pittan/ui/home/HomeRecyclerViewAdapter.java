@@ -64,13 +64,18 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
   @SuppressLint("SetTextI18n")
   @Override
   public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
-    PittanProductDataModel model = pittanProductDataModelArrayList.get(position);
-    holder.textViewDataTitle.setText(model.getPlaceName());
-    holder.textViewDataHeight.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductHeight()));
-    holder.textViewDataWidth.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductWidth()));
-    holder.textViewCategory.setText(model.getProductCategory());
-    if (model.getProductImagePath() != null){
-      holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
+    /* FIXME: 2022/02/20 getPlaceNameがNULL */
+    try {
+      PittanProductDataModel model = pittanProductDataModelArrayList.get(position);
+      holder.textViewDataTitle.setText(model.getPlaceName());
+      holder.textViewDataHeight.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductHeight()));
+      holder.textViewDataWidth.setText(String.format(AppConstant.Objection.DATA_SIZE_FORMAT,model.getProductWidth()));
+      holder.textViewCategory.setText(model.getProductCategory());
+      if (model.getProductImagePath() != null){
+        holder.imageViewPhoto.setImageBitmap(PictureIO.outputPicture(model.getProductImagePath()));
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -108,16 +113,20 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
   // Cellを削除した時に呼ばれる
   public void deleteItem(int position) {
-    mRecentlyDeletedItem = pittanProductDataModelArrayList.get(position);
-    mRecentlyDeletedItemPosition = position;
+    /* FIXME: 2022/02/20 IndexOutOfBounds pittanProductDataModelArrayListが削除→元に戻す→削除で再現 */
+    try {
+      mRecentlyDeletedItem = pittanProductDataModelArrayList.get(position);
+      mRecentlyDeletedItemPosition = position;
 
-    String placeName = pittanProductDataModelArrayList.get(position).getPlaceName();
-    String placeID = String.valueOf(pittanProductDataModelArrayList.get(position).getPlaceID());
+      String placeName = pittanProductDataModelArrayList.get(position).getPlaceName();
+      String placeID = String.valueOf(pittanProductDataModelArrayList.get(position).getPlaceID());
 
-    pittanProductDataModelArrayList.remove(position);
-    notifyItemRemoved(position);
-
-    snackbarListener.showUndoSnackbar(position, placeName, placeID);
+      pittanProductDataModelArrayList.remove(position);
+      notifyItemRemoved(position);
+      snackbarListener.showUndoSnackbar(position, placeName, placeID);
+    } catch (Exception e){
+      e.printStackTrace();
+    }
   }
 
   public void undoDelete() {
