@@ -6,6 +6,15 @@ public class ProductMenuModel {
 
   private int itemModelImage;
   private String itemModelName;
+  private String itemModelType;
+
+  public String getItemModelType() {
+    return itemModelType;
+  }
+
+  public void setItemModelType(String itemModelType) {
+    this.itemModelType = itemModelType;
+  }
 
   public int getItemModelImage() {
     return itemModelImage;

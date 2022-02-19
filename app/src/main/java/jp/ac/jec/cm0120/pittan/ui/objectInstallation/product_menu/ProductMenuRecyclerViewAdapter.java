@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +50,7 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
 
     int itemMenuImage = productMenuModelArrayList.get(position).getItemModelImage();
     holder.imageViewModel.setImageResource(itemMenuImage);
+    holder.textViewModelType.setText(productMenuModelArrayList.get(position).getItemModelType());
     holder.itemView.setOnClickListener(view -> {
       if (onItemClickListener != null) {
         if (position != RecyclerView.NO_POSITION) {
@@ -66,10 +68,12 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
 
   public static class ProductMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
     private final ImageView imageViewModel;
+    private final TextView textViewModelType;
 
     public ProductMenuRecyclerViewHolder(@NonNull View itemView) {
       super(itemView);
       imageViewModel = itemView.findViewById(R.id.image_view_model);
+      textViewModelType = itemView.findViewById(R.id.text_view_model_type);
     }
   }
 }

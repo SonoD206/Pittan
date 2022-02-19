@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="60dp"
-    android:layout_height="match_parent"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginTop="12dp"
-    app:cardCornerRadius="8dp"
-    app:strokeColor="@color/black"
-    app:strokeWidth="1dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-  <ImageView
-      android:id="@+id/image_view_model"
-      android:layout_width="match_parent"
+  <jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView
+      android:layout_width="60dp"
       android:layout_height="match_parent"
-      android:adjustViewBounds="true"
-      android:layout_margin="4dp"
-      android:contentDescription="@string/product_menu_image_view_description"/>
+      app:cardCornerRadius="8dp"
+      app:strokeColor="@color/black"
+      app:strokeWidth="1dp"
+      android:layout_marginTop="12dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp">
 
-</jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView>
+    <ImageView
+        android:id="@+id/image_view_model"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_margin="4dp"
+        android:contentDescription="@string/product_menu_image_view_description"/>
+
+  </jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView>
+
+  <TextView
+      android:id="@+id/text_view_model_type"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:textColor="@color/black"
+      android:textStyle="bold"/>
+</LinearLayout>

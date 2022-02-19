@@ -33,6 +33,7 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
+  public static final   String[] MODEL_TYPES = {"両開き","片開き"};
 
   public ProductMenuFragment() {}
 
@@ -74,6 +75,7 @@ public class ProductMenuFragment extends Fragment {
       ProductMenuModel tmp = new ProductMenuModel();
       tmp.setItemModelName(modelNames.get(i));
       tmp.setItemModelImage(modelImages.get(i));
+      tmp.setItemModelType(MODEL_TYPES[i]);
       ary.add(tmp);
     }
     return ary;
