@@ -548,7 +548,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       delete3DModel();
     }
 
-    Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
+    Toast toast = Toast.makeText(this, "モデルを設置します。少々お待ちください", Toast.LENGTH_SHORT);
     toast.setGravity(Gravity.TOP, 0, 0);
     toast.show();
     Handler handler = new Handler(getMainLooper());
