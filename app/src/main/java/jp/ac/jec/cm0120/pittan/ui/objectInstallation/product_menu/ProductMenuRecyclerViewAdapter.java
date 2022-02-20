@@ -57,7 +57,6 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
 //          holder.imageViewType.setVisibility(View.VISIBLE);
           String modelName = productMenuModelArrayList.get(position).getItemModelName();
           onItemClickListener.onItemClick(modelName);
-
         }
       }
     });

@@ -8,12 +8,12 @@
   <jp.ac.jec.cm0120.pittan.ui.objectInstallation.product_menu.SquareView
       android:layout_width="60dp"
       android:layout_height="match_parent"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="12dp"
+      android:layout_marginEnd="8dp"
       app:cardCornerRadius="8dp"
       app:strokeColor="@color/black"
-      app:strokeWidth="1dp"
-      android:layout_marginTop="12dp"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="8dp">
+      app:strokeWidth="1dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,20 +23,19 @@
           android:id="@+id/image_view_model"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:adjustViewBounds="true"
           android:layout_margin="4dp"
-          android:contentDescription="@string/product_menu_image_view_description"/>
+          android:adjustViewBounds="true"
+          android:contentDescription="@string/product_menu_image_view_description" />
+
       <ImageView
           android:id="@+id/image_view_check"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_margin="4dp"
-          android:src="@drawable/icon_check"
           android:background="@color/base_color"
-          android:alpha="0.8"
-          android:contentDescription="選択した時のチェックマーク"
-          android:visibility="invisible"/>
-
+          android:contentDescription="@string/product_menu_image_view_description"
+          android:src="@drawable/icon_check"
+          android:visibility="invisible" />
     </FrameLayout>
 
 
@@ -48,5 +47,5 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:textColor="@color/black"
-      android:textStyle="bold"/>
+      android:textStyle="bold" />
 </LinearLayout>
