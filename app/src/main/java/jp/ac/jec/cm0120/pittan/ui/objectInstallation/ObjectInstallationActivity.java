@@ -242,6 +242,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonDelete.setOnClickListener(view -> {
       if (mModel != null) {
+        AppLog.info("setListener mModel != null");
         delete3DModel();
       }
     });
@@ -543,38 +544,20 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
     }
 
-    if (mModel != null && (!modelName.equals(beforeModelName))) {
-      AppLog.info("mModel != null");
+    if (mModel != null){
       delete3DModel();
-      Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
-      toast.setGravity(Gravity.TOP, 0, 0);
-      toast.show();
-      Handler handler = new Handler(getMainLooper());
-      handler.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          set3dModel();
-        }
-      }, 2000);
-
-    } else if (!modelName.equals(beforeModelName)) {
-
-      Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
-      toast.setGravity(Gravity.TOP, 0, 0);
-      toast.show();
-      Handler handler = new Handler(getMainLooper());
-      handler.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          set3dModel();
-        }
-      }, 2000);
-
-    } else {
-      Toast toast = Toast.makeText(this, "すでに選択されています", Toast.LENGTH_SHORT);
-      toast.setGravity(Gravity.TOP, 0, 0);
-      toast.show();
     }
+
+    Toast toast = Toast.makeText(this, "モデルを読み込んでいます。少々お待ちください", Toast.LENGTH_SHORT);
+    toast.setGravity(Gravity.TOP, 0, 0);
+    toast.show();
+    Handler handler = new Handler(getMainLooper());
+    handler.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        set3dModel();
+      }
+    }, 2000);
 
   }
 
@@ -658,6 +641,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void delete3DModel() {
+    AppLog.info("delete3dModel");
     anchorNode.setAnchor(null);
     anchorNode.removeChild(mModel);
     mModel = null;
