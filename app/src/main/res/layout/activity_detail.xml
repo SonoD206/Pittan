@@ -63,11 +63,9 @@
               android:id="@+id/detail_image_view_item_photo"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:maxHeight="400dp"
+              android:maxHeight="500dp"
               android:scaleType="fitXY"
-              android:adjustViewBounds="true"
-              android:contentDescription="@string/add_photo_description"
-              android:src="@drawable/sample_curtain"/>
+              android:contentDescription="@string/add_photo_description"/>
         </androidx.cardview.widget.CardView>
       </FrameLayout>
 
@@ -107,7 +105,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="28dp"
+          android:layout_marginTop="16dp"
           android:text="@string/add_third_title"
           android:textColor="@color/black"
           android:textSize="20sp"
@@ -117,7 +115,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
           android:background="@drawable/corner_radius_detail_size_container"
           android:minHeight="100dp"
@@ -195,7 +193,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="28dp"
+          android:layout_marginTop="16dp"
           android:text="@string/add_forth_title"
           android:textColor="@color/black"
           android:textSize="20sp"
@@ -206,7 +204,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="8dp"
           android:layout_marginEnd="16dp"
           android:layout_marginBottom="12dp"
           android:minHeight="100dp"
