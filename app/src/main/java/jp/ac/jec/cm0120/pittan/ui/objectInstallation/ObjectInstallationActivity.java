@@ -94,9 +94,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private String userPhotoFileName;
   private Bitmap mPreviewBitmap;
   private Intent mIntent;
+  private GestureDetectorCompat mDetector;
   private final int[] mModelScales = new int[3];
   private int transitionNum;
-  private GestureDetectorCompat mDetector;
   private int tabHeight;
   private int viewPagerHeight;
   private int[] modelDoubleSizes = {20985, 22518};
@@ -445,13 +445,13 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
           // Create the transformable model and add it to the anchor;
           mModel = new TransformableNode(arFragment.getTransformationSystem());
-          mModel.getScaleController().setMaxScale(1.0f);
-          mModel.getScaleController().setMinScale(0.01f);
+          mModel.getScaleController().setMaxScale(0.1f);
+          mModel.getScaleController().setMinScale(0.04f);
           mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
           /// ここを変えたら最初のポジションが変わる
           mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
           /// ここを変えたら最初の大きさが変わる
-          mModel.setLocalScale(new Vector3(0.05f, 0.05f, 0.05f));
+          mModel.setLocalScale(new Vector3(0.04f, 0.04f, 0.04f));
           mModel.setParent(anchorNode);
           if (texture != null) {
             RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
@@ -544,7 +544,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
     }
 
-    if (mModel != null){
+    if (mModel != null) {
       delete3DModel();
     }
 
