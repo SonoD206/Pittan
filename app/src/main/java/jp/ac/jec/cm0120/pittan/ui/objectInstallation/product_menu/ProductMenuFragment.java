@@ -15,12 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jp.ac.jec.cm0120.pittan.R;
 import jp.ac.jec.cm0120.pittan.app.AppConstant;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 
 public class ProductMenuFragment extends Fragment {
+
 
   /// Interface
   public interface OnClickRecyclerViewListener {
@@ -33,9 +36,11 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
-  public static final   String[] MODEL_TYPES = {"両開き","片開き"};
+  public static final String[] MODEL_TYPES = {"両開き", "片開き"};
+  public AtomicReference<String> beforeName = new AtomicReference<>("test");
 
-  public ProductMenuFragment() {}
+  public ProductMenuFragment() {
+  }
 
   public static ProductMenuFragment newInstance() {
     return new ProductMenuFragment();
@@ -97,8 +102,8 @@ public class ProductMenuFragment extends Fragment {
 
   private ArrayList<Integer> getProductImage() {
     ArrayList<Integer> images = new ArrayList<>();
-    images.add(0,R.drawable.icon_curtain_double);
-    images.add(1,R.drawable.icon_curtain_single);
+    images.add(0, R.drawable.icon_curtain_double);
+    images.add(1, R.drawable.icon_curtain_single);
     return images;
   }
 
@@ -106,11 +111,13 @@ public class ProductMenuFragment extends Fragment {
     ProductMenuRecyclerViewAdapter productMenuAdapter = new ProductMenuRecyclerViewAdapter(this.getContext(), productMenuArrayList);
     productMenuRecyclerView.setAdapter(productMenuAdapter);
     productMenuRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.HORIZONTAL, false));
-    AtomicReference<String> beforeName = new AtomicReference<>("");
     productMenuAdapter.setOnItemClickListener(modelName -> {
+
       if (mOnClickRecyclerViewListener != null) {
-        mOnClickRecyclerViewListener.onClickRecyclerItem(modelName, beforeName.get());
-        beforeName.set(modelName);
+        if (!beforeName.get().equals(modelName)) {
+          mOnClickRecyclerViewListener.onClickRecyclerItem(modelName, beforeName.get());
+          beforeName.set(modelName);
+        }
       }
     });
   }

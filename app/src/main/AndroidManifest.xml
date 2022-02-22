@@ -3,13 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="jp.ac.jec.cm0120.pittan">
 
-  <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-  <uses-feature
-      android:glEsVersion="0x00030000"
-      android:required="true" />
-
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-feature android:glEsVersion="0x00030000" android:required="true" />
   <uses-feature android:name="android.hardware.camera.ar" />
 
   <application
@@ -21,9 +17,7 @@
       android:supportsRtl="true"
       tools:ignore="LockedOrientationActivity">
 
-    <meta-data
-        android:name="com.google.ar.core"
-        android:value="required" />
+    <meta-data android:name="com.google.ar.core" android:value="required" />
 
     <activity
         android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"

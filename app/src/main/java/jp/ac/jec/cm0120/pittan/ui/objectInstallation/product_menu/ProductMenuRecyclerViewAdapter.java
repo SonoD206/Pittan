@@ -11,8 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import jp.ac.jec.cm0120.pittan.R;
+import jp.ac.jec.cm0120.pittan.app.AppLog;
 
 public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<ProductMenuRecyclerViewAdapter.ProductMenuRecyclerViewHolder> {
 
@@ -49,14 +51,13 @@ public class ProductMenuRecyclerViewAdapter extends RecyclerView.Adapter<Product
   public void onBindViewHolder(@NonNull ProductMenuRecyclerViewHolder holder, int position) {
 
     int itemMenuImage = productMenuModelArrayList.get(position).getItemModelImage();
+    String modelName = productMenuModelArrayList.get(position).getItemModelName();
     holder.imageViewModel.setImageResource(itemMenuImage);
     holder.textViewModelType.setText(productMenuModelArrayList.get(position).getItemModelType());
     holder.itemView.setOnClickListener(view -> {
       if (onItemClickListener != null) {
         if (position != RecyclerView.NO_POSITION) {
-//          holder.imageViewType.setVisibility(View.VISIBLE);
-          String modelName = productMenuModelArrayList.get(position).getItemModelName();
-          onItemClickListener.onItemClick(modelName);
+            onItemClickListener.onItemClick(modelName);
         }
       }
     });
