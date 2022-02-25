@@ -447,6 +447,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
           mModel = new TransformableNode(arFragment.getTransformationSystem());
           mModel.getScaleController().setMaxScale(0.1f);
           mModel.getScaleController().setMinScale(0.04f);
+
           mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
           /// ここを変えたら最初のポジションが変わる
           mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
