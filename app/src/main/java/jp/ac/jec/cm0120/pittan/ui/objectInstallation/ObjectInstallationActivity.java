@@ -617,7 +617,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       delete3DModel();
     }
 
-    Toast toast = Toast.makeText(this, "モデルを設置します。少々お待ちください", Toast.LENGTH_SHORT);
+    Toast toast = Toast.makeText(this, "モデルを設置します。お待ちください", Toast.LENGTH_SHORT);
     toast.setGravity(Gravity.TOP, 0, 0);
     toast.show();
     Handler handler = new Handler(getMainLooper());
@@ -753,8 +753,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private void getModelSize() {
 
     if (modelName.equals("curtain.glb")) {
-      mModelScales[0] = (int) ((modelDoubleFirstSizes[0] * mModel.getWorldScale().y * 1000) / 1000);
-      mModelScales[1] = (int) ((modelDoubleFirstSizes[1] * mModel.getWorldScale().x * 1000) / 1000);
+      mModelScales[0] = (int) ((modelDoubleFirstSizes[0] * mModel.getWorldScale().y * 1000));
+      mModelScales[1] = (int) ((modelDoubleFirstSizes[1] * mModel.getWorldScale().x * 1000));
     } else  if (modelName.equals("curtain_double.glb")) {
       mModelScales[0] = (int) ((modelDoubleSecondSizes[0] * mModel.getWorldScale().y * 1000) / 1000);
       mModelScales[1] = (int) ((modelDoubleSecondSizes[1] * mModel.getWorldScale().x * 1000) / 1000);
