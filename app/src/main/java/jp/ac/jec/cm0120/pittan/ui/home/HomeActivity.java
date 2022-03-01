@@ -1,21 +1,36 @@
 package jp.ac.jec.cm0120.pittan.ui.home;
 
+import static jp.ac.jec.cm0120.pittan.app.AppLog.TAG;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.ar.core.ArCoreApk;
+import com.google.ar.core.Session;
+import com.google.ar.core.exceptions.UnavailableApkTooOldException;
+import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
+import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
+import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 
 import java.util.ArrayList;
 
@@ -29,6 +44,8 @@ import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
+  private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
   /// Components
   private Toolbar mToolbar;
   private FloatingActionButton fab;
@@ -40,6 +57,9 @@ public class HomeActivity extends AppCompatActivity {
   private ArrayList<PittanProductDataModel> pittanProductDataModelArrayList = new ArrayList<>();
   private PittanSQLiteOpenHelper helper;
   private HomeRecyclerViewAdapter mAdapter;
+  private Session mSession;
+  private boolean installRequested;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +68,55 @@ public class HomeActivity extends AppCompatActivity {
     initialize();
     buildAppTopBar();
     onClickFab();
+  }
+
+
+  private void checkPermissionAR() {
+    if (mSession == null) {
+      Exception exception = null;
+      String message = null;
+      try {
+        switch (ArCoreApk.getInstance().requestInstall(this, !installRequested)) {
+          case INSTALL_REQUESTED:
+            installRequested = true;
+            return;
+          case INSTALLED:
+            break;
+        }
+
+        // Create the session.
+        mSession = new Session(this);
+      } catch (UnavailableArcoreNotInstalledException
+              | UnavailableUserDeclinedInstallationException e) {
+        message = "ARCoreをインストールしてください";
+        exception = e;
+      } catch (UnavailableApkTooOldException e) {
+        message = "ARCoreをアップデートしてください";
+        exception = e;
+      } catch (UnavailableSdkTooOldException e) {
+        message = "Pittanをアップデートしてください";
+        exception = e;
+      } catch (UnavailableDeviceNotCompatibleException e) {
+        message = "ARCoreに対応してません";
+        exception = e;
+      } catch (Exception e) {
+        message = "ARSessionに失敗しました。";
+        exception = e;
+      }
+
+      if (message != null) {
+//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Exception creating session", exception);
+        Log.i(TAG, "checkPermissionAR: message" + message);
+        return;
+      }
+    }
+  }
+
+  private void checkPermissionStorage() {
+    if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+    }
   }
 
   private void initialize() {
@@ -67,6 +136,8 @@ public class HomeActivity extends AppCompatActivity {
     helper = new PittanSQLiteOpenHelper(this);
     pittanProductDataModelArrayList = helper.getSelectCardData();
     buildRecyclerView();
+    checkPermissionAR();
+    checkPermissionStorage();
 
 //　DBにデータがあるかないか
     if (pittanProductDataModelArrayList.size() > 0) {

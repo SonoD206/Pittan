@@ -1,13 +1,18 @@
 package jp.ac.jec.cm0120.pittan.ui.objectInstallation;
 
+import static jp.ac.jec.cm0120.pittan.app.AppLog.TAG;
+
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -28,6 +33,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -37,6 +44,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.ar.core.Anchor;
+import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.HitResult;
@@ -44,6 +52,11 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.Session;
 import com.google.ar.core.Trackable;
 import com.google.ar.core.TrackingState;
+import com.google.ar.core.exceptions.UnavailableApkTooOldException;
+import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
+import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
+import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.HitTestResult;
@@ -99,8 +112,9 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   private int transitionNum;
   private int tabHeight;
   private int viewPagerHeight;
-  private int[] modelDoubleSizes = {20985, 22518};
-  private int[] modelSingleSizes = {20994, 21962};
+  private final double[] modelDoubleFirstSizes = {0.261546, 0.261546};
+  private final int[] modelDoubleSecondSizes = {20985, 22518};
+  private final int[] modelSingleSizes = {20994, 21962};
 
   /// ARCore
   private Renderable mRenderModel;
@@ -220,7 +234,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     handler.postDelayed(new Runnable() {
       @Override
       public void run() {
-        set3dModel();
+        set3dModel(modelName);
       }
     }, 2000);
     return super.onContextItemSelected(item);
@@ -428,7 +442,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
   }
 
-  private void set3dModel() {
+  private void set3dModel(String modelName) {
     Frame frame = arFragment.getArSceneView().getArFrame();
     android.graphics.Point pt = getScreenCenter();
     List<HitResult> hits;
@@ -445,14 +459,27 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
           // Create the transformable model and add it to the anchor;
           mModel = new TransformableNode(arFragment.getTransformationSystem());
-          mModel.getScaleController().setMaxScale(0.1f);
-          mModel.getScaleController().setMinScale(0.04f);
 
-          mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
-          /// ここを変えたら最初のポジションが変わる
-          mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
-          /// ここを変えたら最初の大きさが変わる
-          mModel.setLocalScale(new Vector3(0.04f, 0.04f, 0.04f));
+          if (modelName.equals("curtain.glb")){
+            mModel.getScaleController().setMaxScale(10f);
+            mModel.getScaleController().setMinScale(1f);
+
+            mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
+            /// ここを変えたら最初のポジションが変わる
+            mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
+            /// ここを変えたら最初の大きさが変わる
+            mModel.setLocalScale(new Vector3(5f, 5f, 5f));
+          } else {
+            mModel.getScaleController().setMaxScale(0.1f);
+            mModel.getScaleController().setMinScale(0.04f);
+
+            mModel.setWorldScale(new Vector3(1.0f, 1.0f, 1.0f));
+            /// ここを変えたら最初のポジションが変わる
+            mModel.setLocalPosition(new Vector3(0.0f, 0.0f, 0.0f));
+            /// ここを変えたら最初の大きさが変わる
+            mModel.setLocalScale(new Vector3(0.04f, 0.04f, 0.04f));
+          }
+
           mModel.setParent(anchorNode);
           if (texture != null) {
             RenderableInstance modelInstance = mModel.setRenderable(this.mRenderModel);
@@ -556,7 +583,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     handler.postDelayed(new Runnable() {
       @Override
       public void run() {
-        set3dModel();
+        set3dModel(modelName);
       }
     }, 2000);
 
@@ -684,20 +711,15 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
   private void getModelSize() {
 
-    AppLog.info("model raw Height"+ mModel.getWorldScale().y);
-    AppLog.info("model raw width"+mModel.getWorldScale().x);
-
-    if (modelName.equals("curtain_double.glb")){
-      AppLog.info("model raw Height"+modelDoubleSizes[0]);
-      AppLog.info("model raw width"+modelDoubleSizes[1]);
-      AppLog.info(""+modelDoubleSizes[1] * mModel.getWorldScale().x);
-      AppLog.info(""+modelDoubleSizes[0] * mModel.getWorldScale().y);
-
-      mModelScales[0] = (int) ((modelDoubleSizes[0] * mModel.getWorldScale().y * 1000)/1000);
-      mModelScales[1] = (int) ((modelDoubleSizes[1] * mModel.getWorldScale().x * 1000)/1000);
-    } else {
-      mModelScales[0] = (int) ((modelSingleSizes[0] * mModel.getWorldScale().y * 1000)/1000);
-      mModelScales[1] = (int) ((modelSingleSizes[1] * mModel.getWorldScale().x * 1000)/1000);
+    if (modelName.equals("curtain.glb")) {
+      mModelScales[0] = (int) ((modelDoubleFirstSizes[0] * mModel.getWorldScale().y * 1000) / 1000);
+      mModelScales[1] = (int) ((modelDoubleFirstSizes[1] * mModel.getWorldScale().x * 1000) / 1000);
+    } else  if (modelName.equals("curtain_double.glb")) {
+      mModelScales[0] = (int) ((modelDoubleSecondSizes[0] * mModel.getWorldScale().y * 1000) / 1000);
+      mModelScales[1] = (int) ((modelDoubleSecondSizes[1] * mModel.getWorldScale().x * 1000) / 1000);
+    } else if (modelName.equals("curtain_single.glb")) {
+      mModelScales[0] = (int) ((modelSingleSizes[0] * mModel.getWorldScale().y * 1000) / 1000);
+      mModelScales[1] = (int) ((modelSingleSizes[1] * mModel.getWorldScale().x * 1000) / 1000);
     }
   }
 

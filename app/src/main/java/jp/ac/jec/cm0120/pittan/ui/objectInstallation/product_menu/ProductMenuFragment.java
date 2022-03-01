@@ -36,7 +36,7 @@ public class ProductMenuFragment extends Fragment {
   /// Fields
   private ArrayList<ProductMenuModel> productMenuArrayList;
   private OnClickRecyclerViewListener mOnClickRecyclerViewListener;
-  public static final String[] MODEL_TYPES = {"両開き", "片開き"};
+  public static final String[] MODEL_TYPES = {"両開き1","両開き2", "片開き"};
   public AtomicReference<String> beforeName = new AtomicReference<>("test");
 
   public ProductMenuFragment() {
@@ -103,7 +103,8 @@ public class ProductMenuFragment extends Fragment {
   private ArrayList<Integer> getProductImage() {
     ArrayList<Integer> images = new ArrayList<>();
     images.add(0, R.drawable.icon_curtain_double);
-    images.add(1, R.drawable.icon_curtain_single);
+    images.add(1, R.drawable.icon_curtain_double);
+    images.add(2, R.drawable.icon_curtain_single);
     return images;
   }
 
