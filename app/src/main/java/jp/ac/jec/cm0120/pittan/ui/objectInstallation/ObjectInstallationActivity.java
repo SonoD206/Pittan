@@ -55,6 +55,7 @@ import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.UnavailableApkTooOldException;
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException;
 import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException;
+import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException;
 import com.google.ar.sceneform.AnchorNode;
@@ -138,6 +139,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   protected void onResume() {
     super.onResume();
+    isARCoreSupportedAndUpToDate();
     setListener();
   }
 
@@ -191,6 +193,45 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       imageButtonShutter.setLayoutParams(margin);
     }
     isFirstFocus = false;
+  }
+
+  private boolean isARCoreSupportedAndUpToDate() {
+    ArCoreApk.Availability availability = ArCoreApk.getInstance().checkAvailability(this);
+    switch (availability) {
+      case SUPPORTED_INSTALLED:
+        return true;
+
+      case SUPPORTED_APK_TOO_OLD:
+      case SUPPORTED_NOT_INSTALLED:
+        try {
+          // Request ARCore installation or update if needed.
+          ArCoreApk.InstallStatus installStatus = ArCoreApk.getInstance().requestInstall(this, true);
+          switch (installStatus) {
+            case INSTALL_REQUESTED:
+              Log.i(TAG, "ARCore installation requested.");
+              return false;
+            case INSTALLED:
+              return true;
+          }
+        } catch (UnavailableException e) {
+          Log.e(TAG, "ARCore not installed", e);
+        }
+        return false;
+
+      case UNSUPPORTED_DEVICE_NOT_CAPABLE:
+        // This device is not supported for AR.
+        Toast.makeText(this, "本デバイスはARに対応しておりません", Toast.LENGTH_SHORT).show();
+        return false;
+
+      case UNKNOWN_CHECKING:
+        // ARCore is checking the availability with a remote query.
+        // This function should be called again after waiting 200 ms to determine the query result.
+      case UNKNOWN_ERROR:
+      case UNKNOWN_TIMED_OUT:
+        // There was an error checking for AR availability. This may be due to the device being offline.
+        // Handle the error appropriately.
+    }
+    return false;
   }
 
   @Override
@@ -251,7 +292,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   }
 
   private void setListener() {
-
     imageButtonClose.setOnClickListener(view -> finish());
 
     imageButtonDelete.setOnClickListener(view -> {
@@ -437,7 +477,8 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onSessionConfiguration(Session session, Config config) {
     if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-      config.setDepthMode(Config.DepthMode.AUTOMATIC);
+      Log.i(TAG, "onSessionConfiguration: depth support");
+      config.setDepthMode(Config.DepthMode.DISABLED);
     }
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
   }
