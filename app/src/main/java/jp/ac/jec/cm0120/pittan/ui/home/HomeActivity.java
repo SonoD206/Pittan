@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,7 +43,7 @@ import jp.ac.jec.cm0120.pittan.ui.setting.SettingActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
-  private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+  private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
   /// Components
   private Toolbar mToolbar;
@@ -105,7 +104,6 @@ public class HomeActivity extends AppCompatActivity {
       }
 
       if (message != null) {
-//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         Log.e(TAG, "Exception creating session", exception);
         Log.i(TAG, "checkPermissionAR: message" + message);
         return;
@@ -114,8 +112,8 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void checkPermissionStorage() {
-    if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+    if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
     }
   }
 
