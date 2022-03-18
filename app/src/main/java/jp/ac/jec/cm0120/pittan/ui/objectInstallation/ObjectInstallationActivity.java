@@ -296,7 +296,7 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
 
     imageButtonDelete.setOnClickListener(view -> {
       if (mModel != null) {
-        AppLog.info("setListener mModel != null");
+        modelName = "";
         delete3DModel();
       }
     });
@@ -349,7 +349,32 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
     imageButtonReplay.setOnClickListener(view -> closePreview(null));
   }
 
-  ///region ViewPager2
+  /// Interfaceの実装
+  @Override
+  public void onClickRecyclerItem(String modelName, String beforeModelName) {
+
+    if (mRenderModel == null || !modelName.equals(beforeModelName)) {
+      AppLog.info("選択されたモデルと前のモデルの名前が異なる");
+      loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
+    }
+
+    if (mModel != null) {
+      delete3DModel();
+    }
+
+    Toast toast = Toast.makeText(this, "モデルを設置します。お待ちください", Toast.LENGTH_SHORT);
+    toast.setGravity(Gravity.TOP, 0, 0);
+    toast.show();
+    Handler handler = new Handler(getMainLooper());
+    handler.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        set3dModel(modelName);
+      }
+    }, 2000);
+
+  }
+
   private void buildViewPager2() {
 
     BottomMenuAdapter bottomMenuAdapter = new BottomMenuAdapter(this);
@@ -393,8 +418,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       }
     });
   }
-  /// endregion
-
   @Override
   public void onAttachFragment(@NonNull FragmentManager fragmentManager, @NonNull Fragment fragment) {
     if (fragment.getId() == R.id.arFragment) {
@@ -477,7 +500,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
   @Override
   public void onSessionConfiguration(Session session, Config config) {
     if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-      Log.i(TAG, "onSessionConfiguration: depth support");
       config.setDepthMode(Config.DepthMode.DISABLED);
     }
     config.setUpdateMode(Config.UpdateMode.LATEST_CAMERA_IMAGE);
@@ -602,32 +624,6 @@ public class ObjectInstallationActivity extends AppCompatActivity implements Fra
       AppLog.info("Not the right kind.");
     }
     return path;
-  }
-
-  /// Interfaceの実装
-  @Override
-  public void onClickRecyclerItem(String modelName, String beforeModelName) {
-    this.modelName = modelName;
-    if (mRenderModel == null || !modelName.equals(beforeModelName)) {
-      AppLog.info("選択されたモデルと前のモデルの名前が異なる");
-      loadModels(getPath(AppConstant.Objection.MODEL_NUM, modelName));
-    }
-
-    if (mModel != null) {
-      delete3DModel();
-    }
-
-    Toast toast = Toast.makeText(this, "モデルを設置します。お待ちください", Toast.LENGTH_SHORT);
-    toast.setGravity(Gravity.TOP, 0, 0);
-    toast.show();
-    Handler handler = new Handler(getMainLooper());
-    handler.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        set3dModel(modelName);
-      }
-    }, 2000);
-
   }
 
   ///写真を撮る
